@@ -1,0 +1,83 @@
+﻿<Page x:Class="LightVPN.Views.Login"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:converters="clr-namespace:LightVPN.Converters"
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+      xmlns:local="clr-namespace:LightVPN.Views"
+      xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+      xmlns:window="clr-namespace:LightVPN.Windows"
+      Name="view"
+      Title="Login"
+      d:DesignWidth="308"
+      d:DesignHeight="390"
+      FontFamily="{DynamicResource MaterialDesignFont}"
+      TextElement.FontSize="13"
+      TextElement.FontWeight="Regular"
+      TextElement.Foreground="{DynamicResource MaterialDesignBody}"
+      TextOptions.TextFormattingMode="Ideal"
+      TextOptions.TextRenderingMode="Auto"
+      mc:Ignorable="d">
+    <Page.Resources>
+        <converters:InverseBooleanConverter x:Key="converter" />
+    </Page.Resources>
+    <Grid>
+        <StackPanel>
+            <Image Name="LogoImage"
+               Width="188"
+               Height="50"
+               Margin="0,70,0,0"
+               HorizontalAlignment="Center"
+               VerticalAlignment="Top"
+               Source="/Resources/logo-dark.png" />
+            <TextBox Name="UsernameBox"
+                 Margin="20,50,20,0"
+                 HorizontalAlignment="Stretch"
+                 VerticalAlignment="Top"
+                 x:FieldModifier="public"
+                 IsEnabled="{Binding IsAuthenticating, Converter={StaticResource converter}, ElementName=view}"
+                 Style="{StaticResource MaterialDesignOutlinedTextBox}"
+                 ToolTip="Enter your LightVPN account ID">
+                <materialDesign:HintAssist.Hint>
+                    <StackPanel Margin="-2,0,0,0" Orientation="Horizontal">
+                        <materialDesign:PackIcon Kind="UserOutline" />
+                        <TextBlock Text=" Account ID" />
+                    </StackPanel>
+                </materialDesign:HintAssist.Hint>
+            </TextBox>
+            <PasswordBox Name="PasswordBox"
+                     Margin="20,15,20,0"
+                     HorizontalAlignment="Stretch"
+                     VerticalAlignment="Top"
+                     x:FieldModifier="public"
+                     IsEnabled="{Binding IsAuthenticating, Converter={StaticResource converter}, ElementName=view}"
+                     Style="{StaticResource MaterialDesignOutlinedPasswordBox}"
+                     ToolTip="Enter your LightVPN password">
+                <materialDesign:HintAssist.Hint>
+                    <StackPanel Margin="-2,0,0,0" Orientation="Horizontal">
+                        <materialDesign:PackIcon Kind="KeyOutline" />
+                        <TextBlock Text=" Password" />
+                    </StackPanel>
+                </materialDesign:HintAssist.Hint>
+            </PasswordBox>
+            <Button Name="SignInBtn"
+                Height="40"
+                Margin="20,30,20,0"
+                VerticalAlignment="Top"
+                materialDesign:ButtonProgressAssist.IsIndeterminate="True"
+                materialDesign:ButtonProgressAssist.IsIndicatorVisible="{Binding ElementName=view, Path=IsAuthenticating}"
+                materialDesign:ButtonProgressAssist.Value="0"
+                Command="{x:Static window:LoginWindow.SignInCommand}"
+                Cursor="Arrow"
+                IsDefault="True"
+                IsEnabled="{Binding IsAuthenticating, Converter={StaticResource converter}, ElementName=view}"
+                Style="{StaticResource MaterialDesignRaisedButton}"
+                ToolTip="Attempts to log you in as the specified user">
+                <StackPanel Orientation="Horizontal">
+                    <materialDesign:PackIcon Kind="Login" />
+                    <TextBlock x:Name="SignInText" Text=" SIGN IN" />
+                </StackPanel>
+            </Button>
+        </StackPanel>
+    </Grid>
+</Page>

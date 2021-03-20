@@ -1,0 +1,163 @@
+﻿<Page
+    x:Class="LightVPN.Views.Home"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:class="LightVPN.Views.Home"
+    xmlns:converters="clr-namespace:LightVPN.Converters"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:local="clr-namespace:LightVPN.Views"
+    xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    Name="HomeView"
+    Title="Home"
+    d:DesignHeight="418"
+    d:DesignWidth="749"
+    FontFamily="{DynamicResource MaterialDesignFont}"
+    Loaded="HomeView_Loaded"
+    TextElement.FontSize="13"
+    TextElement.FontWeight="Regular"
+    TextElement.Foreground="{DynamicResource MaterialDesignBody}"
+    TextOptions.TextFormattingMode="Ideal"
+    TextOptions.TextRenderingMode="Auto"
+    mc:Ignorable="d">
+    <Page.Resources>
+        <converters:InverseBooleanConverter x:Key="converter" />
+    </Page.Resources>
+    <ScrollViewer HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
+        <Grid>
+            <StackPanel>
+                <TextBlock
+                    Margin="45,25,0,20"
+                    HorizontalAlignment="Left"
+                    VerticalAlignment="Top"
+                    Style="{StaticResource Headline}"
+                    Text="Welcome!" />
+                <materialDesign:Card
+                    Height="175"
+                    Margin="40,0,40,20"
+                    HorizontalAlignment="Stretch"
+                    VerticalAlignment="Top"
+                    Style="{StaticResource GradientBackground}">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="170" />
+                        </Grid.ColumnDefinitions>
+                        <StackPanel>
+                            <TextBlock
+                                Name="LastServerTitle"
+                                Margin="15,15,0,0"
+                                HorizontalAlignment="Left"
+                                VerticalAlignment="Top"
+                                Style="{StaticResource BrightHeadline}"
+                                Text="Your last server" />
+                            <TextBlock
+                                Name="RecentServer"
+                                Margin="15,5,0,0"
+                                HorizontalAlignment="Left"
+                                VerticalAlignment="Top"
+                                Style="{StaticResource BrightSmall}"
+                                Text="server" />
+                            <Button
+                                Name="RecentConnectButton"
+                                Margin="15,15,0,0"
+                                HorizontalAlignment="Left"
+                                VerticalAlignment="Top"
+                                Background="{x:Null}"
+                                BorderBrush="{x:Null}"
+                                Command="{x:Static local:Home.ToggleConnectCommand}"
+                                Cursor="Arrow"
+                                Foreground="White">
+                                <StackPanel Orientation="Horizontal">
+                                    <ProgressBar
+                                        Margin="0,0,5,0"
+                                        HorizontalAlignment="Right"
+                                        VerticalAlignment="Stretch"
+                                        Foreground="White"
+                                        IsIndeterminate="True"
+                                        Style="{DynamicResource MaterialDesignCircularProgressBar}"
+                                        Visibility="{Binding ElementName=HomeView, Path=IsProcessingTwo, Converter={StaticResource BooleanToVisibilityConverter}}"
+                                        Value="-1" />
+                                    <materialDesign:PackIcon
+                                        Name="ConnectButtonIcon"
+                                        Margin="0,0,5,0"
+                                        HorizontalAlignment="Right"
+                                        VerticalAlignment="Stretch"
+                                        Kind="PowerPlugOutline"
+                                        Visibility="{Binding ElementName=HomeView, Path=IsProcessingTwo, Converter={StaticResource InverseBoolToVisConverter}}" />
+                                    <TextBlock
+                                        Name="ConnectButtonText"
+                                        HorizontalAlignment="Center"
+                                        VerticalAlignment="Center"
+                                        Text=" CONNECT" />
+                                </StackPanel>
+                            </Button>
+                        </StackPanel>
+                        <StackPanel Grid.Column="1">
+                            <materialDesign:PackIcon
+                                Width="64"
+                                Height="64"
+                                Margin="0,25,25,0"
+                                HorizontalAlignment="Right"
+                                VerticalAlignment="Top"
+                                Foreground="White"
+                                Kind="Server"
+                                Opacity="0.2" />
+                        </StackPanel>
+                    </Grid>
+                </materialDesign:Card>
+            </StackPanel>
+            <Grid>
+                <materialDesign:Card
+                    Margin="40,260,40,25"
+                    HorizontalAlignment="Stretch"
+                    VerticalAlignment="Stretch">
+                    <DataGrid
+                        x:Name="ServerList"
+                        HorizontalAlignment="Stretch"
+                        VerticalAlignment="Stretch"
+                        AutoGenerateColumns="False"
+                        Background="{x:Null}"
+                        BeginningEdit="Grid_BeginningEdit"
+                        BorderBrush="{x:Null}"
+                        CanUserAddRows="False"
+                        CanUserDeleteRows="False"
+                        CanUserReorderColumns="False"
+                        CanUserResizeColumns="False"
+                        CanUserResizeRows="False"
+                        Foreground="{DynamicResource MaterialDesignBody}"
+                        GridLinesVisibility="None"
+                        IsSynchronizedWithCurrentItem="True"
+                        MouseDoubleClick="Grid_MouseClick"
+                        SelectionMode="Single"
+                        SelectionUnit="FullRow">
+                        <DataGrid.Columns>
+                            <DataGridTemplateColumn>
+                                <DataGridTemplateColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <Image Source="{Binding Flag}" />
+                                    </DataTemplate>
+                                </DataGridTemplateColumn.CellTemplate>
+                            </DataGridTemplateColumn>
+                        </DataGrid.Columns>
+                        <DataGrid.ContextMenu>
+                            <ContextMenu>
+                                <MenuItem
+                                    Name="ConnectItem"
+                                    Click="ConnectItem_Click"
+                                    ToolTip="Begin connecting to this server">
+                                    <MenuItem.Icon>
+                                        <materialDesign:PackIcon Kind="PowerPlugOutline" />
+                                    </MenuItem.Icon>
+                                    <MenuItem.Header>
+                                        <TextBlock>Connect to this server</TextBlock>
+                                    </MenuItem.Header>
+                                </MenuItem>
+                            </ContextMenu>
+                        </DataGrid.ContextMenu>
+                    </DataGrid>
+                </materialDesign:Card>
+            </Grid>
+        </Grid>
+    </ScrollViewer>
+</Page>

@@ -1,0 +1,412 @@
+﻿<Window
+    x:Class="LightVPN.MainWindow"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:converters="clr-namespace:LightVPN.Converters"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:tb="http://www.hardcodet.net/taskbar"
+    Name="window"
+    Title="LightVPN"
+    Width="800"
+    Height="481"
+    MinWidth="800"
+    MinHeight="481"
+    AllowsTransparency="True"
+    Background="{DynamicResource MaterialDesignPaper}"
+    Closing="Window_Closing"
+    FontFamily="{DynamicResource MaterialDesignFont}"
+    Foreground="Black"
+    ResizeMode="CanResizeWithGrip"
+    StateChanged="MainWindow_StateChanged"
+    TextElement.FontSize="13"
+    TextElement.FontWeight="Regular"
+    TextElement.Foreground="{DynamicResource MaterialDesignBody}"
+    TextOptions.TextFormattingMode="Ideal"
+    TextOptions.TextRenderingMode="Auto"
+    WindowStartupLocation="CenterScreen"
+    WindowStyle="None"
+    mc:Ignorable="d">
+    <Window.Resources>
+        <converters:InverseBooleanConverter x:Key="converter" />
+        <BooleanToVisibilityConverter x:Key="BoolToVis" />
+        <BeginStoryboard x:Key="HideFrame">
+            <Storyboard Completed="UnloadComplete">
+                <DoubleAnimationUsingKeyFrames Storyboard.TargetName="MainFrame" Storyboard.TargetProperty="(UIElement.RenderTransform).(TransformGroup.Children)[3].(TranslateTransform.Y)">
+                    <EasingDoubleKeyFrame KeyTime="00:00:00.3000000" Value="20">
+                        <EasingDoubleKeyFrame.EasingFunction>
+                            <QuinticEase EasingMode="EaseInOut" />
+                        </EasingDoubleKeyFrame.EasingFunction>
+                    </EasingDoubleKeyFrame>
+                </DoubleAnimationUsingKeyFrames>
+                <DoubleAnimationUsingKeyFrames Storyboard.TargetName="MainFrame" Storyboard.TargetProperty="(UIElement.Opacity)">
+                    <EasingDoubleKeyFrame KeyTime="00:00:00.3000000" Value="0">
+                        <EasingDoubleKeyFrame.EasingFunction>
+                            <QuinticEase EasingMode="EaseInOut" />
+                        </EasingDoubleKeyFrame.EasingFunction>
+                    </EasingDoubleKeyFrame>
+                </DoubleAnimationUsingKeyFrames>
+            </Storyboard>
+        </BeginStoryboard>
+        <BeginStoryboard x:Key="ShowFrame">
+            <Storyboard>
+                <DoubleAnimationUsingKeyFrames Storyboard.TargetName="MainFrame" Storyboard.TargetProperty="(UIElement.RenderTransform).(TransformGroup.Children)[3].(TranslateTransform.Y)">
+                    <EasingDoubleKeyFrame KeyTime="00:00:00" Value="20">
+                        <EasingDoubleKeyFrame.EasingFunction>
+                            <QuinticEase EasingMode="EaseInOut" />
+                        </EasingDoubleKeyFrame.EasingFunction>
+                    </EasingDoubleKeyFrame>
+                    <EasingDoubleKeyFrame KeyTime="00:00:00.3000000" Value="0">
+                        <EasingDoubleKeyFrame.EasingFunction>
+                            <QuinticEase EasingMode="EaseInOut" />
+                        </EasingDoubleKeyFrame.EasingFunction>
+                    </EasingDoubleKeyFrame>
+                </DoubleAnimationUsingKeyFrames>
+                <DoubleAnimationUsingKeyFrames Storyboard.TargetName="MainFrame" Storyboard.TargetProperty="(UIElement.Opacity)">
+                    <EasingDoubleKeyFrame KeyTime="00:00:00" Value="0">
+                        <EasingDoubleKeyFrame.EasingFunction>
+                            <QuinticEase EasingMode="EaseInOut" />
+                        </EasingDoubleKeyFrame.EasingFunction>
+                    </EasingDoubleKeyFrame>
+                    <EasingDoubleKeyFrame KeyTime="00:00:00.3000000" Value="1">
+                        <EasingDoubleKeyFrame.EasingFunction>
+                            <QuinticEase EasingMode="EaseInOut" />
+                        </EasingDoubleKeyFrame.EasingFunction>
+                    </EasingDoubleKeyFrame>
+                </DoubleAnimationUsingKeyFrames>
+            </Storyboard>
+        </BeginStoryboard>
+        <Storyboard x:Key="OpenAnim">
+            <DoubleAnimationUsingKeyFrames Storyboard.TargetName="window" Storyboard.TargetProperty="(FrameworkElement.Width)">
+                <EasingDoubleKeyFrame KeyTime="00:00:00" Value="780">
+                    <EasingDoubleKeyFrame.EasingFunction>
+                        <QuinticEase EasingMode="EaseInOut" />
+                    </EasingDoubleKeyFrame.EasingFunction>
+                </EasingDoubleKeyFrame>
+                <EasingDoubleKeyFrame KeyTime="00:00:00.400" Value="800">
+                    <EasingDoubleKeyFrame.EasingFunction>
+                        <QuinticEase EasingMode="EaseInOut" />
+                    </EasingDoubleKeyFrame.EasingFunction>
+                </EasingDoubleKeyFrame>
+            </DoubleAnimationUsingKeyFrames>
+            <DoubleAnimationUsingKeyFrames Storyboard.TargetName="window" Storyboard.TargetProperty="(FrameworkElement.Height)">
+                <EasingDoubleKeyFrame KeyTime="00:00:00" Value="460">
+                    <EasingDoubleKeyFrame.EasingFunction>
+                        <QuinticEase EasingMode="EaseInOut" />
+                    </EasingDoubleKeyFrame.EasingFunction>
+                </EasingDoubleKeyFrame>
+                <EasingDoubleKeyFrame KeyTime="00:00:00.400" Value="481">
+                    <EasingDoubleKeyFrame.EasingFunction>
+                        <QuinticEase EasingMode="EaseInOut" />
+                    </EasingDoubleKeyFrame.EasingFunction>
+                </EasingDoubleKeyFrame>
+            </DoubleAnimationUsingKeyFrames>
+            <DoubleAnimationUsingKeyFrames Storyboard.TargetName="window" Storyboard.TargetProperty="(UIElement.Opacity)">
+                <EasingDoubleKeyFrame KeyTime="00:00:00" Value="0">
+                    <EasingDoubleKeyFrame.EasingFunction>
+                        <QuinticEase EasingMode="EaseInOut" />
+                    </EasingDoubleKeyFrame.EasingFunction>
+                </EasingDoubleKeyFrame>
+                <EasingDoubleKeyFrame KeyTime="00:00:00.4000000" Value="1">
+                    <EasingDoubleKeyFrame.EasingFunction>
+                        <QuinticEase EasingMode="EaseInOut" />
+                    </EasingDoubleKeyFrame.EasingFunction>
+                </EasingDoubleKeyFrame>
+            </DoubleAnimationUsingKeyFrames>
+        </Storyboard>
+        <BeginStoryboard x:Key="CloseAnim">
+            <Storyboard Completed="FinishedClosingAnimation">
+                <DoubleAnimationUsingKeyFrames Storyboard.TargetName="window" Storyboard.TargetProperty="(FrameworkElement.Width)">
+                    <EasingDoubleKeyFrame KeyTime="00:00:00" Value="800">
+                        <EasingDoubleKeyFrame.EasingFunction>
+                            <QuinticEase EasingMode="EaseInOut" />
+                        </EasingDoubleKeyFrame.EasingFunction>
+                    </EasingDoubleKeyFrame>
+                    <EasingDoubleKeyFrame KeyTime="00:00:00.400" Value="780">
+                        <EasingDoubleKeyFrame.EasingFunction>
+                            <QuinticEase EasingMode="EaseInOut" />
+                        </EasingDoubleKeyFrame.EasingFunction>
+                    </EasingDoubleKeyFrame>
+                </DoubleAnimationUsingKeyFrames>
+                <DoubleAnimationUsingKeyFrames Storyboard.TargetName="window" Storyboard.TargetProperty="(FrameworkElement.Height)">
+                    <EasingDoubleKeyFrame KeyTime="00:00:00" Value="481">
+                        <EasingDoubleKeyFrame.EasingFunction>
+                            <QuinticEase EasingMode="EaseInOut" />
+                        </EasingDoubleKeyFrame.EasingFunction>
+                    </EasingDoubleKeyFrame>
+                    <EasingDoubleKeyFrame KeyTime="00:00:00.400" Value="460">
+                        <EasingDoubleKeyFrame.EasingFunction>
+                            <QuinticEase EasingMode="EaseInOut" />
+                        </EasingDoubleKeyFrame.EasingFunction>
+                    </EasingDoubleKeyFrame>
+                </DoubleAnimationUsingKeyFrames>
+                <DoubleAnimationUsingKeyFrames Storyboard.TargetName="window" Storyboard.TargetProperty="(UIElement.Opacity)">
+                    <EasingDoubleKeyFrame KeyTime="00:00:00" Value="1">
+                        <EasingDoubleKeyFrame.EasingFunction>
+                            <QuinticEase EasingMode="EaseInOut" />
+                        </EasingDoubleKeyFrame.EasingFunction>
+                    </EasingDoubleKeyFrame>
+                    <EasingDoubleKeyFrame KeyTime="00:00:00.4000000" Value="0">
+                        <EasingDoubleKeyFrame.EasingFunction>
+                            <QuinticEase EasingMode="EaseInOut" />
+                        </EasingDoubleKeyFrame.EasingFunction>
+                    </EasingDoubleKeyFrame>
+                </DoubleAnimationUsingKeyFrames>
+            </Storyboard>
+        </BeginStoryboard>
+    </Window.Resources>
+    <Window.Triggers>
+        <EventTrigger RoutedEvent="Window.Loaded">
+            <BeginStoryboard Storyboard="{StaticResource OpenAnim}" />
+        </EventTrigger>
+    </Window.Triggers>
+    <WindowChrome.WindowChrome>
+        <WindowChrome
+            CaptionHeight="37"
+            CornerRadius="0,0,0,0"
+            GlassFrameThickness="0"
+            ResizeBorderThickness="7"
+            UseAeroCaptionButtons="False" />
+    </WindowChrome.WindowChrome>
+    <Border Name="Border" Style="{StaticResource WindowBorder}">
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="50" />
+                <ColumnDefinition Width="750*" />
+            </Grid.ColumnDefinitions>
+            <tb:TaskbarIcon
+                x:Name="trayIcon"
+                IconSource="/Resources/lightvpn.ico"
+                MenuActivation="RightClick"
+                PopupActivation="LeftOrDoubleClick"
+                ToolTipText="LightVPN"
+                Visibility="Visible" />
+            <Frame
+                Name="ConnectingFrame"
+                Grid.ColumnSpan="2"
+                NavigationUIVisibility="Hidden"
+                Visibility="Hidden" />
+            <Grid Grid.Column="1">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="32" />
+                    <RowDefinition Height="*" />
+                    <RowDefinition Height="30" />
+                </Grid.RowDefinitions>
+                <Grid
+                    Name="TopBar"
+                    Grid.Row="0"
+                    Grid.Column="1"
+                    HorizontalAlignment="Stretch"
+                    VerticalAlignment="Top">
+                    <StackPanel
+                        Grid.Column="1"
+                        HorizontalAlignment="Right"
+                        VerticalAlignment="Stretch"
+                        Orientation="Horizontal">
+                        <Button
+                            Name="DisconnectBtn"
+                            Width="50"
+                            materialDesign:RippleAssist.Feedback="#DD000000"
+                            Background="{x:Null}"
+                            BorderBrush="{x:Null}"
+                            Click="CaptionButton_Click"
+                            Cursor="Arrow"
+                            Foreground="White"
+                            IsEnabled="{Binding IsConnected, ElementName=window}"
+                            ToolTip="Disconnect from the currently connected server"
+                            WindowChrome.IsHitTestVisibleInChrome="True">
+                            <materialDesign:PackIcon
+                                Name="ConnectIcon"
+                                Foreground="{DynamicResource MaterialDesignBody}"
+                                Kind="PowerPlugOffOutline" />
+                        </Button>
+                        <Button
+                            Width="50"
+                            materialDesign:RippleAssist.Feedback="#DD000000"
+                            Background="{x:Null}"
+                            BorderBrush="{x:Null}"
+                            Click="CaptionButton_Click"
+                            Cursor="Arrow"
+                            Foreground="White"
+                            ToolTip="Minimize"
+                            WindowChrome.IsHitTestVisibleInChrome="True">
+                            <materialDesign:PackIcon Foreground="{DynamicResource MaterialDesignBody}" Kind="WindowMinimize" />
+                        </Button>
+                        <Button
+                            Width="50"
+                            materialDesign:RippleAssist.Feedback="#DD000000"
+                            Background="{x:Null}"
+                            BorderBrush="{x:Null}"
+                            Click="CaptionButton_Click"
+                            Cursor="Arrow"
+                            Foreground="White"
+                            ToolTip="Maximize"
+                            WindowChrome.IsHitTestVisibleInChrome="True">
+                            <materialDesign:PackIcon
+                                Name="MaxIcon"
+                                Foreground="{DynamicResource MaterialDesignBody}"
+                                Kind="WindowMaximize" />
+                        </Button>
+                        <Button
+                            Width="50"
+                            materialDesign:RippleAssist.Feedback="#DDC80000"
+                            Background="{x:Null}"
+                            BorderBrush="{x:Null}"
+                            Click="CaptionButton_Click"
+                            Cursor="Arrow"
+                            Foreground="White"
+                            ToolTip="Close"
+                            WindowChrome.IsHitTestVisibleInChrome="True">
+                            <materialDesign:PackIcon Foreground="{DynamicResource MaterialDesignBody}" Kind="WindowClose" />
+                        </Button>
+                    </StackPanel>
+                </Grid>
+                <Grid
+                    Grid.Row="1"
+                    Grid.RowSpan="1"
+                    HorizontalAlignment="Stretch"
+                    VerticalAlignment="Stretch">
+                    <Frame
+                        Name="MainFrame"
+                        NavigationUIVisibility="Hidden"
+                        RenderTransformOrigin="0.5,0.5">
+                        <Frame.RenderTransform>
+                            <TransformGroup>
+                                <ScaleTransform />
+                                <SkewTransform />
+                                <RotateTransform />
+                                <TranslateTransform />
+                            </TransformGroup>
+                        </Frame.RenderTransform>
+                    </Frame>
+                </Grid>
+                <Grid
+                    Grid.Row="2"
+                    HorizontalAlignment="Stretch"
+                    VerticalAlignment="Bottom"
+                    RenderTransformOrigin="0.5,0.5">
+                    <StackPanel
+                        HorizontalAlignment="Stretch"
+                        VerticalAlignment="Stretch"
+                        Orientation="Horizontal">
+                        <Label
+                            Name="StatusFooter"
+                            Margin="10,2,0,2"
+                            HorizontalAlignment="Left"
+                            VerticalAlignment="Stretch"
+                            Content="Status: Disconnected"
+                            Foreground="{DynamicResource MaterialDesignBody}" />
+                        <Separator
+                            Width="15"
+                            Margin="10"
+                            HorizontalAlignment="Left"
+                            VerticalAlignment="Center"
+                            Visibility="Hidden"
+                            RenderTransformOrigin="0.5,0.5">
+                            <Separator.RenderTransform>
+                                <TransformGroup>
+                                    <ScaleTransform />
+                                    <SkewTransform />
+                                    <RotateTransform Angle="90" />
+                                    <TranslateTransform />
+                                </TransformGroup>
+                            </Separator.RenderTransform>
+                        </Separator>
+                        <Label
+                            Name="IPFooter"
+                            Margin="0,2,0,2"
+                            HorizontalAlignment="Left"
+                            VerticalAlignment="Stretch"
+                            Content="IP:"
+                            Visibility="Hidden"
+                            Foreground="{DynamicResource MaterialDesignBody}"
+                            MouseDown="IPFooter_MouseDown" />
+                    </StackPanel>
+                </Grid>
+            </Grid>
+            <materialDesign:Snackbar
+                x:Name="MainSnackbar"
+                Grid.Column="1"
+                HorizontalAlignment="Stretch"
+                VerticalAlignment="Bottom"
+                MessageQueue="{materialDesign:MessageQueue}" />
+            <Grid MaxWidth="50" Background="#FF141414">
+                <Grid.Effect>
+                    <DropShadowEffect BlurRadius="10" ShadowDepth="0" />
+                </Grid.Effect>
+                <StackPanel Name="MainStackpanel">
+                    <Image
+                        Width="25"
+                        Height="25"
+                        Margin="0,20,0,0"
+                        HorizontalAlignment="Center"
+                        VerticalAlignment="Top"
+                        Source="/Resources/lightvpn-w.png" />
+                    <StackPanel
+                        Margin="0,20,0,0"
+                        VerticalAlignment="Top"
+                        Background="#00000000"
+                        MouseEnter="PackIcon_MouseEnter"
+                        MouseLeave="PackIcon_MouseLeave"
+                        ToolTip="Home">
+                        <materialDesign:PackIcon
+                            x:Name="HomeIcon"
+                            Width="25"
+                            Height="25"
+                            Margin="10"
+                            HorizontalAlignment="Center"
+                            HorizontalContentAlignment="Center"
+                            Foreground="#A5FFFFFF"
+                            Kind="HomeOutline" />
+                    </StackPanel>
+                    <StackPanel
+                        VerticalAlignment="Top"
+                        Background="#00000000"
+                        MouseEnter="PackIcon_MouseEnter"
+                        MouseLeave="PackIcon_MouseLeave"
+                        ToolTip="Tools">
+                        <materialDesign:PackIcon
+                            Width="25"
+                            Height="25"
+                            Margin="10"
+                            HorizontalAlignment="Center"
+                            HorizontalContentAlignment="Center"
+                            Foreground="#A5FFFFFF"
+                            Kind="ToolboxOutline" />
+                    </StackPanel>
+                    <StackPanel
+                        VerticalAlignment="Top"
+                        Background="#00000000"
+                        MouseEnter="PackIcon_MouseEnter"
+                        MouseLeave="PackIcon_MouseLeave"
+                        ToolTip="Settings">
+                        <materialDesign:PackIcon
+                            Width="25"
+                            Height="25"
+                            Margin="10"
+                            HorizontalAlignment="Center"
+                            HorizontalContentAlignment="Center"
+                            Foreground="#A5FFFFFF"
+                            Kind="SettingsOutline" />
+                    </StackPanel>
+                    <StackPanel
+                        VerticalAlignment="Top"
+                        Background="#00000000"
+                        MouseEnter="PackIcon_MouseEnter"
+                        MouseLeave="PackIcon_MouseLeave"
+                        ToolTip="Logout">
+                        <materialDesign:PackIcon
+                            Width="25"
+                            Height="25"
+                            Margin="10"
+                            HorizontalAlignment="Center"
+                            HorizontalContentAlignment="Center"
+                            Foreground="#A5FFFFFF"
+                            Kind="Logout" />
+                    </StackPanel>
+                </StackPanel>
+            </Grid>
+        </Grid>
+    </Border>
+</Window>
