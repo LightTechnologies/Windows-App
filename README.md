@@ -2,7 +2,7 @@
 The official LightVPN Windows client written in C#
 
 ## License
-Licensed under the GNU Affero General Public License v3.0, see LICENSE.md
+Licensed under the LTPCL, see LICENSE.md
 
 ## Requirements
 - Visual Studio 2019
