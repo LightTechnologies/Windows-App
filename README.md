@@ -12,7 +12,7 @@ Licensed under the LTPCL, see LICENSE.md
 To compile from source, if you so wish to, just simply clone the source code
 
 ```
-git clone https://github.com/LightTechnologies/LightVPN-Windows.git
+git clone https://github.com/LightTechnologies/LightVPN-Win.git
 ```
 
 Then open the .sln file with Visual Studio 2019 and just rebuild. It should fetch the NuGet packages for you.
