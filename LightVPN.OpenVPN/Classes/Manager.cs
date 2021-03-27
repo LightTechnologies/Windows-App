@@ -92,6 +92,10 @@ namespace LightVPN.OpenVPN
             {
                 InvokeError("Unknown error connecting to server, reinstall your TAP adapter and try again");
             }
+            else if(e.Data.Contains("Adapter 'LightVPN-TAP' not found"))
+            {
+                InvokeError("Couldn't find adapter");
+            }
             else if (e.Data.Contains("Initialization Sequence Completed"))
             {
                 if (Connected == null) return;

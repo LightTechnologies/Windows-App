@@ -9,7 +9,7 @@
     x:Name="window"
     Title="LightVPN"
     Width="308"
-    Height="425"
+    Height="435"
     AllowsTransparency="True"
     Background="{DynamicResource MaterialDesignPaper}"
     Closing="Window_Closing"
@@ -41,7 +41,7 @@
                     </EasingDoubleKeyFrame>
                 </DoubleAnimationUsingKeyFrames>
                 <DoubleAnimationUsingKeyFrames Storyboard.TargetName="window" Storyboard.TargetProperty="(FrameworkElement.Height)">
-                    <EasingDoubleKeyFrame KeyTime="00:00:00" Value="425">
+                    <EasingDoubleKeyFrame KeyTime="00:00:00" Value="435">
                         <EasingDoubleKeyFrame.EasingFunction>
                             <QuinticEase EasingMode="EaseInOut" />
                         </EasingDoubleKeyFrame.EasingFunction>
@@ -80,12 +80,12 @@
                 </EasingDoubleKeyFrame>
             </DoubleAnimationUsingKeyFrames>
             <DoubleAnimationUsingKeyFrames Storyboard.TargetName="window" Storyboard.TargetProperty="(FrameworkElement.Height)">
-                <EasingDoubleKeyFrame KeyTime="00:00:00" Value="425">
+                <EasingDoubleKeyFrame KeyTime="00:00:00" Value="435">
                     <EasingDoubleKeyFrame.EasingFunction>
                         <QuinticEase EasingMode="EaseInOut" />
                     </EasingDoubleKeyFrame.EasingFunction>
                 </EasingDoubleKeyFrame>
-                <EasingDoubleKeyFrame KeyTime="00:00:00.400" Value="425">
+                <EasingDoubleKeyFrame KeyTime="00:00:00.400" Value="435">
                     <EasingDoubleKeyFrame.EasingFunction>
                         <QuinticEase EasingMode="EaseInOut" />
                     </EasingDoubleKeyFrame.EasingFunction>
@@ -119,16 +119,22 @@
             UseAeroCaptionButtons="False" />
     </WindowChrome.WindowChrome>
     <Border Name="Border" Style="{StaticResource WindowBorder}">
+        <Border.Background>
+            <ImageBrush ImageSource="/Windows/background.png"/>
+        </Border.Background>
         <Grid>
             <Grid.RowDefinitions>
                 <RowDefinition Height="32" />
-                <RowDefinition Height="390" />
+                <RowDefinition Height="30" />
             </Grid.RowDefinitions>
             <Grid
                 Name="TopBar"
                 Height="32"
                 HorizontalAlignment="Stretch"
                 VerticalAlignment="Top">
+                <Grid.Background>
+                    <ImageBrush/>
+                </Grid.Background>
                 <StackPanel
                     Width="95"
                     Height="32"
@@ -164,14 +170,26 @@
             </Grid>
             <Frame
                 Name="MainFrame"
-                Grid.Row="1"
-                NavigationUIVisibility="Hidden" />
+                NavigationUIVisibility="Hidden" Margin="0,0,0,-371" Grid.Row="1" >
+                <Frame.Background>
+                    <ImageBrush/>
+                </Frame.Background>
+            </Frame>
             <materialDesign:Snackbar
                 x:Name="MainSnackbar"
                 Grid.Row="1"
                 HorizontalAlignment="Stretch"
-                VerticalAlignment="Bottom"
-                MessageQueue="{materialDesign:MessageQueue}" />
+                VerticalAlignment="Top"
+                MessageQueue="{materialDesign:MessageQueue}" Height="5" Margin="0,426,0,0" RenderTransformOrigin="0.5,0.5" >
+                <materialDesign:Snackbar.RenderTransform>
+                    <TransformGroup>
+                        <ScaleTransform ScaleY="-1"/>
+                        <SkewTransform/>
+                        <RotateTransform/>
+                        <TranslateTransform/>
+                    </TransformGroup>
+                </materialDesign:Snackbar.RenderTransform>
+            </materialDesign:Snackbar>
         </Grid>
     </Border>
 </Window>

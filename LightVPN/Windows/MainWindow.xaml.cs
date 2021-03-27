@@ -78,8 +78,6 @@ namespace LightVPN
 
         private Page CurrentView;
 
-        private int connecttimes = 1;
-
         public MainWindow()
         {
             InitializeComponent();
@@ -90,36 +88,35 @@ namespace LightVPN
             _manager.Connected += Manager_Connected;
             _manager.LoginFailed += LoginFailed;
             _manager.Error += ConnectionError;
-            viewLoaded = this.FindResource("ShowFrame") as BeginStoryboard;
+            viewLoaded = this.FindResource("ShowFrame") as BeginStoryboard; // push this update
             viewUnloaded = this.FindResource("HideFrame") as BeginStoryboard;
             NavigatePage(new Home(this, true));
         }
 
         private async void ConnectionError(object sender, string message)
         {
-            if (message == ("Unknown error connecting to server, reinstall your TAP adapter and try again") && connecttimes % 2 == 0)
-            {
-                Globals.container.GetInstance<ITapManager>().RemoveTapAdapter();
-                Globals.container.GetInstance<ITapManager>().CreateTapAdapter();
-                ShowSnackbar("Reinstalled TAP Adapter, please connect again");
-            }
             connectedAt = DateTime.MinValue;
             await Globals.container.GetInstance<IDiscordRpc>().SetPresenceObjectAsync(new DiscordRPC.RichPresence
             {
                 State = "Disconnected"
             });
             IsConnecting = false;
-            await Dispatcher.InvokeAsync(async () =>
+            await Dispatcher.InvokeAsync(async () => //  make kill switch u wont
             {
                 IsConnected = false;
                 IsProcessing = false;
-                if (CurrentView is Home home)
-                {
-                    await home.UpdateUIAsync();
-                }
                 UpdateFooter();
                 StatusFooter.Content = "Status: Disconnected";
-                ShowSnackbar(message);
+                if (message == "Unknown error connecting to server, reinstall your TAP adapter and try again" || message == "Couldn't find adapter")
+                {
+                    Globals.container.GetInstance<ITapManager>().RemoveTapAdapter();
+                    Globals.container.GetInstance<ITapManager>().CreateTapAdapter();
+                    ShowSnackbar("Reinstalled TAP Adapter, please connect again");
+                }
+                else
+                {
+                    ShowSnackbar(message);
+                }
 
             });
             if (CurrentView is Home home)
@@ -130,7 +127,6 @@ namespace LightVPN
 
         private async void Manager_Connected(object sender)
         {
-            connecttimes = 1;
             await Globals.container.GetInstance<IDiscordRpc>().SetPresenceObjectAsync(new DiscordRPC.RichPresence
             {
                 State = $"Connected to {CurrentServer}",

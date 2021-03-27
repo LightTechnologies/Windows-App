@@ -10,7 +10,7 @@
       Name="view"
       Title="Login"
       d:DesignWidth="308"
-      d:DesignHeight="390"
+      d:DesignHeight="435"
       FontFamily="{DynamicResource MaterialDesignFont}"
       TextElement.FontSize="13"
       TextElement.FontWeight="Regular"
@@ -23,17 +23,25 @@
     </Page.Resources>
     <Grid>
         <StackPanel>
-            <Image Name="LogoImage"
-               Width="188"
-               Height="50"
-               Margin="0,70,0,0"
-               HorizontalAlignment="Center"
-               VerticalAlignment="Top"
-               Source="/Resources/logo-dark.png" />
+            <TextBlock Name="WelcomeBack"
+                Text="Welcome Back"
+                Margin="20,95,20,0"
+                VerticalAlignment="Center"
+                HorizontalAlignment="Left"
+                FontFamily="Roboto Black"
+                FontSize="32">
+            </TextBlock>
+            <TextBlock Name="Signin"
+                Text="Sign in to continue"
+                Margin="20,0,20,0"
+                VerticalAlignment="Center"
+                HorizontalAlignment="Left"
+                FontFamily="Roboto"
+                FontSize="13">
+            </TextBlock>
             <TextBox Name="UsernameBox"
                  Margin="20,50,20,0"
                  HorizontalAlignment="Stretch"
-                 VerticalAlignment="Top"
                  x:FieldModifier="public"
                  IsEnabled="{Binding IsAuthenticating, Converter={StaticResource converter}, ElementName=view}"
                  Style="{StaticResource MaterialDesignOutlinedTextBox}"
@@ -46,9 +54,8 @@
                 </materialDesign:HintAssist.Hint>
             </TextBox>
             <PasswordBox Name="PasswordBox"
-                     Margin="20,15,20,0"
+                     Margin="20,10,20,0"
                      HorizontalAlignment="Stretch"
-                     VerticalAlignment="Top"
                      x:FieldModifier="public"
                      IsEnabled="{Binding IsAuthenticating, Converter={StaticResource converter}, ElementName=view}"
                      Style="{StaticResource MaterialDesignOutlinedPasswordBox}"
@@ -61,9 +68,8 @@
                 </materialDesign:HintAssist.Hint>
             </PasswordBox>
             <Button Name="SignInBtn"
-                Height="40"
-                Margin="20,30,20,0"
-                VerticalAlignment="Top"
+                Height="37"
+                Margin="20,10,20,0"
                 materialDesign:ButtonProgressAssist.IsIndeterminate="True"
                 materialDesign:ButtonProgressAssist.IsIndicatorVisible="{Binding ElementName=view, Path=IsAuthenticating}"
                 materialDesign:ButtonProgressAssist.Value="0"
@@ -72,12 +78,28 @@
                 IsDefault="True"
                 IsEnabled="{Binding IsAuthenticating, Converter={StaticResource converter}, ElementName=view}"
                 Style="{StaticResource MaterialDesignRaisedButton}"
-                ToolTip="Attempts to log you in as the specified user">
+                ToolTip="Attempts to log you in as the specified user" Background="#FFEB6051" Width="268" Opacity="0.88">
+                <Button.BorderBrush>
+                    <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
+                        <GradientStop Color="#FFE24A39"/>
+                        <GradientStop Color="#FFE24A39" Offset="1"/>
+                    </LinearGradientBrush>
+                </Button.BorderBrush>
                 <StackPanel Orientation="Horizontal">
                     <materialDesign:PackIcon Kind="Login" />
                     <TextBlock x:Name="SignInText" Text=" SIGN IN" />
                 </StackPanel>
             </Button>
+            <TextBlock Name="ForgotPassword"
+                Text="Forgot Password"
+                Margin="185,4,20,0"
+                VerticalAlignment="Center"
+                HorizontalAlignment="Left"
+                FontFamily="Roboto Black"
+                FontSize="13"
+                Foreground="#FFE24A39"
+                MouseLeftButtonDown="ForgotPassword_MouseLeftButtonDown">
+            </TextBlock>
         </StackPanel>
     </Grid>
 </Page>

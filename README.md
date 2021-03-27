@@ -2,7 +2,7 @@
 The official LightVPN Windows client written in C#
 
 ## License
-Licensed under the LTPCL, see LICENSE.md
+Licensed under the GNU Affero General Public License v3.0, see LICENSE.md
 
 ## Requirements
 - Visual Studio 2019
@@ -12,7 +12,7 @@ Licensed under the LTPCL, see LICENSE.md
 To compile from source, if you so wish to, just simply clone the source code
 
 ```
-git clone https://github.com/LightTechnologies/LightVPN-Win.git
+git clone https://github.com/LightTechnologies/LightVPN-Windows.git
 ```
 
 Then open the .sln file with Visual Studio 2019 and just rebuild. It should fetch the NuGet packages for you.

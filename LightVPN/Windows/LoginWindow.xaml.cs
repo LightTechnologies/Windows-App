@@ -120,11 +120,13 @@ namespace LightVPN.Windows
                         await Task.Run(async () =>
                         {
                             await Globals.container.GetInstance<IHttp>().GetOpenVPNBinariesAsync();
-                            if (Globals.container.GetInstance<ITapManager>().IsAdapterExistant())
-                            {
-                                Globals.container.GetInstance<ITapManager>().CreateTapAdapter();
-                            }
                         });
+                    }
+                    page.SignInText.Text = " CHECKING TAP ADAPTER";
+                    if (!Globals.container.GetInstance<ITapManager>().IsAdapterExistant())
+                    {
+                        page.SignInText.Text = " INSTALLING TAP ADAPTER";
+                        Globals.container.GetInstance<ITapManager>().CreateTapAdapter();
                     }
                     page.SignInText.Text = " LOADING UI...";
                     await Globals.container.GetInstance<IDiscordRpc>().SetPresenceObjectAsync(new DiscordRPC.RichPresence
