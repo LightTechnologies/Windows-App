@@ -21,6 +21,8 @@ using LightVPN.Settings.Interfaces;
 using LightVPN.Common.v2.Interfaces;
 using LightVPN.OpenVPN.Interfaces;
 using static LightVPN.Auth.ApiException;
+using System.Reflection;
+using LightVPN.Common.v2;
 
 namespace LightVPN.Views
 {
@@ -60,6 +62,7 @@ namespace LightVPN.Views
             var settings = Globals.container.GetInstance<ISettingsManager<Configuration>>().Load();
             DarkModeCheckbox.IsChecked = settings.DarkMode;
             AutoConnectCheckbox.IsChecked = settings.AutoConnect;
+            LightVpnHeadlineText.Text = $"LightVPN Windows Client (version {Assembly.GetExecutingAssembly().GetVersion()})";
         }
         private async void HandleCheckChanges_Event(object sender, ExecutedRoutedEventArgs args)
         {
@@ -83,6 +86,10 @@ namespace LightVPN.Views
             {
                 MessageBox.Show(e.ResponseString);
                 throw;
+            }
+            catch (ApiOfflineException e)
+            {
+                _host.ShowSnackbar(e.Message);
             }
             Dispatcher.Invoke(() => { IsWorking = false; });
             _host.ShowSnackbar("Rebuilt cache successfully.");

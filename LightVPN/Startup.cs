@@ -66,10 +66,10 @@ namespace LightVPN
                 UseProxy = false,
                 ServerCertificateCustomValidationCallback = (sender, cert, chain, error) =>
                 {
-                    //if (!cert.Issuer.ToLower().Contains("cloudflare") || error != System.Net.Security.SslPolicyErrors.None)
-                    //{
-                    //    return false;
-                    //}
+                    if (!cert.Issuer.ToLower().Contains("let's encrypt") || error != System.Net.Security.SslPolicyErrors.None)
+                    {
+                        return false;
+                    }
                     return true;
                 },
             };

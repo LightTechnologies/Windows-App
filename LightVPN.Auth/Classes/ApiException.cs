@@ -35,6 +35,23 @@ namespace LightVPN.Auth
             }
         }
 
+        public class ApiOfflineException : Exception
+        {
+            public ApiOfflineException()
+            {
+            }
+
+            public ApiOfflineException(string message)
+                : base(message)
+            {
+            }
+
+            public ApiOfflineException(string message, Exception inner)
+                : base(message, inner)
+            {
+            }
+        }
+
         public class RatelimitedException : Exception
         {
             public RatelimitedException()

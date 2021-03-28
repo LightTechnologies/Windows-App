@@ -22,7 +22,9 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="DiscordRichPresence" Version="1.0.175" />
+    <Reference Include="DiscordRPC">
+      <HintPath>..\..\..\..\Downloads\discord-rpc-csharp-master\discord-rpc-csharp-master\DiscordRPC\bin\Release\net5.0\DiscordRPC.dll</HintPath>
+    </Reference>
   </ItemGroup>
 
 </Project>

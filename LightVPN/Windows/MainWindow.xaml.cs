@@ -33,6 +33,7 @@ using LightVPN.Auth.Interfaces;
 using LightVPN.Settings.Interfaces;
 using System.Windows.Threading;
 using System.Diagnostics;
+using LightVPN.OpenVPN.Models;
 
 namespace LightVPN
 {
@@ -47,10 +48,6 @@ namespace LightVPN
             DependencyProperty.Register("IsProcessing", typeof(bool),
             typeof(Window), new(false));
 
-        public static readonly DependencyProperty IsConnectedProperty =
-            DependencyProperty.Register("IsConnected", typeof(bool),
-            typeof(Window), new(false));
-
         private readonly BeginStoryboard viewLoaded = null;
 
         private readonly BeginStoryboard viewUnloaded = null;
@@ -63,14 +60,7 @@ namespace LightVPN
             set { SetValue(IsProcessingProperty, value); }
         }
 
-        public bool IsConnecting = false;
-        public bool IsConnected
-        {
-            get { return (bool)GetValue(IsConnectedProperty); }
-            set { SetValue(IsConnectedProperty, value); }
-        }
-
-        private string ExternalAddress = "127.0.0.1";
+        public ConnectionState _connectionState = ConnectionState.Disconnected;
 
         public string CurrentServer { get; private set; }
 
@@ -88,7 +78,7 @@ namespace LightVPN
             _manager.Connected += Manager_Connected;
             _manager.LoginFailed += LoginFailed;
             _manager.Error += ConnectionError;
-            viewLoaded = this.FindResource("ShowFrame") as BeginStoryboard; // push this update
+            viewLoaded = this.FindResource("ShowFrame") as BeginStoryboard; // push this update - shut up toshi
             viewUnloaded = this.FindResource("HideFrame") as BeginStoryboard;
             NavigatePage(new Home(this, true));
         }
@@ -100,10 +90,10 @@ namespace LightVPN
             {
                 State = "Disconnected"
             });
-            IsConnecting = false;
-            await Dispatcher.InvokeAsync(async () => //  make kill switch u wont
+            _connectionState = ConnectionState.Disconnected;
+            await Dispatcher.InvokeAsync(() => //  make kill switch u wont - shut up toshi
             {
-                IsConnected = false;
+                _connectionState = ConnectionState.Disconnected;
                 IsProcessing = false;
                 UpdateFooter();
                 StatusFooter.Content = "Status: Disconnected";
@@ -131,10 +121,9 @@ namespace LightVPN
             {
                 State = $"Connected to {CurrentServer}",
             });
-            IsConnecting = false;
+            _connectionState = ConnectionState.Connected;
             await Dispatcher.InvokeAsync(async () =>
             {
-                IsConnected = true;
                 IsProcessing = false;
                 if (CurrentView is Home home)
                 {
@@ -155,10 +144,9 @@ namespace LightVPN
             {
                 State = "Disconnected"
             });
-            IsConnecting = false;
+            _connectionState = ConnectionState.Disconnected;
             await Dispatcher.InvokeAsync(async () =>
             {
-                IsConnected = false;
                 IsProcessing = false;
                 if (CurrentView is Home home)
                 {
@@ -179,9 +167,9 @@ namespace LightVPN
                 switch (pI.Kind)
                 {
                     case PackIconKind.WindowClose:
-                        if (IsConnected)
+                        if (_connectionState == ConnectionState.Connected)
                         {
-                            MessageBoxResult rsltMessageBox = MessageBox.Show(LightVPN.Resources.Lang.English.NOTIFY_CLOSE, "LightVPN", MessageBoxButton.YesNo, MessageBoxImage.Question);
+                            MessageBoxResult rsltMessageBox = MessageBox.Show("Are you sure you want to close LightVPN?\n\nYour active VPN connection will be terminated!", "LightVPN", MessageBoxButton.YesNo, MessageBoxImage.Question);
                             if (rsltMessageBox == MessageBoxResult.Yes)
                             {
                                 Close();
@@ -205,24 +193,33 @@ namespace LightVPN
                         WindowState = WindowState.Minimized;
                         break;
                     case PackIconKind.PowerPlugOffOutline:
-                        connectedAt = DateTime.MinValue;
-                        ShowSnackbar($"Disconnected!");
-                        await Globals.container.GetInstance<IDiscordRpc>().SetPresenceObjectAsync(new DiscordRPC.RichPresence
-                        {
-                            State = "Disconnected"
-                        });
-                        StatusFooter.Content = "Status: Disconnected";
-                        _manager.Disconnect();
-                        IsConnected = false;
-                        if (CurrentView is Home home)
-                        {
-                            await home.UpdateUIAsync();
-                        }
-                        UpdateFooter();
+                        await DisconnectAsync();
                         break;
                 }
             }
         }
+
+        public async Task DisconnectAsync(bool notUpdateUi = false)
+        {
+            connectedAt = DateTime.MinValue;
+            if (!notUpdateUi)
+            {
+                ShowSnackbar($"Disconnected!");
+                await Globals.container.GetInstance<IDiscordRpc>().SetPresenceObjectAsync(new DiscordRPC.RichPresence
+                {
+                    State = "Disconnected"
+                });
+            }
+            _manager.Disconnect();
+            _connectionState = ConnectionState.Disconnected;
+            if (CurrentView is Home home)
+            {
+                await home.UpdateUIAsync();
+                home.UpdateViaConnectionState();
+            }
+            UpdateFooter();
+        }
+
         private void MainWindow_StateChanged(object sender, EventArgs e)
         {
             //Handles Windows Aero maximize changes
@@ -272,7 +269,7 @@ namespace LightVPN
         public async Task ConnectToServerAsync(string serverId, string location)
         {
             if (_manager.IsConnected) return;
-            IsConnecting = true;
+            _connectionState = ConnectionState.Connecting;
             IsProcessing = true;
             CurrentServer = location;
             CurrentServerId = serverId;
@@ -292,6 +289,7 @@ namespace LightVPN
      
             if (CurrentView is Home home)
             {
+                home.UpdateViaConnectionState();
                 await home.UpdateUIAsync();
             }
             await Globals.container.GetInstance<IDiscordRpc>().SetPresenceObjectAsync(new DiscordRPC.RichPresence
@@ -299,8 +297,7 @@ namespace LightVPN
                 State = "Connecting"
             });
             ShowSnackbar($"Connecting...");
-            StatusFooter.Content = "Status: Connecting";
-            ConnectIcon.Kind = PackIconKind.PowerPlugOffOutline;
+            UpdateFooter();
             _manager.Connect(ovpnFn);
         }
 
@@ -385,7 +382,7 @@ namespace LightVPN
                             break;
 
                         case PackIconKind.Logout:
-                            MessageBoxResult rsltMessageBox = MessageBox.Show(LightVPN.Resources.Lang.English.NOTIFY_LOGOUT, "LightVPN", MessageBoxButton.YesNo, MessageBoxImage.Question);
+                            MessageBoxResult rsltMessageBox = MessageBox.Show("Are you sure you want to logout?" , "LightVPN", MessageBoxButton.YesNo, MessageBoxImage.Question);
                             if (rsltMessageBox == MessageBoxResult.Yes)
                             {
                                 LoginWindow login = new();
@@ -400,35 +397,11 @@ namespace LightVPN
             }
         }
 
-        public async void UpdateFooter()
+        public void UpdateFooter()
         {
             //ExternalAddress = await Globals.container.GetInstance<IHttp>().GetExternalAddressAsync();
             //IPFooter.Content = $"Click to show IP";
-            if (IsConnected)
-            {
-                StatusFooter.Content = "Status: Connected";
-
-            }
-            else
-            {
-                StatusFooter.Content = "Status: Disconnected";
-            }
-            if (IsConnecting)
-            {
-                StatusFooter.Content = "Status: Connecting";
-            }
-        }
-
-        private void IPFooter_MouseDown(object sender, System.Windows.Input.MouseButtonEventArgs e)
-        {
-            if (IPFooter.Content.ToString() == "Click to show IP")
-            {
-                IPFooter.Content = $"IP: {ExternalAddress}";
-            }
-            else
-            {
-                IPFooter.Content = "Click to show IP";
-            }
+            StatusFooter.Content = $"Status: {_connectionState}";
         }
 
         private bool ClosingAnimationFinished;

@@ -37,18 +37,10 @@ namespace LightVPN.Views
         {
             InitializeComponent();
             var settings = Globals.container.GetInstance<ISettingsManager<Configuration>>().Load();
-            //if (settings.DarkMode)
-            //{
-            //    LogoImage.Source = new BitmapImage(new Uri(@"pack://application:,,,/LightVPN;component/Resources/logo-light.png", UriKind.Absolute));
-            //}
-        }
-
-        private void ForgotPassword_MouseLeftButtonDown(object sender, System.Windows.Input.MouseButtonEventArgs e)
-        {
-            var process = new Process();
-            process.StartInfo.UseShellExecute = true;
-            process.StartInfo.FileName = ("https://lightvpn.org/dash/reset_password");
-            process.Start();
+            if (settings.DarkMode)
+            {
+                LogoImage.Source = new BitmapImage(new Uri(@"pack://application:,,,/LightVPN;component/Resources/logo-light.png", UriKind.Absolute));
+            }
         }
     }
 }

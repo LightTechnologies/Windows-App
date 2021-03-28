@@ -1,51 +1,51 @@
-﻿<Page x:Class="LightVPN.Views.Login"
-      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-      xmlns:converters="clr-namespace:LightVPN.Converters"
-      xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-      xmlns:local="clr-namespace:LightVPN.Views"
-      xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
-      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-      xmlns:window="clr-namespace:LightVPN.Windows"
-      Name="view"
-      Title="Login"
-      d:DesignWidth="308"
-      d:DesignHeight="435"
-      FontFamily="{DynamicResource MaterialDesignFont}"
-      TextElement.FontSize="13"
-      TextElement.FontWeight="Regular"
-      TextElement.Foreground="{DynamicResource MaterialDesignBody}"
-      TextOptions.TextFormattingMode="Ideal"
-      TextOptions.TextRenderingMode="Auto"
-      mc:Ignorable="d">
+﻿<Page
+    x:Class="LightVPN.Views.Login"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:converters="clr-namespace:LightVPN.Converters"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:local="clr-namespace:LightVPN.Views"
+    xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:viewModels="clr-namespace:LightVPN.ViewModels"
+    xmlns:window="clr-namespace:LightVPN.Windows"
+    Name="view"
+    Title="Login"
+    d:DesignHeight="435"
+    d:DesignWidth="308"
+    FontFamily="{DynamicResource MaterialDesignFont}"
+    TextElement.FontSize="13"
+    TextElement.FontWeight="Regular"
+    TextElement.Foreground="{DynamicResource MaterialDesignBody}"
+    TextOptions.TextFormattingMode="Ideal"
+    TextOptions.TextRenderingMode="Auto"
+    mc:Ignorable="d">
+    <Page.DataContext>
+        <viewModels:LoginViewModel />
+    </Page.DataContext>
     <Page.Resources>
         <converters:InverseBooleanConverter x:Key="converter" />
     </Page.Resources>
     <Grid>
         <StackPanel>
-            <TextBlock Name="WelcomeBack"
-                Text="Welcome Back"
-                Margin="20,95,20,0"
-                VerticalAlignment="Center"
-                HorizontalAlignment="Left"
-                FontFamily="Roboto Black"
-                FontSize="32">
-            </TextBlock>
-            <TextBlock Name="Signin"
-                Text="Sign in to continue"
-                Margin="20,0,20,0"
-                VerticalAlignment="Center"
-                HorizontalAlignment="Left"
-                FontFamily="Roboto"
-                FontSize="13">
-            </TextBlock>
-            <TextBox Name="UsernameBox"
-                 Margin="20,50,20,0"
-                 HorizontalAlignment="Stretch"
-                 x:FieldModifier="public"
-                 IsEnabled="{Binding IsAuthenticating, Converter={StaticResource converter}, ElementName=view}"
-                 Style="{StaticResource MaterialDesignOutlinedTextBox}"
-                 ToolTip="Enter your LightVPN account ID">
+            <Image
+                Name="LogoImage"
+                Width="188"
+                Height="50"
+                Margin="0,90,0,0"
+                HorizontalAlignment="Center"
+                VerticalAlignment="Top"
+                Source="/Resources/logo-dark.png" />
+            <TextBox
+                Name="UsernameBox"
+                Margin="20,50,20,0"
+                HorizontalAlignment="Stretch"
+                VerticalAlignment="Top"
+                x:FieldModifier="public"
+                IsEnabled="{Binding IsAuthenticating, Converter={StaticResource converter}, ElementName=view}"
+                MaxLength="30"
+                Style="{StaticResource MaterialDesignOutlinedTextBox}"
+                ToolTip="Enter your LightVPN account ID">
                 <materialDesign:HintAssist.Hint>
                     <StackPanel Margin="-2,0,0,0" Orientation="Horizontal">
                         <materialDesign:PackIcon Kind="UserOutline" />
@@ -53,13 +53,15 @@
                     </StackPanel>
                 </materialDesign:HintAssist.Hint>
             </TextBox>
-            <PasswordBox Name="PasswordBox"
-                     Margin="20,10,20,0"
-                     HorizontalAlignment="Stretch"
-                     x:FieldModifier="public"
-                     IsEnabled="{Binding IsAuthenticating, Converter={StaticResource converter}, ElementName=view}"
-                     Style="{StaticResource MaterialDesignOutlinedPasswordBox}"
-                     ToolTip="Enter your LightVPN password">
+            <PasswordBox
+                Name="PasswordBox"
+                Margin="20,20,20,0"
+                HorizontalAlignment="Stretch"
+                VerticalAlignment="Top"
+                x:FieldModifier="public"
+                IsEnabled="{Binding IsAuthenticating, Converter={StaticResource converter}, ElementName=view}"
+                Style="{StaticResource MaterialDesignOutlinedPasswordBox}"
+                ToolTip="Enter your LightVPN password">
                 <materialDesign:HintAssist.Hint>
                     <StackPanel Margin="-2,0,0,0" Orientation="Horizontal">
                         <materialDesign:PackIcon Kind="KeyOutline" />
@@ -67,9 +69,11 @@
                     </StackPanel>
                 </materialDesign:HintAssist.Hint>
             </PasswordBox>
-            <Button Name="SignInBtn"
-                Height="37"
-                Margin="20,10,20,0"
+            <Button
+                Name="SignInBtn"
+                Height="40"
+                Margin="20,30,20,0"
+                VerticalAlignment="Top"
                 materialDesign:ButtonProgressAssist.IsIndeterminate="True"
                 materialDesign:ButtonProgressAssist.IsIndicatorVisible="{Binding ElementName=view, Path=IsAuthenticating}"
                 materialDesign:ButtonProgressAssist.Value="0"
@@ -78,28 +82,12 @@
                 IsDefault="True"
                 IsEnabled="{Binding IsAuthenticating, Converter={StaticResource converter}, ElementName=view}"
                 Style="{StaticResource MaterialDesignRaisedButton}"
-                ToolTip="Attempts to log you in as the specified user" Background="#FFEB6051" Width="268" Opacity="0.88">
-                <Button.BorderBrush>
-                    <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
-                        <GradientStop Color="#FFE24A39"/>
-                        <GradientStop Color="#FFE24A39" Offset="1"/>
-                    </LinearGradientBrush>
-                </Button.BorderBrush>
+                ToolTip="Attempts to log you in as the specified user">
                 <StackPanel Orientation="Horizontal">
                     <materialDesign:PackIcon Kind="Login" />
                     <TextBlock x:Name="SignInText" Text=" SIGN IN" />
                 </StackPanel>
             </Button>
-            <TextBlock Name="ForgotPassword"
-                Text="Forgot Password"
-                Margin="185,4,20,0"
-                VerticalAlignment="Center"
-                HorizontalAlignment="Left"
-                FontFamily="Roboto Black"
-                FontSize="13"
-                Foreground="#FFE24A39"
-                MouseLeftButtonDown="ForgotPassword_MouseLeftButtonDown">
-            </TextBlock>
         </StackPanel>
     </Grid>
 </Page>

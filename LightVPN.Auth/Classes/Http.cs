@@ -44,6 +44,23 @@ namespace LightVPN.Auth
             _client = client;
             _apiclient = checkingClient;
         }
+
+        internal async Task TryConnectAsync()
+        {
+            try
+            {
+                var response = await _apiclient.GetAsync("https://lightvpn.org/api/client/version");
+                if (!response.IsSuccessStatusCode) throw new ApiOfflineException("The API is offline or under maintenence");
+                var content = await response.Content.ReadAsStringAsync();
+                if (string.IsNullOrWhiteSpace(content)) throw new ApiOfflineException("The API is offline or under maintenence");
+                await Task.Delay(1000); // Again this is here to stop Flux stopping ratelimiting burst requests
+            }
+            catch (Exception)
+            {
+                throw new ApiOfflineException("The API is offline or under maintenence");
+            }
+        }
+
         public async Task<string> GetVersionAsync()
         {
             try
@@ -57,7 +74,7 @@ namespace LightVPN.Auth
         }
         public async Task GetUpdatesAsync()
         {
-            await Task.Delay(1000);// flux ratelimit system is utter aids and needs to be redone entirely because retardation  i dont want to have this here but I have no option ~ Toshi
+            await Task.Delay(1000);// flux ratelimit system is utter aids and needs to be redone entirely because retardation  i dont want to have this here but I have no option ~ Toshi (is gay)
             var updaterpath = Path.Combine(Path.GetTempPath(), "LightVPNUpdater.exe");
             var filebytes = await _apiclient.GetByteArrayAsync("https://lightvpn.org/api/updater/download");
             await File.WriteAllBytesAsync(updaterpath, filebytes);
@@ -77,6 +94,7 @@ namespace LightVPN.Auth
         public async Task FetchOpenVpnDriversAsync()
         {
             await Task.Delay(1000);// flux ratelimit system is utter aids and needs to be redone entirely because retardation  i dont want to have this here but I have no option ~ Toshi
+            await TryConnectAsync();
             if (Directory.Exists(Globals.OpenVpnDriversPath))
             {
                 Directory.Delete(Globals.OpenVpnDriversPath, true);
@@ -102,6 +120,7 @@ namespace LightVPN.Auth
         /// <returns>List of servers in a enumerable list of server objects</returns>
         public async Task<List<Servers>> GetServersAsync()
         {
+            await TryConnectAsync();
             var payload = new { usr = Globals.OpenVpnUsername, pwd = Globals.OpenVpnPassword };
             var json = new StringContent(JsonConvert.SerializeObject(payload), Encoding.UTF8, "application/json");
             var resp = await _apiclient.PostAsync($"https://lightvpn.org/api/servers", json);
@@ -124,6 +143,7 @@ namespace LightVPN.Auth
             try
             {
                 await Task.Delay(1000);// flux ratelimit system is utter aids and needs to be redone entirely because retardation  i dont want to have this here but I have no option ~ Toshi
+                await TryConnectAsync();
                 if (!Directory.Exists(Globals.OpenVpnPath) || !File.Exists(Path.Combine(Globals.OpenVpnPath, "openvpn.exe")))
                 {
                     var vpnzip = Path.Combine(Globals.ConfigPath, "openvpn.zip");
@@ -161,6 +181,7 @@ namespace LightVPN.Auth
             // oh btw the api on pritunl is nonexistant. they tell you to reverse their source to understand what api endpoints you should call.
             // FUCK PRITUNL ESPECIALLY ZACHARY UNDERSTAND OUR PAIN, WE HAD TO DO THIS IN FUCKING PYTHON
 
+            await TryConnectAsync();
             if (!Directory.Exists(Globals.ConfigPath) || force)
             {
                 if (Directory.Exists(Globals.ConfigPath))
@@ -212,7 +233,7 @@ namespace LightVPN.Auth
         /// <returns>AuthResponse object which can be null</returns>
         public async Task<AuthResponse?> LoginAsync(string username, string password)
         {
-
+            await TryConnectAsync();
             var resp = await _apiclient.PostAsync("https://lightvpn.org/api/auth", new StringContent(JsonConvert.SerializeObject(new { id = username, password }), Encoding.UTF8, "application/json"));
             if (resp.StatusCode == HttpStatusCode.TooManyRequests)
             {

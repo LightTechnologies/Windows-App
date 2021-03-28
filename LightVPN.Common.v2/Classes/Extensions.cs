@@ -11,6 +11,9 @@
  */
 using Newtonsoft.Json.Linq;
 using System;
+using System.Diagnostics;
+using System.IO;
+using System.Reflection;
 
 namespace LightVPN.Common.v2
 {
@@ -21,7 +24,7 @@ namespace LightVPN.Common.v2
         /// </summary>
         /// <param name="strInput">The input string</param>
         /// <returns>True or false value whether the string was valid Json or not</returns>
-        public static bool IsValidJson(string strInput)
+        public static bool IsValidJson(this string strInput)
         {
             strInput = strInput.Trim();
             try
@@ -33,6 +36,15 @@ namespace LightVPN.Common.v2
             {
                 return false;
             }
+        }
+        /// <summary>
+        /// Gets the assembly and returns the version
+        /// </summary>
+        /// <param name="assembly">The assembly, should be the executing assembly</param>
+        /// <returns>The version of the executing assembly</returns>
+        public static Version GetVersion(this Assembly assembly)
+        {
+            return Version.Parse(FileVersionInfo.GetVersionInfo(Path.GetFullPath(assembly.Location)).FileVersion);
         }
 
         /// <summary>

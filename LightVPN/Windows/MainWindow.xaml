@@ -7,6 +7,7 @@
     xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:tb="http://www.hardcodet.net/taskbar"
+    xmlns:viewModels="clr-namespace:LightVPN.ViewModels"
     Name="window"
     Title="LightVPN"
     Width="800"
@@ -28,6 +29,9 @@
     WindowStartupLocation="CenterScreen"
     WindowStyle="None"
     mc:Ignorable="d">
+    <Window.DataContext>
+        <viewModels:MainViewModel />
+    </Window.DataContext>
     <Window.Resources>
         <converters:InverseBooleanConverter x:Key="converter" />
         <BooleanToVisibilityConverter x:Key="BoolToVis" />
@@ -114,40 +118,30 @@
                     </EasingDoubleKeyFrame.EasingFunction>
                 </EasingDoubleKeyFrame>
             </DoubleAnimationUsingKeyFrames>
+            <DoubleAnimationUsingKeyFrames Storyboard.TargetName="grid" Storyboard.TargetProperty="(UIElement.RenderTransform).(TransformGroup.Children)[3].(TranslateTransform.Y)">
+                <EasingDoubleKeyFrame KeyTime="00:00:00" Value="20">
+                    <EasingDoubleKeyFrame.EasingFunction>
+                        <QuinticEase EasingMode="EaseInOut" />
+                    </EasingDoubleKeyFrame.EasingFunction>
+                </EasingDoubleKeyFrame>
+                <EasingDoubleKeyFrame KeyTime="00:00:00.4000000" Value="0">
+                    <EasingDoubleKeyFrame.EasingFunction>
+                        <QuinticEase EasingMode="EaseInOut" />
+                    </EasingDoubleKeyFrame.EasingFunction>
+                </EasingDoubleKeyFrame>
+            </DoubleAnimationUsingKeyFrames>
         </Storyboard>
         <BeginStoryboard x:Key="CloseAnim">
             <Storyboard Completed="FinishedClosingAnimation">
-                <DoubleAnimationUsingKeyFrames Storyboard.TargetName="window" Storyboard.TargetProperty="(FrameworkElement.Width)">
-                    <EasingDoubleKeyFrame KeyTime="00:00:00" Value="800">
-                        <EasingDoubleKeyFrame.EasingFunction>
-                            <QuinticEase EasingMode="EaseInOut" />
-                        </EasingDoubleKeyFrame.EasingFunction>
-                    </EasingDoubleKeyFrame>
-                    <EasingDoubleKeyFrame KeyTime="00:00:00.400" Value="780">
-                        <EasingDoubleKeyFrame.EasingFunction>
-                            <QuinticEase EasingMode="EaseInOut" />
-                        </EasingDoubleKeyFrame.EasingFunction>
-                    </EasingDoubleKeyFrame>
-                </DoubleAnimationUsingKeyFrames>
-                <DoubleAnimationUsingKeyFrames Storyboard.TargetName="window" Storyboard.TargetProperty="(FrameworkElement.Height)">
-                    <EasingDoubleKeyFrame KeyTime="00:00:00" Value="481">
-                        <EasingDoubleKeyFrame.EasingFunction>
-                            <QuinticEase EasingMode="EaseInOut" />
-                        </EasingDoubleKeyFrame.EasingFunction>
-                    </EasingDoubleKeyFrame>
-                    <EasingDoubleKeyFrame KeyTime="00:00:00.400" Value="460">
-                        <EasingDoubleKeyFrame.EasingFunction>
-                            <QuinticEase EasingMode="EaseInOut" />
-                        </EasingDoubleKeyFrame.EasingFunction>
-                    </EasingDoubleKeyFrame>
-                </DoubleAnimationUsingKeyFrames>
                 <DoubleAnimationUsingKeyFrames Storyboard.TargetName="window" Storyboard.TargetProperty="(UIElement.Opacity)">
-                    <EasingDoubleKeyFrame KeyTime="00:00:00" Value="1">
+                    <EasingDoubleKeyFrame KeyTime="00:00:00.4000000" Value="0">
                         <EasingDoubleKeyFrame.EasingFunction>
                             <QuinticEase EasingMode="EaseInOut" />
                         </EasingDoubleKeyFrame.EasingFunction>
                     </EasingDoubleKeyFrame>
-                    <EasingDoubleKeyFrame KeyTime="00:00:00.4000000" Value="0">
+                </DoubleAnimationUsingKeyFrames>
+                <DoubleAnimationUsingKeyFrames Storyboard.TargetName="grid" Storyboard.TargetProperty="(UIElement.RenderTransform).(TransformGroup.Children)[3].(TranslateTransform.Y)">
+                    <EasingDoubleKeyFrame KeyTime="00:00:00.4000000" Value="20">
                         <EasingDoubleKeyFrame.EasingFunction>
                             <QuinticEase EasingMode="EaseInOut" />
                         </EasingDoubleKeyFrame.EasingFunction>
@@ -163,14 +157,22 @@
     </Window.Triggers>
     <WindowChrome.WindowChrome>
         <WindowChrome
-            CaptionHeight="37"
+            CaptionHeight="32"
             CornerRadius="0,0,0,0"
             GlassFrameThickness="0"
             ResizeBorderThickness="7"
             UseAeroCaptionButtons="False" />
     </WindowChrome.WindowChrome>
     <Border Name="Border" Style="{StaticResource WindowBorder}">
-        <Grid>
+        <Grid x:Name="grid" RenderTransformOrigin="0.5,0.5">
+            <Grid.RenderTransform>
+                <TransformGroup>
+                    <ScaleTransform />
+                    <SkewTransform />
+                    <RotateTransform />
+                    <TranslateTransform />
+                </TransformGroup>
+            </Grid.RenderTransform>
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="50" />
                 <ColumnDefinition Width="750*" />
@@ -205,25 +207,7 @@
                         VerticalAlignment="Stretch"
                         Orientation="Horizontal">
                         <Button
-                            Name="DisconnectBtn"
                             Width="50"
-                            materialDesign:RippleAssist.Feedback="#DD000000"
-                            Background="{x:Null}"
-                            BorderBrush="{x:Null}"
-                            Click="CaptionButton_Click"
-                            Cursor="Arrow"
-                            Foreground="White"
-                            IsEnabled="{Binding IsConnected, ElementName=window}"
-                            ToolTip="Disconnect from the currently connected server"
-                            WindowChrome.IsHitTestVisibleInChrome="True">
-                            <materialDesign:PackIcon
-                                Name="ConnectIcon"
-                                Foreground="{DynamicResource MaterialDesignBody}"
-                                Kind="PowerPlugOffOutline" />
-                        </Button>
-                        <Button
-                            Width="50"
-                            materialDesign:RippleAssist.Feedback="#DD000000"
                             Background="{x:Null}"
                             BorderBrush="{x:Null}"
                             Click="CaptionButton_Click"
@@ -235,7 +219,6 @@
                         </Button>
                         <Button
                             Width="50"
-                            materialDesign:RippleAssist.Feedback="#DD000000"
                             Background="{x:Null}"
                             BorderBrush="{x:Null}"
                             Click="CaptionButton_Click"
@@ -302,8 +285,8 @@
                             Margin="10"
                             HorizontalAlignment="Left"
                             VerticalAlignment="Center"
-                            Visibility="Hidden"
-                            RenderTransformOrigin="0.5,0.5">
+                            RenderTransformOrigin="0.5,0.5"
+                            Visibility="Hidden">
                             <Separator.RenderTransform>
                                 <TransformGroup>
                                     <ScaleTransform />
@@ -313,15 +296,6 @@
                                 </TransformGroup>
                             </Separator.RenderTransform>
                         </Separator>
-                        <Label
-                            Name="IPFooter"
-                            Margin="0,2,0,2"
-                            HorizontalAlignment="Left"
-                            VerticalAlignment="Stretch"
-                            Content="IP:"
-                            Visibility="Hidden"
-                            Foreground="{DynamicResource MaterialDesignBody}"
-                            MouseDown="IPFooter_MouseDown" />
                     </StackPanel>
                 </Grid>
             </Grid>
@@ -331,10 +305,12 @@
                 HorizontalAlignment="Stretch"
                 VerticalAlignment="Bottom"
                 MessageQueue="{materialDesign:MessageQueue}" />
-            <Grid MaxWidth="50" Background="#FF141414">
-                <Grid.Effect>
-                    <DropShadowEffect BlurRadius="10" ShadowDepth="0" />
-                </Grid.Effect>
+            <Grid
+                Width="50"
+                HorizontalAlignment="Left"
+                VerticalAlignment="Stretch"
+                Background="#FF141414"
+                WindowChrome.IsHitTestVisibleInChrome="True">
                 <StackPanel Name="MainStackpanel">
                     <Image
                         Width="25"

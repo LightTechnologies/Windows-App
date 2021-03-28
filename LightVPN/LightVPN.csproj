@@ -11,17 +11,17 @@
     <EnforceCodeStyleInBuild>true</EnforceCodeStyleInBuild>
     <EnableNETAnalyzers>true</EnableNETAnalyzers>
     <PackageId>LightVPN Windows Client</PackageId>
-    <Authors>Light Technologies LLC</Authors>
+    <Authors>Light Technologies, LLC</Authors>
     <Product>LightVPN</Product>
     <Description>Official compiled binaries of the LightVPN Windows client.</Description>
-    <Copyright>Copyright 2021 (C) Light Technologies LLC</Copyright>
-    <PackageProjectUrl>https://github.com/LightTechnologies/LightVPN-Windows</PackageProjectUrl>
+    <Copyright>Copyright 2021 (C) Light Technologies, LLC</Copyright>
+    <PackageProjectUrl>https://github.com/LightTechnologies/LightVPN-Win</PackageProjectUrl>
     <ApplicationManifest>app.manifest</ApplicationManifest>
     <ApplicationIcon>lightvpnlogo_black(2).ico</ApplicationIcon>
     <PackageLicenseFile>License.txt</PackageLicenseFile>
-    <AssemblyVersion>1.0.0.8</AssemblyVersion>
-    <FileVersion>1.0.0.8</FileVersion>
-    <Version>1.0.0.8</Version>
+    <AssemblyVersion>1.0.1.0</AssemblyVersion>
+    <FileVersion>1.0.1.0</FileVersion>
+    <Version>1.0.1.0</Version>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
@@ -303,7 +303,6 @@
     <None Remove="Resources\lightvpn.png" />
     <None Remove="Resources\logo-dark.png" />
     <None Remove="Resources\logo-light.png" />
-    <None Remove="Windows\background.png" />
     <None Include="..\..\..\License.txt">
       <Pack>True</Pack>
       <PackagePath></PackagePath>
@@ -315,7 +314,7 @@
     <PackageReference Include="Hardcodet.NotifyIcon.Wpf.NetCore" Version="1.0.18" />
     <PackageReference Include="MaterialDesignColors" Version="2.0.0" />
     <PackageReference Include="MaterialDesignThemes" Version="4.0.0" />
-    <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
     <PackageReference Include="Serilog" Version="2.10.0" />
     <PackageReference Include="SimpleInjector" Version="5.3.0" />
     <PackageReference Include="System.Management" Version="5.0.0" />
@@ -328,6 +327,12 @@
     <ProjectReference Include="..\LightVPN.DiscordRpc\LightVPN.Discord.csproj" />
     <ProjectReference Include="..\LightVPN.Logger\LightVPN.Logger.csproj" />
     <ProjectReference Include="..\LightVPN.OpenVPN\LightVPN.OpenVPN.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Reference Include="DiscordRPC">
+      <HintPath>..\..\..\..\Downloads\discord-rpc-csharp-master\discord-rpc-csharp-master\DiscordRPC\bin\Release\net5.0\DiscordRPC.dll</HintPath>
+    </Reference>
   </ItemGroup>
 
   <ItemGroup>
@@ -600,25 +605,12 @@
     <Resource Include="Resources\lightvpn.png" />
     <Resource Include="Resources\logo-dark.png" />
     <Resource Include="Resources\logo-light.png" />
-    <Resource Include="Windows\background.png" />
   </ItemGroup>
 
   <ItemGroup>
-    <Compile Update="Resources\Lang\English.Designer.cs">
-      <DesignTime>True</DesignTime>
-      <AutoGen>True</AutoGen>
-      <DependentUpon>English.resx</DependentUpon>
-    </Compile>
     <Compile Update="Views\Tools.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
-  </ItemGroup>
-
-  <ItemGroup>
-    <EmbeddedResource Update="Resources\Lang\English.resx">
-      <Generator>ResXFileCodeGenerator</Generator>
-      <LastGenOutput>English.Designer.cs</LastGenOutput>
-    </EmbeddedResource>
   </ItemGroup>
 
   <ItemGroup>

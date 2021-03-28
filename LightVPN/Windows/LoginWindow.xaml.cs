@@ -1,11 +1,13 @@
 ﻿/* --------------------------------------------
  * 
- * Login window - Model
+ * Login window - (bad) Model
  * Copyright (C) Light Technologies LLC
  * 
  * File: LoginWindow.xaml.cs
  * 
  * Created: 04-03-21 Khrysus
+ * Updated: 27-03-21 Khrysus
+ *  NOTE: Added view models
  * 
  * --------------------------------------------
  */
@@ -140,6 +142,10 @@ namespace LightVPN.Windows
                 }
             }
             catch (SubscriptionExpiredException e)
+            {
+                ShowSnackbar(e.Message);
+            }
+            catch (ApiOfflineException e)
             {
                 ShowSnackbar(e.Message);
             }

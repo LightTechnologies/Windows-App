@@ -6,6 +6,7 @@
     xmlns:local="clr-namespace:LightVPN"
     xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:viewModels="clr-namespace:LightVPN.ViewModels"
     x:Name="window"
     Title="LightVPN"
     Width="308"
@@ -25,40 +26,21 @@
     WindowStartupLocation="CenterScreen"
     WindowStyle="None"
     mc:Ignorable="d">
+    <Window.DataContext>
+        <viewModels:LoginWindowViewModel />
+    </Window.DataContext>
     <Window.Resources>
         <BeginStoryboard x:Key="CloseAnim">
             <Storyboard Completed="FinishedClosingAnimation">
-                <DoubleAnimationUsingKeyFrames Storyboard.TargetName="window" Storyboard.TargetProperty="(FrameworkElement.Width)">
-                    <EasingDoubleKeyFrame KeyTime="00:00:00" Value="308">
-                        <EasingDoubleKeyFrame.EasingFunction>
-                            <QuinticEase EasingMode="EaseInOut" />
-                        </EasingDoubleKeyFrame.EasingFunction>
-                    </EasingDoubleKeyFrame>
-                    <EasingDoubleKeyFrame KeyTime="00:00:00.400" Value="290">
-                        <EasingDoubleKeyFrame.EasingFunction>
-                            <QuinticEase EasingMode="EaseInOut" />
-                        </EasingDoubleKeyFrame.EasingFunction>
-                    </EasingDoubleKeyFrame>
-                </DoubleAnimationUsingKeyFrames>
-                <DoubleAnimationUsingKeyFrames Storyboard.TargetName="window" Storyboard.TargetProperty="(FrameworkElement.Height)">
-                    <EasingDoubleKeyFrame KeyTime="00:00:00" Value="435">
-                        <EasingDoubleKeyFrame.EasingFunction>
-                            <QuinticEase EasingMode="EaseInOut" />
-                        </EasingDoubleKeyFrame.EasingFunction>
-                    </EasingDoubleKeyFrame>
-                    <EasingDoubleKeyFrame KeyTime="00:00:00.400" Value="350">
-                        <EasingDoubleKeyFrame.EasingFunction>
-                            <QuinticEase EasingMode="EaseInOut" />
-                        </EasingDoubleKeyFrame.EasingFunction>
-                    </EasingDoubleKeyFrame>
-                </DoubleAnimationUsingKeyFrames>
                 <DoubleAnimationUsingKeyFrames Storyboard.TargetName="window" Storyboard.TargetProperty="(UIElement.Opacity)">
-                    <EasingDoubleKeyFrame KeyTime="00:00:00" Value="1">
+                    <EasingDoubleKeyFrame KeyTime="00:00:00.4000000" Value="0">
                         <EasingDoubleKeyFrame.EasingFunction>
                             <QuinticEase EasingMode="EaseInOut" />
                         </EasingDoubleKeyFrame.EasingFunction>
                     </EasingDoubleKeyFrame>
-                    <EasingDoubleKeyFrame KeyTime="00:00:00.4000000" Value="0">
+                </DoubleAnimationUsingKeyFrames>
+                <DoubleAnimationUsingKeyFrames Storyboard.TargetName="grid" Storyboard.TargetProperty="(UIElement.RenderTransform).(TransformGroup.Children)[3].(TranslateTransform.Y)">
+                    <EasingDoubleKeyFrame KeyTime="00:00:00.4000000" Value="20">
                         <EasingDoubleKeyFrame.EasingFunction>
                             <QuinticEase EasingMode="EaseInOut" />
                         </EasingDoubleKeyFrame.EasingFunction>
@@ -67,30 +49,6 @@
             </Storyboard>
         </BeginStoryboard>
         <Storyboard x:Key="OpenAnim">
-            <DoubleAnimationUsingKeyFrames Storyboard.TargetName="window" Storyboard.TargetProperty="(FrameworkElement.Width)">
-                <EasingDoubleKeyFrame KeyTime="00:00:00" Value="290">
-                    <EasingDoubleKeyFrame.EasingFunction>
-                        <QuinticEase EasingMode="EaseInOut" />
-                    </EasingDoubleKeyFrame.EasingFunction>
-                </EasingDoubleKeyFrame>
-                <EasingDoubleKeyFrame KeyTime="00:00:00.400" Value="308">
-                    <EasingDoubleKeyFrame.EasingFunction>
-                        <QuinticEase EasingMode="EaseInOut" />
-                    </EasingDoubleKeyFrame.EasingFunction>
-                </EasingDoubleKeyFrame>
-            </DoubleAnimationUsingKeyFrames>
-            <DoubleAnimationUsingKeyFrames Storyboard.TargetName="window" Storyboard.TargetProperty="(FrameworkElement.Height)">
-                <EasingDoubleKeyFrame KeyTime="00:00:00" Value="435">
-                    <EasingDoubleKeyFrame.EasingFunction>
-                        <QuinticEase EasingMode="EaseInOut" />
-                    </EasingDoubleKeyFrame.EasingFunction>
-                </EasingDoubleKeyFrame>
-                <EasingDoubleKeyFrame KeyTime="00:00:00.400" Value="435">
-                    <EasingDoubleKeyFrame.EasingFunction>
-                        <QuinticEase EasingMode="EaseInOut" />
-                    </EasingDoubleKeyFrame.EasingFunction>
-                </EasingDoubleKeyFrame>
-            </DoubleAnimationUsingKeyFrames>
             <DoubleAnimationUsingKeyFrames Storyboard.TargetName="window" Storyboard.TargetProperty="(UIElement.Opacity)">
                 <EasingDoubleKeyFrame KeyTime="00:00:00" Value="0">
                     <EasingDoubleKeyFrame.EasingFunction>
@@ -98,6 +56,18 @@
                     </EasingDoubleKeyFrame.EasingFunction>
                 </EasingDoubleKeyFrame>
                 <EasingDoubleKeyFrame KeyTime="00:00:00.4000000" Value="1">
+                    <EasingDoubleKeyFrame.EasingFunction>
+                        <QuinticEase EasingMode="EaseInOut" />
+                    </EasingDoubleKeyFrame.EasingFunction>
+                </EasingDoubleKeyFrame>
+            </DoubleAnimationUsingKeyFrames>
+            <DoubleAnimationUsingKeyFrames Storyboard.TargetName="grid" Storyboard.TargetProperty="(UIElement.RenderTransform).(TransformGroup.Children)[3].(TranslateTransform.Y)">
+                <EasingDoubleKeyFrame KeyTime="00:00:00" Value="20">
+                    <EasingDoubleKeyFrame.EasingFunction>
+                        <QuinticEase EasingMode="EaseInOut" />
+                    </EasingDoubleKeyFrame.EasingFunction>
+                </EasingDoubleKeyFrame>
+                <EasingDoubleKeyFrame KeyTime="00:00:00.4000000" Value="0">
                     <EasingDoubleKeyFrame.EasingFunction>
                         <QuinticEase EasingMode="EaseInOut" />
                     </EasingDoubleKeyFrame.EasingFunction>
@@ -112,29 +82,31 @@
     </Window.Triggers>
     <WindowChrome.WindowChrome>
         <WindowChrome
-            CaptionHeight="37"
+            CaptionHeight="32"
             CornerRadius="0,0,0,0"
             GlassFrameThickness="0"
             ResizeBorderThickness="7"
             UseAeroCaptionButtons="False" />
     </WindowChrome.WindowChrome>
     <Border Name="Border" Style="{StaticResource WindowBorder}">
-        <Border.Background>
-            <ImageBrush ImageSource="/Windows/background.png"/>
-        </Border.Background>
-        <Grid>
+        <Grid x:Name="grid" RenderTransformOrigin="0.5,0.5">
+            <Grid.RenderTransform>
+                <TransformGroup>
+                    <ScaleTransform />
+                    <SkewTransform />
+                    <RotateTransform />
+                    <TranslateTransform />
+                </TransformGroup>
+            </Grid.RenderTransform>
             <Grid.RowDefinitions>
                 <RowDefinition Height="32" />
-                <RowDefinition Height="30" />
+                <RowDefinition Height="*" />
             </Grid.RowDefinitions>
             <Grid
                 Name="TopBar"
                 Height="32"
                 HorizontalAlignment="Stretch"
                 VerticalAlignment="Top">
-                <Grid.Background>
-                    <ImageBrush/>
-                </Grid.Background>
                 <StackPanel
                     Width="95"
                     Height="32"
@@ -144,7 +116,6 @@
                     Orientation="Horizontal">
                     <Button
                         Width="47"
-                        materialDesign:RippleAssist.Feedback="#DD000000"
                         Background="{x:Null}"
                         BorderBrush="{x:Null}"
                         Click="CaptionButtons_Click"
@@ -170,26 +141,14 @@
             </Grid>
             <Frame
                 Name="MainFrame"
-                NavigationUIVisibility="Hidden" Margin="0,0,0,-371" Grid.Row="1" >
-                <Frame.Background>
-                    <ImageBrush/>
-                </Frame.Background>
-            </Frame>
+                Grid.Row="1"
+                NavigationUIVisibility="Hidden" />
             <materialDesign:Snackbar
                 x:Name="MainSnackbar"
                 Grid.Row="1"
                 HorizontalAlignment="Stretch"
-                VerticalAlignment="Top"
-                MessageQueue="{materialDesign:MessageQueue}" Height="5" Margin="0,426,0,0" RenderTransformOrigin="0.5,0.5" >
-                <materialDesign:Snackbar.RenderTransform>
-                    <TransformGroup>
-                        <ScaleTransform ScaleY="-1"/>
-                        <SkewTransform/>
-                        <RotateTransform/>
-                        <TranslateTransform/>
-                    </TransformGroup>
-                </materialDesign:Snackbar.RenderTransform>
-            </materialDesign:Snackbar>
+                VerticalAlignment="Bottom"
+                MessageQueue="{materialDesign:MessageQueue}" />
         </Grid>
     </Border>
 </Window>

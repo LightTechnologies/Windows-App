@@ -8,6 +8,7 @@
     xmlns:local="clr-namespace:LightVPN.Views"
     xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:viewModels="clr-namespace:LightVPN.ViewModels"
     Name="HomeView"
     Title="Home"
     d:DesignHeight="418"
@@ -20,18 +21,30 @@
     TextOptions.TextFormattingMode="Ideal"
     TextOptions.TextRenderingMode="Auto"
     mc:Ignorable="d">
+    <Page.DataContext>
+        <viewModels:HomeViewModel />
+    </Page.DataContext>
     <Page.Resources>
         <converters:InverseBooleanConverter x:Key="converter" />
     </Page.Resources>
     <ScrollViewer HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
         <Grid>
             <StackPanel>
-                <TextBlock
-                    Margin="45,25,0,20"
-                    HorizontalAlignment="Left"
-                    VerticalAlignment="Top"
-                    Style="{StaticResource Headline}"
-                    Text="Welcome!" />
+                <StackPanel Orientation="Horizontal">
+                    <materialDesign:PackIcon
+                        Width="20"
+                        Height="20"
+                        Margin="45,25,0,20"
+                        HorizontalAlignment="Left"
+                        VerticalAlignment="Center"
+                        Kind="HomeOutline" />
+                    <TextBlock
+                        Margin="10,25,0,20"
+                        HorizontalAlignment="Left"
+                        VerticalAlignment="Top"
+                        Style="{StaticResource Headline}"
+                        Text="Welcome!" />
+                </StackPanel>
                 <materialDesign:Card
                     Height="175"
                     Margin="40,0,40,20"
@@ -44,13 +57,23 @@
                             <ColumnDefinition Width="170" />
                         </Grid.ColumnDefinitions>
                         <StackPanel>
-                            <TextBlock
-                                Name="LastServerTitle"
-                                Margin="15,15,0,0"
-                                HorizontalAlignment="Left"
-                                VerticalAlignment="Top"
-                                Style="{StaticResource BrightHeadline}"
-                                Text="Your last server" />
+                            <StackPanel Orientation="Horizontal">
+                                <materialDesign:PackIcon
+                                    Width="20"
+                                    Height="20"
+                                    Margin="15,15,0,0"
+                                    HorizontalAlignment="Left"
+                                    VerticalAlignment="Center"
+                                    Foreground="White"
+                                    Kind="ServerNetwork" />
+                                <TextBlock
+                                    Name="LastServerTitle"
+                                    Margin="10,15,0,0"
+                                    HorizontalAlignment="Left"
+                                    VerticalAlignment="Top"
+                                    Style="{StaticResource BrightHeadline}"
+                                    Text="Your last server" />
+                            </StackPanel>
                             <TextBlock
                                 Name="RecentServer"
                                 Margin="15,5,0,0"

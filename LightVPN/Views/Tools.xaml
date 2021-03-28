@@ -8,6 +8,7 @@
     xmlns:local="clr-namespace:LightVPN.Views"
     xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:viewModels="clr-namespace:LightVPN.ViewModels"
     Name="ToolsView"
     Title="Tools"
     d:DesignHeight="418"
@@ -19,18 +20,30 @@
     TextOptions.TextFormattingMode="Ideal"
     TextOptions.TextRenderingMode="Auto"
     mc:Ignorable="d">
+    <Page.DataContext>
+        <viewModels:ToolsViewModel />
+    </Page.DataContext>
     <Page.Resources>
         <converters:InverseBooleanConverter x:Key="converter" />
     </Page.Resources>
     <ScrollViewer>
         <Grid>
             <StackPanel>
-                <TextBlock
-                    Margin="45,25,0,20"
-                    HorizontalAlignment="Left"
-                    VerticalAlignment="Top"
-                    Style="{StaticResource Headline}"
-                    Text="Tools" />
+                <StackPanel Orientation="Horizontal">
+                    <materialDesign:PackIcon
+                        Width="20"
+                        Height="20"
+                        Margin="45,25,0,20"
+                        HorizontalAlignment="Left"
+                        VerticalAlignment="Center"
+                        Kind="ToolboxOutline" />
+                    <TextBlock
+                        Margin="10,25,0,20"
+                        HorizontalAlignment="Left"
+                        VerticalAlignment="Top"
+                        Style="{StaticResource Headline}"
+                        Text="Tools" />
+                </StackPanel>
                 <materialDesign:Card
                     Height="160"
                     Margin="40,0,40,20"
@@ -38,12 +51,19 @@
                     VerticalAlignment="Top">
                     <Grid>
                         <StackPanel>
-                            <TextBlock
-                                Margin="15,15,0,15"
-                                HorizontalAlignment="Left"
-                                VerticalAlignment="Top"
-                                Style="{StaticResource MaterialDesignSubtitle2TextBlock}"
-                                Text="Troubleshoot" />
+                            <StackPanel Orientation="Horizontal">
+                                <materialDesign:PackIcon
+                                    Margin="15,15,0,15"
+                                    HorizontalAlignment="Left"
+                                    VerticalAlignment="Center"
+                                    Kind="HelpOutline" />
+                                <TextBlock
+                                    Margin="10,15,0,15"
+                                    HorizontalAlignment="Left"
+                                    VerticalAlignment="Top"
+                                    Style="{StaticResource MaterialDesignSubtitle2TextBlock}"
+                                    Text="Troubleshoot" />
+                            </StackPanel>
                             <StackPanel>
                                 <TextBlock
                                     Margin="15,10,0,0"
@@ -102,13 +122,19 @@
                             <RowDefinition Height="50" />
                             <RowDefinition Height="*" />
                         </Grid.RowDefinitions>
-                        <TextBlock
-                            Grid.Row="0"
-                            Margin="15,15,0,15"
-                            HorizontalAlignment="Left"
-                            VerticalAlignment="Top"
-                            Style="{StaticResource MaterialDesignSubtitle2TextBlock}"
-                            Text="OpenVPN Logs" />
+                        <StackPanel Orientation="Horizontal">
+                            <materialDesign:PackIcon
+                                Margin="15,15,0,15"
+                                HorizontalAlignment="Left"
+                                VerticalAlignment="Center"
+                                Kind="Vpn" />
+                            <TextBlock
+                                Margin="10,15,0,15"
+                                HorizontalAlignment="Left"
+                                VerticalAlignment="Top"
+                                Style="{StaticResource MaterialDesignSubtitle2TextBlock}"
+                                Text="OpenVPN logs" />
+                        </StackPanel>
                         <ScrollViewer
                             Grid.Row="1"
                             HorizontalAlignment="Stretch"
@@ -130,12 +156,19 @@
                     VerticalAlignment="Top">
                     <Grid>
                         <StackPanel>
-                            <TextBlock
-                                Margin="15,15,0,15"
-                                HorizontalAlignment="Left"
-                                VerticalAlignment="Top"
-                                Style="{StaticResource MaterialDesignSubtitle2TextBlock}"
-                                Text="Clear logs" />
+                            <StackPanel Orientation="Horizontal">
+                                <materialDesign:PackIcon
+                                    Margin="15,15,0,15"
+                                    HorizontalAlignment="Left"
+                                    VerticalAlignment="Center"
+                                    Kind="TrashOutline" />
+                                <TextBlock
+                                    Margin="10,15,0,15"
+                                    HorizontalAlignment="Left"
+                                    VerticalAlignment="Top"
+                                    Style="{StaticResource MaterialDesignSubtitle2TextBlock}"
+                                    Text="Clear logs" />
+                            </StackPanel>
                             <StackPanel>
                                 <TextBlock
                                     Margin="15,10,0,0"

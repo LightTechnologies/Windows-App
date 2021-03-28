@@ -24,6 +24,19 @@
         <Setter Property="FontWeight" Value="Bold" />
         <Setter Property="FontFamily" Value="{DynamicResource MaterialDesignFont}" />
     </Style>
+    <Style x:Key="DarkSmall" TargetType="TextBlock">
+        <Setter Property="Foreground" Value="Black" />
+        <Setter Property="FontSize" Value="14" />
+        <Setter Property="Opacity" Value="0.5" />
+        <Setter Property="FontWeight" Value="Bold" />
+        <Setter Property="FontFamily" Value="{DynamicResource MaterialDesignFont}" />
+    </Style>
+    <Style x:Key="Small" TargetType="TextBlock">
+        <Setter Property="FontSize" Value="14" />
+        <Setter Property="Opacity" Value="0.5" />
+        <Setter Property="FontWeight" Value="Bold" />
+        <Setter Property="FontFamily" Value="{DynamicResource MaterialDesignFont}" />
+    </Style>
     <Style x:Key="DarkHeadline" TargetType="TextBlock">
         <Setter Property="Foreground" Value="Black" />
         <Setter Property="FontSize" Value="20" />

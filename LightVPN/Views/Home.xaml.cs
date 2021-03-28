@@ -33,6 +33,7 @@ using LightVPN.Discord.Interfaces;
 using System.Threading;
 using LightVPN.Common.v2;
 using System.Windows.Threading;
+using LightVPN.OpenVPN.Models;
 
 namespace LightVPN.Views
 {
@@ -69,20 +70,20 @@ namespace LightVPN.Views
             InitializeComponent();
             _host = host;
             _wasFirstLoad = wasFirstLoad;
-            if (_host.IsConnected)
+            if (_host._connectionState == ConnectionState.Connected)
             {
                 var connectionElapsed = (DateTime.Now - _host.connectedAt).ToHMS();
                 connectionElapsed = string.IsNullOrWhiteSpace(connectionElapsed) ? "0 seconds" : connectionElapsed;
                 LastServerTitle.Text = $"Connected for {connectionElapsed}";
             }
-            else
+            else if (_host._connectionState == ConnectionState.Disconnected)
             {
                 LastServerTitle.Text = "Your last server";
             }
 
             DispatcherTimer timer = new DispatcherTimer(TimeSpan.FromSeconds(1), DispatcherPriority.Background, (object sender, EventArgs e) =>
             {
-                if (_host.IsConnected)
+                if (_host._connectionState == ConnectionState.Connected)
                 {
                     var connectionElapsed = (DateTime.Now - _host.connectedAt).ToHMS();
                     connectionElapsed = string.IsNullOrWhiteSpace(connectionElapsed) ? "0 seconds" : connectionElapsed;
@@ -100,7 +101,7 @@ namespace LightVPN.Views
 
         private async void ToggleConnectCommand_Event(object sender, ExecutedRoutedEventArgs e)
         {
-            if (_host.IsConnected)
+            if (_host._connectionState == ConnectionState.Connected)
             {
                 _host.connectedAt = DateTime.MinValue;
                 _host.ShowSnackbar($"Disconnected!");
@@ -108,9 +109,9 @@ namespace LightVPN.Views
                 {
                     State = "Disconnected"
                 });
-                _host.StatusFooter.Content = "Status: Disconnected";
+                _host._connectionState = ConnectionState.Disconnected;
+                UpdateViaConnectionState();
                 _host._manager.Disconnect();
-                _host.IsConnected = false;
                 await UpdateUIAsync();
                 _host.UpdateFooter();
             }
@@ -128,27 +129,36 @@ namespace LightVPN.Views
             {
                 var settings = await Globals.container.GetInstance<ISettingsManager<Configuration>>().LoadAsync();
                 RecentServer.Text = settings.PreviousServer.Country ?? "N/A";
-                if (_host.IsConnecting)
-                {
-                    RecentConnectButton.IsEnabled = false;
-                    ConnectButtonText.Text = " CONNECTING";
-                    IsProcessingTwo = true;
-                }
-                else if (_host.IsConnected)
-                {
+                UpdateViaConnectionState();
+            });
+        }
+
+        internal void UpdateViaConnectionState()
+        {
+            switch (_host._connectionState)
+            {
+                case ConnectionState.Connected:
                     RecentConnectButton.IsEnabled = true;
                     ConnectButtonIcon.Kind = PackIconKind.PowerPlugOffOutline;
                     ConnectButtonText.Text = " DISCONNECT";
+                    _host.IsProcessing = false;
                     IsProcessingTwo = false;
-                }
-                else
-                {
+                    break;
+                case ConnectionState.Connecting:
+                    RecentConnectButton.IsEnabled = false;
+                    ConnectButtonText.Text = " CONNECTING";
+                    IsProcessingTwo = true;
+                    _host.IsProcessing = true;
+                    break;
+                case ConnectionState.Disconnected:
                     RecentConnectButton.IsEnabled = true;
                     ConnectButtonIcon.Kind = PackIconKind.PowerPlugOutline;
                     ConnectButtonText.Text = " CONNECT";
                     IsProcessingTwo = false;
-                }
-            });
+                    _host.IsProcessing = false;
+                    break;
+            }
+            _host.StatusFooter.Content = $"Status: {_host._connectionState}";
         }
 
         private void ChangeToIcon(PackIconKind kind)
@@ -161,30 +171,10 @@ namespace LightVPN.Views
         {
             var settings = await Globals.container.GetInstance<ISettingsManager<Configuration>>().LoadAsync();
             RecentServer.Text = settings.PreviousServer?.Country ?? "N/A";
-            if (_host.IsConnecting)
-            {
-                RecentConnectButton.IsEnabled = false;
-                ConnectButtonText.Text = " CONNECTING";
-                _host.StatusFooter.Content = "Status: Connecting";
-                _host.IsProcessing = true;
-                IsProcessingTwo = true;
-            }
-            else if (_host.IsConnected)
-            {
-                RecentConnectButton.IsEnabled = true;
-                ChangeToIcon(PackIconKind.PowerPlugOffOutline);
-                ConnectButtonText.Text = " DISCONNECT";
-                _host.StatusFooter.Content = "Status: Connected";
-                _host.IsProcessing = false;
-            }
-            else
-            {
-                RecentConnectButton.IsEnabled = settings.PreviousServer is not null;
-                ChangeToIcon(PackIconKind.PowerPlugOutline);
-                ConnectButtonText.Text = " CONNECT";
-                _host.StatusFooter.Content = "Status: Disconnected";
-                _host.IsProcessing = false;
-            }
+
+            UpdateViaConnectionState();
+
+            RecentConnectButton.IsEnabled = settings.PreviousServer is not null;
 
             var servers = await Globals.container.GetInstance<IHttp>().GetServersAsync();
             foreach (var server in servers)
@@ -237,6 +227,10 @@ namespace LightVPN.Views
             {
                 _host.ShowSnackbar(e.Message);
             }
+            catch (ApiOfflineException e)
+            {
+                _host.ShowSnackbar(e.Message);
+            }
             catch (InvalidResponseException e)
             {
                 _host.ShowSnackbar(e.Message);
@@ -250,7 +244,11 @@ namespace LightVPN.Views
 
         public async void ConnectItem_Click(object sender, RoutedEventArgs e)
         {
-            if (!_host.IsConnected || _host.IsConnecting)
+            if (_host._connectionState == ConnectionState.Connected)
+            {
+                await _host.DisconnectAsync(true);
+            }
+            if (_host._connectionState == ConnectionState.Disconnected || _host._connectionState == ConnectionState.Connecting)
             {
                 if (ServerList.SelectedItem is not null)
                 {
