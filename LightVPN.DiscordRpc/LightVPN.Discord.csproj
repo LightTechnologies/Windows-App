@@ -22,9 +22,12 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Reference Include="DiscordRPC">
-      <HintPath>..\..\..\..\Downloads\discord-rpc-csharp-master\discord-rpc-csharp-master\DiscordRPC\bin\Release\net5.0\DiscordRPC.dll</HintPath>
-    </Reference>
+    <PackageReference Include="DiscordRichPresence" Version="1.0.175" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\LightVPN.Common.v2\LightVPN.Common.v2.csproj" />
+    <ProjectReference Include="..\LightVPN.Configuration\LightVPN.Settings.csproj" />
   </ItemGroup>
 
 </Project>

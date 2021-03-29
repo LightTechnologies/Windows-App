@@ -19,9 +19,9 @@
     <ApplicationManifest>app.manifest</ApplicationManifest>
     <ApplicationIcon>lightvpnlogo_black(2).ico</ApplicationIcon>
     <PackageLicenseFile>License.txt</PackageLicenseFile>
-    <AssemblyVersion>1.0.1.0</AssemblyVersion>
-    <FileVersion>1.0.1.0</FileVersion>
-    <Version>1.0.1.0</Version>
+    <AssemblyVersion>1.0.1.1</AssemblyVersion>
+    <FileVersion>1.0.1.1</FileVersion>
+    <Version>1.0.1.1</Version>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
@@ -303,6 +303,9 @@
     <None Remove="Resources\lightvpn.png" />
     <None Remove="Resources\logo-dark.png" />
     <None Remove="Resources\logo-light.png" />
+    <None Remove="Views\text.png" />
+    <None Remove="Windows\test.jpg" />
+    <None Remove="Windows\test2.jpg" />
     <None Include="..\..\..\License.txt">
       <Pack>True</Pack>
       <PackagePath></PackagePath>
@@ -605,6 +608,9 @@
     <Resource Include="Resources\lightvpn.png" />
     <Resource Include="Resources\logo-dark.png" />
     <Resource Include="Resources\logo-light.png" />
+    <Resource Include="Views\text.png" />
+    <Resource Include="Windows\test.jpg" />
+    <Resource Include="Windows\test2.jpg" />
   </ItemGroup>
 
   <ItemGroup>

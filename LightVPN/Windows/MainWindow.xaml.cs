@@ -282,10 +282,10 @@ namespace LightVPN
             }
             ovpnFn = files.First(x => x.Contains(serverId));
 
-            var existingSettings = await Globals.container.GetInstance<ISettingsManager<Configuration>>().LoadAsync();
+            var existingSettings = await Globals.container.GetInstance<ISettingsManager<SettingsModel>>().LoadAsync();
             existingSettings.PreviousServer = new PreviousServer { Id = CurrentServerId, Country = CurrentServer };
             
-            await Globals.container.GetInstance<ISettingsManager<Configuration>>().SaveAsync(existingSettings);
+            await Globals.container.GetInstance<ISettingsManager<SettingsModel>>().SaveAsync(existingSettings);
      
             if (CurrentView is Home home)
             {

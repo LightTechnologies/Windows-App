@@ -31,10 +31,10 @@ using LightVPN.Settings;
 using LightVPN.Common.v2.Interfaces;
 using System.Diagnostics;
 using System.Reflection;
-using LightVPN.Common.v2;
 using Exceptionless;
 using LightVPN.Auth.Classes;
 using System.Net.Http.Headers;
+using LightVPN.Common.v2;
 
 namespace LightVPN
 {
@@ -89,7 +89,7 @@ namespace LightVPN
             Globals.container.Register<ITapManager>(() => new TapManager(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "LightVPN", "ovpn", "tapctl.exe")), Lifestyle.Singleton);
             Globals.container.Register<IManager>(() => new Manager(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "LightVPN", "ovpn", "openvpn.exe")), Lifestyle.Singleton);
             Globals.container.Register(() => new DiscordRpcClient("817163355260583957"), Lifestyle.Singleton);
-            Globals.container.Register<ISettingsManager<Auth.Models.Configuration>>(() => new SettingsManager<Auth.Models.Configuration>(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "LightVPN", "config.json")), Lifestyle.Singleton);
+            Globals.container.Register<ISettingsManager<SettingsModel>>(() => new SettingsManager<SettingsModel>(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "LightVPN", "config.json")), Lifestyle.Singleton);
 
             Globals.container.Verify();
             try

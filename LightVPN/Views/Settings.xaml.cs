@@ -23,6 +23,7 @@ using LightVPN.OpenVPN.Interfaces;
 using static LightVPN.Auth.ApiException;
 using System.Reflection;
 using LightVPN.Common.v2;
+using LightVPN.Discord.Interfaces;
 
 namespace LightVPN.Views
 {
@@ -59,10 +60,11 @@ namespace LightVPN.Views
             _host = host;
             this.CommandBindings.Add(new CommandBinding(RefreshCacheCommand, RefreshCacheCommand_Event));
             this.CommandBindings.Add(new CommandBinding(HandleCheckChanges, HandleCheckChanges_Event));
-            var settings = Globals.container.GetInstance<ISettingsManager<Configuration>>().Load();
+            var settings = Globals.container.GetInstance<ISettingsManager<SettingsModel>>().Load();
             DarkModeCheckbox.IsChecked = settings.DarkMode;
+            DiscordRPCCheckBox.IsChecked = settings.DiscordRPC;
             AutoConnectCheckbox.IsChecked = settings.AutoConnect;
-            LightVpnHeadlineText.Text = $"LightVPN Windows Client (version {Assembly.GetExecutingAssembly().GetVersion()})";
+            LightVpnHeadlineText.Text = $"LightVPN Windows Client (version {typeof(Startup).Assembly.GetName().Version})";
         }
         private async void HandleCheckChanges_Event(object sender, ExecutedRoutedEventArgs args)
         {
@@ -72,6 +74,14 @@ namespace LightVPN.Views
                 SecondaryColor = "Default",
                 PrimaryColor = "Default"
             });
+            if(DiscordRPCCheckBox.IsChecked.Value)
+            {
+                await Globals.container.GetInstance<IDiscordRpc>().StartAsync();
+            }
+            else
+            {
+                await Globals.container.GetInstance<IDiscordRpc>().StopAsync();
+            }
             await SaveSettingsAsync();
         }
 
@@ -97,11 +107,12 @@ namespace LightVPN.Views
 
         private async Task SaveSettingsAsync()
         {
-            var settingsManager = Globals.container.GetInstance<ISettingsManager<Configuration>>();
+            var settingsManager = Globals.container.GetInstance<ISettingsManager<SettingsModel>>();
             var existingSettings = await settingsManager.LoadAsync();
-            var settings = new Configuration
+            var settings = new Common.v2.Models.SettingsModel
             {
                 AutoConnect = AutoConnectCheckbox.IsChecked.Value,
+                DiscordRPC = DiscordRPCCheckBox.IsChecked.Value,
                 DarkMode = DarkModeCheckbox.IsChecked.Value,
                 PreviousServer = existingSettings.PreviousServer
             };

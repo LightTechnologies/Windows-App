@@ -16,6 +16,7 @@ using LightVPN.Discord.Interfaces;
 using DiscordRPC;
 using System;
 using System.Threading.Tasks;
+using LightVPN.Common.v2.Models;
 
 namespace LightVPN.Discord
 {
@@ -100,6 +101,9 @@ namespace LightVPN.Discord
         /// <returns>Tuple of whether it was successful, and if not a description on the error</returns>
         public async Task<Tuple<bool, string>> SetPresenceObjectAsync(RichPresence richPresence)
         {
+            if (!(await Globals.container.GetInstance< LightVPN.Settings.Interfaces.ISettingsManager<SettingsModel>>().LoadAsync()).DiscordRPC)
+                return new Tuple<bool, string>(false, "DiscordRPC turned off in settings");
+
             if (_client == null)
             {
                 return Tuple.Create(false, "Client is null or not set to instance of an object");
@@ -131,11 +135,13 @@ namespace LightVPN.Discord
                 {
                     return Tuple.Create(false, "Client is null or not set to instance of an object");
                 }
-                await Task.Run(() =>
+                await Task.Run(async () =>
                 {
-                    _client.SetPresence(_presence);
+                    if ((await Globals.container.GetInstance<LightVPN.Settings.Interfaces.ISettingsManager<SettingsModel>>().LoadAsync()).DiscordRPC)
+                    {
+                        _client.SetPresence(_presence);
+                    }
                     _client.Initialize();
-                    _client.Invoke();
                 });
                 _isRunning = true;
                 return Tuple.Create(true, string.Empty);

@@ -57,7 +57,7 @@ namespace LightVPN.Windows
             InitializeComponent();
             this.CommandBindings.Add(
             new CommandBinding(SignInCommand, LoginClick));
-            var settings = Globals.container.GetInstance<ISettingsManager<Configuration>>().Load();
+            var settings = Globals.container.GetInstance<ISettingsManager<SettingsModel>>().Load();
             Globals.container.GetInstance<IThemeUtils>().SwitchTheme(new Auth.Models.Theme { DarkMode = settings.DarkMode, PrimaryColor = "Default", SecondaryColor = "Default" });
         }
 

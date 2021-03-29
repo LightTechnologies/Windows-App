@@ -36,11 +36,19 @@ namespace LightVPN.Views
         public Login()
         {
             InitializeComponent();
-            var settings = Globals.container.GetInstance<ISettingsManager<Configuration>>().Load();
+            var settings = Globals.container.GetInstance<ISettingsManager<SettingsModel>>().Load();
             if (settings.DarkMode)
             {
                 LogoImage.Source = new BitmapImage(new Uri(@"pack://application:,,,/LightVPN;component/Resources/logo-light.png", UriKind.Absolute));
             }
+        }
+
+        private void Button_Click(object sender, RoutedEventArgs e)
+        {
+            var process = new Process();
+            process.StartInfo.UseShellExecute = true;
+            process.StartInfo.FileName = ("https://lightvpn.org/dash/generate");
+            process.Start();
         }
     }
 }

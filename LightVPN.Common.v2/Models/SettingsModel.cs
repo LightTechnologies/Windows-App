@@ -12,9 +12,9 @@
 
 using Newtonsoft.Json;
 
-namespace LightVPN.Auth.Models
+namespace LightVPN.Common.v2.Models
 {
-    public struct Configuration
+    public class SettingsModel
     {
         [JsonProperty("AutoConnect")] 
         public bool AutoConnect { get; set; }
@@ -27,6 +27,9 @@ namespace LightVPN.Auth.Models
 
         [JsonProperty("PreviousServer")]
         public PreviousServer PreviousServer { get; set; }
+
+        [JsonProperty("DiscordRPC")]
+        public bool DiscordRPC { get; set; } = true;
 
     }
 

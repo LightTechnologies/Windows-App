@@ -45,7 +45,7 @@
                         Text="Settings" />
                 </StackPanel>
                 <materialDesign:Card
-                    Height="240"
+                    Height="310"
                     Margin="40,0,40,20"
                     HorizontalAlignment="Stretch"
                     VerticalAlignment="Top">
@@ -109,7 +109,37 @@
                                 VerticalAlignment="Top"
                                 Opacity="0.5"
                                 Orientation="Horizontal" />
-
+                            <StackPanel Orientation="Horizontal">
+                                <ToggleButton
+                                    x:Name="DiscordRPCCheckBox"
+                                    Margin="15,10,0,10"
+                                    VerticalAlignment="Center"
+                                    Command="{x:Static local:Settings.HandleCheckChanges}"
+                                    Style="{StaticResource MaterialDesignSwitchToggleButton}" />
+                                <TextBlock
+                                    Margin="10,0,0,0"
+                                    VerticalAlignment="Center"
+                                    FontSize="13"
+                                    Text="Discord RPC"
+                                    TextWrapping="Wrap" />
+                            </StackPanel>
+                            <StackPanel
+                                Margin="15,0,0,10"
+                                HorizontalAlignment="Left"
+                                VerticalAlignment="Top"
+                                Opacity="0.5"
+                                Orientation="Horizontal">
+                                <materialDesign:PackIcon
+                                    HorizontalAlignment="Center"
+                                    VerticalAlignment="Center"
+                                    Kind="InfoCircleOutline" />
+                                <TextBlock
+                                    HorizontalAlignment="Center"
+                                    VerticalAlignment="Center"
+                                    FontSize="11"
+                                    Text=" LightVPN will automatically connect when you open the program"
+                                    TextWrapping="Wrap" />
+                            </StackPanel>
                             <StackPanel>
                                 <TextBlock
                                     Margin="15,10,0,0"

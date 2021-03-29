@@ -117,7 +117,7 @@ namespace LightVPN.Views
             }
             else
             {
-                var existingSettings = await Globals.container.GetInstance<ISettingsManager<Configuration>>().LoadAsync();
+                var existingSettings = await Globals.container.GetInstance<ISettingsManager<SettingsModel>>().LoadAsync();
                 await UpdateUIAsync();
                 await _host.ConnectToServerAsync(existingSettings.PreviousServer.Id, existingSettings.PreviousServer.Country);
             }
@@ -127,7 +127,7 @@ namespace LightVPN.Views
         {
             await Dispatcher.InvokeAsync(async () =>
             {
-                var settings = await Globals.container.GetInstance<ISettingsManager<Configuration>>().LoadAsync();
+                var settings = await Globals.container.GetInstance<ISettingsManager<SettingsModel>>().LoadAsync();
                 RecentServer.Text = settings.PreviousServer.Country ?? "N/A";
                 UpdateViaConnectionState();
             });
@@ -169,7 +169,7 @@ namespace LightVPN.Views
 
         private async Task DownloadServers()
         {
-            var settings = await Globals.container.GetInstance<ISettingsManager<Configuration>>().LoadAsync();
+            var settings = await Globals.container.GetInstance<ISettingsManager<SettingsModel>>().LoadAsync();
             RecentServer.Text = settings.PreviousServer?.Country ?? "N/A";
 
             UpdateViaConnectionState();
@@ -253,8 +253,8 @@ namespace LightVPN.Views
                 if (ServerList.SelectedItem is not null)
                 {
                     var item = (ServersGrid)ServerList.SelectedItem;
-                    var existingSettings = await Globals.container.GetInstance<ISettingsManager<Configuration>>().LoadAsync();
-                    await Globals.container.GetInstance<ISettingsManager<Configuration>>().SaveAsync(new Configuration
+                    var existingSettings = await Globals.container.GetInstance<ISettingsManager<SettingsModel>>().LoadAsync();
+                    await Globals.container.GetInstance<ISettingsManager<SettingsModel>>().SaveAsync(new SettingsModel
                     {
                         AutoConnect = existingSettings.AutoConnect,
                         PreviousServer = new PreviousServer
