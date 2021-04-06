@@ -9,8 +9,8 @@
     xmlns:viewModels="clr-namespace:LightVPN.ViewModels"
     x:Name="window"
     Title="LightVPN"
-    Width="308"
-    Height="435"
+    Width="315"
+    Height="480"
     AllowsTransparency="True"
     Background="{DynamicResource MaterialDesignPaper}"
     Closing="Window_Closing"
@@ -88,7 +88,10 @@
             ResizeBorderThickness="7"
             UseAeroCaptionButtons="False" />
     </WindowChrome.WindowChrome>
-    <Border Name="Border" Style="{StaticResource WindowBorder}">
+    <Border Name="Border" Style="{StaticResource WindowBorder}" BorderBrush="{x:Null}">
+        <Border.Background>
+            <ImageBrush ImageSource="/Windows/sdfdfdfsdfsdfsdfsdfsdfsdf.jpg"/>
+        </Border.Background>
         <Grid x:Name="grid" RenderTransformOrigin="0.5,0.5">
             <Grid.RenderTransform>
                 <TransformGroup>
@@ -110,7 +113,7 @@
                 <StackPanel
                     Width="95"
                     Height="32"
-                    Margin="213,0,0,0"
+                    Margin="217,0,0,0"
                     HorizontalAlignment="Left"
                     VerticalAlignment="Center"
                     Orientation="Horizontal">

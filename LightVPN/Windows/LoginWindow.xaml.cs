@@ -135,6 +135,12 @@ namespace LightVPN.Windows
                     {
                         State = "Disconnected"
                     });
+                    if (string.IsNullOrWhiteSpace(loginresponse.Value.Email))
+                    {
+                        var emailpopup = new LightVPN.Views.EmailAlert();
+                        NavigatePage(emailpopup);
+                        await Task.Delay(10000);
+                    }
                     await Globals.container.GetInstance<IDiscordRpc>().StartAsync();
                     MainWindow mw = new();
                     mw.Show();

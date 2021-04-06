@@ -39,7 +39,7 @@ namespace LightVPN.Views
             var settings = Globals.container.GetInstance<ISettingsManager<SettingsModel>>().Load();
             if (settings.DarkMode)
             {
-                LogoImage.Source = new BitmapImage(new Uri(@"pack://application:,,,/LightVPN;component/Resources/logo-light.png", UriKind.Absolute));
+                //LogoImage.Source = new BitmapImage(new Uri(@"pack://application:,,,/LightVPN;component/Resources/logo-light.png", UriKind.Absolute));
             }
         }
 

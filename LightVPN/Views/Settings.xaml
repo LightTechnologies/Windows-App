@@ -137,7 +137,7 @@
                                     HorizontalAlignment="Center"
                                     VerticalAlignment="Center"
                                     FontSize="11"
-                                    Text=" LightVPN will automatically connect when you open the program"
+                                    Text=" LightVPN will cease its Discord RPC whilst application is open."
                                     TextWrapping="Wrap" />
                             </StackPanel>
                             <StackPanel>
