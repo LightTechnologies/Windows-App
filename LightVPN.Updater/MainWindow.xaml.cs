@@ -29,7 +29,7 @@ namespace LightVPN.Updater
             {
                 var path = Path.GetTempFileName();
 
-                var client = new HttpClientDownloadWithProgress("https://lightvpn.org/api/client/rar", path);
+                var client = new HttpClientDownloadWithProgress("https://lightvpn.org/api/download/latest", path);
 
                 client.ProgressChanged += Client_ProgressChanged;
                 ProgressBar.Value = 0;

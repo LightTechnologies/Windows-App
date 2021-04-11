@@ -19,6 +19,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.IO.Compression;
+using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
@@ -40,25 +41,10 @@ namespace LightVPN.Auth
         /// <param name="client">The instance of HttpClient the class will use</param>
         public Http(HttpClient client, SSLCheckingHttpClient checkingClient)
         {
-            
+
             _client = client;
             _apiclient = checkingClient;
-        }
-
-        internal async Task TryConnectAsync()
-        {
-            try
-            {
-                var response = await _apiclient.GetAsync("https://lightvpn.org/api/client/version");
-                if (!response.IsSuccessStatusCode) throw new ApiOfflineException("The API is offline or under maintenence");
-                var content = await response.Content.ReadAsStringAsync();
-                if (string.IsNullOrWhiteSpace(content)) throw new ApiOfflineException("The API is offline or under maintenence");
-                await Task.Delay(1000); // Again this is here to stop Flux stopping ratelimiting burst requests
-            }
-            catch (Exception)
-            {
-                throw new ApiOfflineException("The API is offline or under maintenence");
-            }
+            checkingClient.DefaultRequestHeaders.TryAddWithoutValidation("X-Client-Version", $"Windows {Assembly.GetEntryAssembly().GetName().Version}");
         }
 
         public async Task<string> GetVersionAsync()
@@ -76,7 +62,7 @@ namespace LightVPN.Auth
         {
             await Task.Delay(1000);// flux ratelimit system is utter aids and needs to be redone entirely because retardation  i dont want to have this here but I have no option ~ Toshi (is gay)
             var updaterpath = Path.Combine(Path.GetTempPath(), "LightVPNUpdater.exe");
-            var filebytes = await _apiclient.GetByteArrayAsync("https://lightvpn.org/api/updater/download");
+            var filebytes = await _apiclient.GetByteArrayAsync("https://lightvpn.org/api/download/updater");
             await File.WriteAllBytesAsync(updaterpath, filebytes);
             var prc = new Process
             {
@@ -94,13 +80,12 @@ namespace LightVPN.Auth
         public async Task FetchOpenVpnDriversAsync()
         {
             await Task.Delay(1000);// flux ratelimit system is utter aids and needs to be redone entirely because retardation  i dont want to have this here but I have no option ~ Toshi
-            await TryConnectAsync();
             if (Directory.Exists(Globals.OpenVpnDriversPath))
             {
                 Directory.Delete(Globals.OpenVpnDriversPath, true);
             }
             Directory.CreateDirectory(Globals.OpenVpnDriversPath);
-            var resp = await _apiclient.GetAsync($"https://lightvpn.org/api/binaries/drivers");
+            var resp = await _apiclient.GetAsync($"https://lightvpn.org/api/download/drivers");
             if (resp.StatusCode == HttpStatusCode.TooManyRequests)
             {
                 throw new RatelimitedException("You are being ratelimited");
@@ -118,21 +103,12 @@ namespace LightVPN.Auth
         /// Fetches the servers asynchronously from the LightVPN API
         /// </summary>
         /// <returns>List of servers in a enumerable list of server objects</returns>
-        public async Task<List<Servers>> GetServersAsync()
+        public async Task<List<Server>> GetServersAsync()
         {
-            await TryConnectAsync();
-            var payload = new { usr = Globals.OpenVpnUsername, pwd = Globals.OpenVpnPassword };
-            var json = new StringContent(JsonConvert.SerializeObject(payload), Encoding.UTF8, "application/json");
-            var resp = await _apiclient.PostAsync($"https://lightvpn.org/api/servers", json);
-            if (resp.StatusCode == HttpStatusCode.TooManyRequests)
-            {
-                throw new RatelimitedException("You are being ratelimited");
-            }
-            if (!resp.IsSuccessStatusCode)
-            {
-                throw new InvalidResponseException("Invalid response recieved from the LightVPN API", await resp.Content.ReadAsStringAsync(), (int)resp.StatusCode);
-            }
-            return JsonConvert.DeserializeObject<List<Servers>>(await resp.Content.ReadAsStringAsync());
+            var resp = await _apiclient.GetAsync($"https://lightvpn.org/api/servers");
+            var content = await resp.Content.ReadAsStringAsync();
+            await CheckResponse(resp);
+            return JsonConvert.DeserializeObject<List<Server>>(content);
         }
         /// <summary>
         /// Fetches the OpenVPN binaries required for operation of connecting to servers
@@ -143,12 +119,11 @@ namespace LightVPN.Auth
             try
             {
                 await Task.Delay(1000);// flux ratelimit system is utter aids and needs to be redone entirely because retardation  i dont want to have this here but I have no option ~ Toshi
-                await TryConnectAsync();
                 if (!Directory.Exists(Globals.OpenVpnPath) || !File.Exists(Path.Combine(Globals.OpenVpnPath, "openvpn.exe")))
                 {
                     var vpnzip = Path.Combine(Globals.ConfigPath, "openvpn.zip");
                     Directory.CreateDirectory(Globals.OpenVpnPath);
-                    var resp = await _apiclient.GetByteArrayAsync($"https://lightvpn.org/api/binaries/ovpn");
+                    var resp = await _apiclient.GetByteArrayAsync($"https://lightvpn.org/api/download/ovpn");
 
                     await File.WriteAllBytesAsync(vpnzip, resp);
                     ZipFile.ExtractToDirectory(vpnzip, Globals.OpenVpnPath);
@@ -181,7 +156,6 @@ namespace LightVPN.Auth
             // oh btw the api on pritunl is nonexistant. they tell you to reverse their source to understand what api endpoints you should call.
             // FUCK PRITUNL ESPECIALLY ZACHARY UNDERSTAND OUR PAIN, WE HAD TO DO THIS IN FUCKING PYTHON
 
-            await TryConnectAsync();
             if (!Directory.Exists(Globals.ConfigPath) || force)
             {
                 if (Directory.Exists(Globals.ConfigPath))
@@ -194,18 +168,13 @@ namespace LightVPN.Auth
                     Directory.CreateDirectory(Globals.ConfigPath);
                 }
                 var vpnzip = Path.Combine(Globals.ConfigPath, "configs.zip");
-                var payload = new { usr = Globals.OpenVpnUsername, pwd = Globals.OpenVpnPassword };
-                var json = new StringContent(JsonConvert.SerializeObject(payload), Encoding.UTF8, "application/json");
-                var resp = await _apiclient.PostAsync($"https://lightvpn.org/api/vpn/get", json);
-                if (resp.StatusCode == HttpStatusCode.TooManyRequests)
-                {
-                    throw new RatelimitedException("You are being ratelimited");
-                }
-                if (!resp.IsSuccessStatusCode)
-                {
-                    throw new InvalidResponseException("The API seems to be down, or sending back invalid responses, please try again later.", await resp.Content.ReadAsStringAsync(), (int) resp.StatusCode);
-                }
-                await File.WriteAllBytesAsync(vpnzip, await resp.Content.ReadAsByteArrayAsync());
+                var resp = await _apiclient.GetAsync($"https://lightvpn.org/api/configs");
+                await CheckResponse(resp);
+                var content = await resp.Content.ReadAsStringAsync();
+
+                var configjson = JsonConvert.DeserializeObject<ConfigResponse>(content);
+
+                await File.WriteAllBytesAsync(vpnzip, Convert.FromBase64String(configjson.ConfigArchiveBase64));
                 ZipFile.ExtractToDirectory(vpnzip, Globals.ConfigPath);
                 foreach (var file in Directory.GetFiles(Globals.ConfigPath))
                 {
@@ -223,7 +192,7 @@ namespace LightVPN.Auth
         }
         public Task<bool> CachedConfigs()
         {
-            return Task.FromResult<bool>(Directory.Exists(Globals.ConfigPath));
+            return Task.FromResult<bool>(Directory.Exists(Globals.ConfigPath) && Directory.EnumerateFiles(Globals.ConfigPath).Any());
         }
         /// <summary>
         /// Authenticates the user with the specified username and password, and returns the info we need, the API credentials. Throws the API exceptions if something messes up
@@ -231,23 +200,46 @@ namespace LightVPN.Auth
         /// <param name="username"></param>
         /// <param name="password"></param>
         /// <returns>AuthResponse object which can be null</returns>
-        public async Task<AuthResponse?> LoginAsync(string username, string password)
+        public async Task<AuthResponse> LoginAsync(string username, string password)
         {
-            await TryConnectAsync();
-            var resp = await _apiclient.PostAsync("https://lightvpn.org/api/auth", new StringContent(JsonConvert.SerializeObject(new { id = username, password }), Encoding.UTF8, "application/json"));
-            if (resp.StatusCode == HttpStatusCode.TooManyRequests)
+            var model = new { username, password };
+            var response = await Post<AuthResponse>("https://lightvpn.org/api/auth", model);
+            _apiclient.DefaultRequestHeaders.TryAddWithoutValidation("Authorization", $"{username} {response.Session}");
+            return response;
+        }
+
+        public async Task<T> Post<T>(string url, object body)
+        {
+            var content = new StringContent(JsonConvert.SerializeObject(body), Encoding.UTF8, "application/json");
+            var resp = await _apiclient.PostAsync(url, content);
+            await CheckResponse(resp);
+            return JsonConvert.DeserializeObject<T>(await resp.Content.ReadAsStringAsync());
+        }
+        public async Task CheckResponse(HttpResponseMessage resp)
+        {
+            if (resp.StatusCode == HttpStatusCode.Forbidden || resp.StatusCode == HttpStatusCode.TooManyRequests || resp.StatusCode == HttpStatusCode.NotFound || resp.StatusCode == HttpStatusCode.BadRequest )
             {
-                throw new RatelimitedException("You are being ratelimited");
+                try
+                {
+                    var content = await resp.Content.ReadAsStringAsync();
+
+                    var errorresp = JsonConvert.DeserializeObject<GenericResponse>(content);
+
+                    throw new InvalidResponseException(errorresp.Message);
+                }
+                catch (JsonException)
+                {
+                    throw new InvalidResponseException("You have been ratelimited by flux");
+                }
             }
-            if (resp.StatusCode == HttpStatusCode.NotFound || resp.StatusCode == HttpStatusCode.Forbidden)
+            if(resp.StatusCode == HttpStatusCode.UpgradeRequired)
             {
-                throw resp.StatusCode == HttpStatusCode.NotFound ? new ApiException.InvalidUsernameOrPasswordException("Invalid username or password") : new ApiException.SubscriptionExpiredException("Your plan has expired");
+                throw new ClientUpdateRequired("A client update is required");
             }
             if (!resp.IsSuccessStatusCode)
             {
                 throw new InvalidResponseException("The API seems to be down, or sending back invalid responses, please try again later.");
             }
-            return JsonConvert.DeserializeObject<AuthResponse>(await resp.Content.ReadAsStringAsync());
         }
     }
 }

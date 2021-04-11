@@ -11,22 +11,15 @@
  */
 
 using Newtonsoft.Json;
+using System;
 
 namespace LightVPN.Auth.Models
 {
     public struct AuthResponse
     {
-        [JsonProperty("status")] 
-        public bool Status { get; set; }
         [JsonProperty("code")] 
         public int Code { get; set; }
-        [JsonProperty("error")] 
-        public string Error { get; set; }
-        [JsonProperty("ovpn_username")] 
-        public string OpenVPNUsername { get; set; }
-        [JsonProperty("ovpn_password")] 
-        public string OpenVPNPassword { get; set; }
-        [JsonProperty("email")] 
-        public string Email { get; set; }
+        [JsonProperty("sessionid")] 
+        public Guid Session { get; set; }
     }
 }

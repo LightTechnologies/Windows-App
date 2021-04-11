@@ -13,21 +13,30 @@ using Newtonsoft.Json;
 
 namespace LightVPN.Auth.Models
 {
-    public struct Servers
+    public struct Server
     {
         [JsonProperty("id")] 
         public string Id { get; set; }
+        [JsonProperty("serverName")]
+        public string ServerName { get; set; }
 
         [JsonProperty("location")] 
         public string Location { get; set; }
 
         [JsonProperty("type")]
-        public string Type { get; set; }
+        public ServerType Type { get; set; }
 
-        [JsonProperty("country_name")]
+        [JsonProperty("countryName")]
         public string Country { get; set; }
 
-        [JsonProperty("pritunl_name")] 
+        [JsonProperty("pritunlName")] 
         public string FileName { get; set; }
+    }
+    public enum ServerType
+    {
+        Regular,
+        Speed,
+        Privacy,
+        Game
     }
 }

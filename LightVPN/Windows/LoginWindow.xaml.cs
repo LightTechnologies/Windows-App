@@ -82,87 +82,57 @@ namespace LightVPN.Windows
                 page.IsAuthenticating = true;
                 page.SignInText.Text = " SIGNING IN...";
                 var loginresponse = await Globals.container.GetInstance<IHttp>().LoginAsync(page.UsernameBox.Text, page.PasswordBox.Password);
-                if (loginresponse.HasValue)
+
+                page.SignInText.Text = " CHECKING VPN DRIVER...";
+                if (!Globals.container.GetInstance<ITapManager>().CheckDriverExists())
                 {
-                    Globals.OpenVpnUsername = loginresponse.Value.OpenVPNUsername;
-                    Globals.OpenVpnPassword = loginresponse.Value.OpenVPNPassword;
-                    page.SignInText.Text = " CHECKING FOR UPDATES...";
-                    if (Version.TryParse(await Globals.container.GetInstance<IHttp>().GetVersionAsync(), out var version))
-                    {
-                        if (version > Assembly.GetEntryAssembly().GetName().Version)
-                        {
-                            Dispatcher.Invoke(() => page.SignInText.Text = " DOWNLOADING UPDATER...");
-                            await Globals.container.GetInstance<IHttp>().GetUpdatesAsync();
-                            return;
-                        }
-                    }
-                    page.SignInText.Text = " CHECKING VPN DRIVER...";
-                    if (!Globals.container.GetInstance<ITapManager>().CheckDriverExists())
-                    {
-                        page.SignInText.Text = " DOWNLOADING VPN DRIVER...";
-                        await Globals.container.GetInstance<IHttp>().FetchOpenVpnDriversAsync();
-                        page.SignInText.Text = " INSTALLING VPN DRIVER...";
+                    page.SignInText.Text = " DOWNLOADING VPN DRIVER...";
+                    await Globals.container.GetInstance<IHttp>().FetchOpenVpnDriversAsync();
+                    page.SignInText.Text = " INSTALLING VPN DRIVER...";
 
-                        await Task.Run(async () => await Globals.container.GetInstance<ITapManager>().InstallDriverAsync());
-                    }
-
-                    var encryption = Globals.container.GetInstance<IEncryption>();
-                    await File.WriteAllTextAsync(Globals.AuthPath, encryption.Encrypt(JsonConvert.SerializeObject(new AuthFile { Username = page.UsernameBox.Text, Password = page.PasswordBox.Password })));
-                    if (!await Globals.container.GetInstance<IHttp>().CachedConfigs())
-                    {
-                        page.SignInText.Text = " FETCHING SERVERS...";
-                        await Task.Run(async () =>
-                        {
-                            await Globals.container.GetInstance<IHttp>().CacheConfigsAsync();
-                        });
-                    }
-                    if (!await Globals.container.GetInstance<IHttp>().HasOpenVPN())
-                    {
-                        page.SignInText.Text = " FETCHING BINARIES...";
-                        await Task.Run(async () =>
-                        {
-                            await Globals.container.GetInstance<IHttp>().GetOpenVPNBinariesAsync();
-                        });
-                    }
-                    page.SignInText.Text = " CHECKING TAP ADAPTER";
-                    if (!Globals.container.GetInstance<ITapManager>().IsAdapterExistant())
-                    {
-                        page.SignInText.Text = " INSTALLING TAP ADAPTER";
-                        Globals.container.GetInstance<ITapManager>().CreateTapAdapter();
-                    }
-                    page.SignInText.Text = " LOADING UI...";
-                    await Globals.container.GetInstance<IDiscordRpc>().SetPresenceObjectAsync(new DiscordRPC.RichPresence
-                    {
-                        State = "Disconnected"
-                    });
-                    if (string.IsNullOrWhiteSpace(loginresponse.Value.Email))
-                    {
-                        var emailpopup = new LightVPN.Views.EmailAlert();
-                        NavigatePage(emailpopup);
-                        await Task.Delay(10000);
-                    }
-                    await Globals.container.GetInstance<IDiscordRpc>().StartAsync();
-                    MainWindow mw = new();
-                    mw.Show();
-                    this.Close();
+                    await Task.Run(async () => await Globals.container.GetInstance<ITapManager>().InstallDriverAsync());
                 }
+
+                var encryption = Globals.container.GetInstance<IEncryption>();
+                await File.WriteAllTextAsync(Globals.AuthPath, encryption.Encrypt(JsonConvert.SerializeObject(new AuthFile { Username = page.UsernameBox.Text, Password = page.PasswordBox.Password })));
+                if (!await Globals.container.GetInstance<IHttp>().CachedConfigs())
+                {
+                    page.SignInText.Text = " FETCHING SERVERS...";
+                    await Task.Run(async () =>
+                    {
+                        await Globals.container.GetInstance<IHttp>().CacheConfigsAsync();
+                    });
+                }
+                if (!await Globals.container.GetInstance<IHttp>().HasOpenVPN())
+                {
+                    page.SignInText.Text = " FETCHING BINARIES...";
+                    await Task.Run(async () =>
+                    {
+                        await Globals.container.GetInstance<IHttp>().GetOpenVPNBinariesAsync();
+                    });
+                }
+                page.SignInText.Text = " CHECKING TAP ADAPTER";
+                if (!Globals.container.GetInstance<ITapManager>().IsAdapterExistant())
+                {
+                    page.SignInText.Text = " INSTALLING TAP ADAPTER";
+                    Globals.container.GetInstance<ITapManager>().CreateTapAdapter();
+                }
+                page.SignInText.Text = " LOADING UI...";
+                await Globals.container.GetInstance<IDiscordRpc>().SetPresenceObjectAsync(new DiscordRPC.RichPresence
+                {
+                    State = "Disconnected"
+                });
+                await Globals.container.GetInstance<IDiscordRpc>().StartAsync();
+                MainWindow mw = new();
+                mw.Show();
+                this.Close();
             }
-            catch (SubscriptionExpiredException e)
+            catch (ClientUpdateRequired e)
             {
-                ShowSnackbar(e.Message);
-            }
-            catch (ApiOfflineException e)
-            {
-                ShowSnackbar(e.Message);
-            }
-            catch (InvalidUsernameOrPasswordException e)
-            {
-                ShowSnackbar(e.Message);
-                if (e.InnerException != null) logger.Write(e.InnerException.Message + "\n" + page.SignInBtn.Content);
-            }
-            catch (RatelimitedException)
-            {
-                ShowSnackbar("You have been ratelimited");
+                ShowSnackbar("Update Is Required");
+                Dispatcher.Invoke(() => page.SignInText.Text = " DOWNLOADING UPDATER...");
+                await Globals.container.GetInstance<IHttp>().GetUpdatesAsync();
+
             }
             catch (InvalidResponseException e)
             {

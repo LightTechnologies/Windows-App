@@ -38,6 +38,6 @@ namespace LightVPN.Common.v2.Models
         [JsonProperty("Id")]
         public string Id { get; set; }
         [JsonProperty("Country")]
-        public string Country { get; set; }
+        public string ServerName { get; set; }
     }
 }

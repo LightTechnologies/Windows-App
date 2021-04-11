@@ -266,12 +266,12 @@ namespace LightVPN
             }
         }
 
-        public async Task ConnectToServerAsync(string serverId, string location)
+        public async Task ConnectToServerAsync(string serverId, string serverName)
         {
             if (_manager.IsConnected) return;
             _connectionState = ConnectionState.Connecting;
             IsProcessing = true;
-            CurrentServer = location;
+            CurrentServer = serverName;
             CurrentServerId = serverId;
             string ovpnFn = string.Empty;
             var files = Directory.GetFiles(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "LightVPN", "cache"));
@@ -283,7 +283,7 @@ namespace LightVPN
             ovpnFn = files.First(x => x.Contains(serverId));
 
             var existingSettings = await Globals.container.GetInstance<ISettingsManager<SettingsModel>>().LoadAsync();
-            existingSettings.PreviousServer = new PreviousServer { Id = CurrentServerId, Country = CurrentServer };
+            existingSettings.PreviousServer = new PreviousServer { Id = CurrentServerId, ServerName = CurrentServer };
             
             await Globals.container.GetInstance<ISettingsManager<SettingsModel>>().SaveAsync(existingSettings);
      

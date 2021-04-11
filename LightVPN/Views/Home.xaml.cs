@@ -119,7 +119,7 @@ namespace LightVPN.Views
             {
                 var existingSettings = await Globals.container.GetInstance<ISettingsManager<SettingsModel>>().LoadAsync();
                 await UpdateUIAsync();
-                await _host.ConnectToServerAsync(existingSettings.PreviousServer.Id, existingSettings.PreviousServer.Country);
+                await _host.ConnectToServerAsync(existingSettings.PreviousServer.Id, existingSettings.PreviousServer.ServerName);
             }
         }
 
@@ -128,7 +128,7 @@ namespace LightVPN.Views
             await Dispatcher.InvokeAsync(async () =>
             {
                 var settings = await Globals.container.GetInstance<ISettingsManager<SettingsModel>>().LoadAsync();
-                RecentServer.Text = settings.PreviousServer.Country ?? "N/A";
+                RecentServer.Text = settings.PreviousServer.ServerName ?? "N/A";
                 UpdateViaConnectionState();
             });
         }
@@ -170,7 +170,7 @@ namespace LightVPN.Views
         private async Task DownloadServers()
         {
             var settings = await Globals.container.GetInstance<ISettingsManager<SettingsModel>>().LoadAsync();
-            RecentServer.Text = settings.PreviousServer?.Country ?? "N/A";
+            RecentServer.Text = settings.PreviousServer?.ServerName ?? "N/A";
 
             UpdateViaConnectionState();
 
@@ -179,13 +179,13 @@ namespace LightVPN.Views
             var servers = await Globals.container.GetInstance<IHttp>().GetServersAsync();
             foreach (var server in servers)
             {
-                gridObjects.Add(new ServersGrid { Country = server.Location, Server = server.FileName, Id = server.Id, Type = server.Type, Flag = $"pack://application:,,,/LightVPN;Component/Resources/Flags/{server.Country.Replace(' ', '-')}.png"
+                gridObjects.Add(new ServersGrid { ServerName = server.ServerName, Country = server.Location, Server = server.FileName, Id = server.Id, Type = server.Type, Flag = $"pack://application:,,,/LightVPN;Component/Resources/Flags/{server.Country.Replace(' ', '-')}.png"
             });
             }
-            if (settings.PreviousServer is not null && settings.AutoConnect && gridObjects.Any(x => x.Country == settings.PreviousServer?.Country) && _wasFirstLoad)
+            if (settings.PreviousServer is not null && settings.AutoConnect && gridObjects.Any(x => x.Country == settings.PreviousServer?.ServerName) && _wasFirstLoad)
             {
-                var server = gridObjects.FirstOrDefault(x => x.Country == settings.PreviousServer?.Country);
-                await _host.ConnectToServerAsync(server.Server, server.Country);
+                var server = gridObjects.FirstOrDefault(x => x.Country == settings.PreviousServer?.ServerName);
+                await _host.ConnectToServerAsync(server.Server, server.ServerName);
                 await UpdateUIAsync();
                 return;
             }
@@ -211,7 +211,7 @@ namespace LightVPN.Views
             ServerList.Columns.Add(@column1);
             ServerList.Columns.Add(@column2);
 
-            @column1.Binding = new Binding("Country");
+            @column1.Binding = new Binding("ServerName");
             @column2.Binding = new Binding("Type");
 
             @column1.Header = "Server";
@@ -260,13 +260,13 @@ namespace LightVPN.Views
                         PreviousServer = new PreviousServer
                         {
                             Id = item.Server,
-                            Country = item.Country
+                            ServerName = item.Country
                         },
                         KillSwitch = existingSettings.KillSwitch,
                         DarkMode = existingSettings.DarkMode
                     });
                     await UpdateUIAsync();
-                    await _host.ConnectToServerAsync(item.Server, item.Country);
+                    await _host.ConnectToServerAsync(item.Server, item.ServerName);
                 }
                 else
                 {

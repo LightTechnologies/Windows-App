@@ -35,6 +35,7 @@ using Exceptionless;
 using LightVPN.Auth.Classes;
 using System.Net.Http.Headers;
 using LightVPN.Common.v2;
+using LightVPN.OpenVPN.Classes;
 
 namespace LightVPN
 {
@@ -81,6 +82,7 @@ namespace LightVPN
             Globals.container.Register<IEncryption, Encryption>(Lifestyle.Singleton);
             Globals.container.Register<HttpClientHandler>(() => httpClientHandler, Lifestyle.Singleton);
             Globals.container.Register<IThemeUtils, ThemeUtils>(Lifestyle.Singleton);
+            Globals.container.Register<IKillswitch>(() => new Killswitch("LightVPN-TAP"), Lifestyle.Singleton);
             Globals.container.Register<IDiscordRpc, DiscordRpc>(Lifestyle.Singleton);
             Globals.container.Register<INative, Native>(Lifestyle.Singleton);
             Globals.container.Register<HttpClient>(() => httpClient, Lifestyle.Singleton);

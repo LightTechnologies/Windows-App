@@ -17,6 +17,8 @@ namespace LightVPN.Auth.Models
     public struct ServersGrid : INotifyPropertyChanged
     {
         public event PropertyChangedEventHandler PropertyChanged;
+
+        private string _displayName { set; get; }
         private string _country { set; get; }
 
         private string _flag { set; get; }
@@ -27,8 +29,21 @@ namespace LightVPN.Auth.Models
 
         private string _server { set; get; }
 
-        private string _type { set; get; }
+        private ServerType _type { set; get; }
 
+        public string ServerName
+        {
+            get
+            {
+                return _displayName;
+            }
+
+            set
+            {
+                _displayName = value;
+                OnPropertyChanged(nameof(ServerName));
+            }
+        }
         public string Country
         {
             get
@@ -97,7 +112,7 @@ namespace LightVPN.Auth.Models
             }
         }
 
-        public string Type
+        public ServerType Type
         {
             get
             {

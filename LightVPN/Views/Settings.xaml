@@ -45,7 +45,7 @@
                         Text="Settings" />
                 </StackPanel>
                 <materialDesign:Card
-                    Height="310"
+                    Height="370"
                     Margin="40,0,40,20"
                     HorizontalAlignment="Stretch"
                     VerticalAlignment="Top">
@@ -137,9 +137,16 @@
                                     HorizontalAlignment="Center"
                                     VerticalAlignment="Center"
                                     FontSize="11"
-                                    Text=" LightVPN will cease its Discord RPC whilst application is open."
+                                    Text=" LightVPN will show a nice little status on your Discord"
                                     TextWrapping="Wrap" />
                             </StackPanel>
+                            <StackPanel Orientation="Horizontal"/>
+                            <StackPanel
+                                Margin="15,0,0,10"
+                                HorizontalAlignment="Left"
+                                VerticalAlignment="Top"
+                                Opacity="0.5"
+                                Orientation="Horizontal"/>
                             <StackPanel>
                                 <TextBlock
                                     Margin="15,10,0,0"

@@ -109,6 +109,25 @@ namespace LightVPN.Auth
             }
         }
         /// <summary>
+        /// Thrown when the client needs an upgrade
+        /// </summary>
+        public class ClientUpdateRequired : Exception
+        {
+            public ClientUpdateRequired()
+            {
+            }
+
+            public ClientUpdateRequired(string message)
+                : base(message)
+            {
+            }
+
+            public ClientUpdateRequired(string message, Exception inner)
+                : base(message, inner)
+            {
+            }
+        }
+        /// <summary>
         /// Thrown when the API responds with something that we can't understand
         /// </summary>
         public class InvalidResponseException : Exception
