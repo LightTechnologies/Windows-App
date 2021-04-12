@@ -94,7 +94,7 @@ namespace LightVPN.Windows
                 }
 
                 var encryption = Globals.container.GetInstance<IEncryption>();
-                await File.WriteAllTextAsync(Globals.AuthPath, encryption.Encrypt(JsonConvert.SerializeObject(new AuthFile { Username = page.UsernameBox.Text, Password = page.PasswordBox.Password })));
+                await File.WriteAllTextAsync(Globals.AuthPath, encryption.Encrypt(JsonConvert.SerializeObject(new AuthFile { Username = page.UsernameBox.Text, Password = page.PasswordBox.Password, SessionId = loginresponse.Session })));
                 if (!await Globals.container.GetInstance<IHttp>().CachedConfigs())
                 {
                     page.SignInText.Text = " FETCHING SERVERS...";
@@ -199,7 +199,7 @@ namespace LightVPN.Windows
             MainFrame.Navigate(page);
         }
 
-        private void Window_Loaded(object sender, RoutedEventArgs e)
+        private async void Window_Loaded(object sender, RoutedEventArgs e)
         {
             NavigatePage(page);
             if (File.Exists(Globals.AuthPath))
@@ -210,12 +210,103 @@ namespace LightVPN.Windows
                 page.PasswordBox.Password = auth.Password;
                 if (!_idk)
                 {
-                    LoginClick(null, null);
+                    await ChangeLaterThisIsShit(auth.Username, auth.SessionId);
                     _idk = true;
                 }
             }
         }
+        private async Task ChangeLaterThisIsShit(string username, Guid session)
+        {
+            try
+            {
+                if (string.IsNullOrWhiteSpace(page.UsernameBox.Text) || string.IsNullOrWhiteSpace(page.PasswordBox.Password)) return;
+                page.IsAuthenticating = true;
+                page.SignInText.Text = " SIGNING IN...";
+                var loginresponse = await Globals.container.GetInstance<IHttp>().ValidateSession(page.UsernameBox.Text, session);
+                if (!loginresponse) return;
+                page.SignInText.Text = " CHECKING VPN DRIVER...";
+                if (!Globals.container.GetInstance<ITapManager>().CheckDriverExists())
+                {
+                    page.SignInText.Text = " DOWNLOADING VPN DRIVER...";
+                    await Globals.container.GetInstance<IHttp>().FetchOpenVpnDriversAsync();
+                    page.SignInText.Text = " INSTALLING VPN DRIVER...";
 
+                    await Task.Run(async () => await Globals.container.GetInstance<ITapManager>().InstallDriverAsync());
+                }
+                
+                if (!await Globals.container.GetInstance<IHttp>().CachedConfigs())
+                {
+                    page.SignInText.Text = " FETCHING SERVERS...";
+                    await Task.Run(async () =>
+                    {
+                        await Globals.container.GetInstance<IHttp>().CacheConfigsAsync();
+                    });
+                }
+                if (!await Globals.container.GetInstance<IHttp>().HasOpenVPN())
+                {
+                    page.SignInText.Text = " FETCHING BINARIES...";
+                    await Task.Run(async () =>
+                    {
+                        await Globals.container.GetInstance<IHttp>().GetOpenVPNBinariesAsync();
+                    });
+                }
+                page.SignInText.Text = " CHECKING TAP ADAPTER";
+                if (!Globals.container.GetInstance<ITapManager>().IsAdapterExistant())
+                {
+                    page.SignInText.Text = " INSTALLING TAP ADAPTER";
+                    Globals.container.GetInstance<ITapManager>().CreateTapAdapter();
+                }
+                page.SignInText.Text = " LOADING UI...";
+                await Globals.container.GetInstance<IDiscordRpc>().SetPresenceObjectAsync(new DiscordRPC.RichPresence
+                {
+                    State = "Disconnected"
+                });
+                await Globals.container.GetInstance<IDiscordRpc>().StartAsync();
+                MainWindow mw = new();
+                mw.Show();
+                this.Close();
+            }
+            catch (ClientUpdateRequired e)
+            {
+                ShowSnackbar("Update Is Required");
+                Dispatcher.Invoke(() => page.SignInText.Text = " DOWNLOADING UPDATER...");
+                await Globals.container.GetInstance<IHttp>().GetUpdatesAsync();
+
+            }
+            catch (InvalidResponseException e)
+            {
+                ShowSnackbar(e.Message);
+                await logger.WriteAsync(e.ResponseString);
+                if (e.InnerException != null)
+                {
+                    logger.Write(e.InnerException.Message);
+                    e.ToExceptionless().SetUserIdentity(page.UsernameBox.Text).AddObject(page.SignInBtn.Content, "SignINText").Submit();
+                }
+            }
+            catch (HttpRequestException e)
+            {
+                switch (e.Message)
+                {
+                    case "The SSL connection could not be established, see inner exception.":
+                        ShowSnackbar("API certificate check failed.");
+                        break;
+                    default:
+                        await logger.WriteAsync(e.ToString() + "\n" + page.SignInBtn.Content); e.ToExceptionless().SetUserIdentity(page.UsernameBox.Text).AddObject(page.SignInBtn.Content, "SignINText").Submit();
+                        ShowSnackbar("Failed to send HTTP request to the LightVPN API.");
+                        break;
+                }
+            }
+            catch (Exception e)
+            {
+                await logger.WriteAsync(e.ToString());
+                ShowSnackbar("Something went wrong.");
+            }
+            finally
+            {
+                page.SignInText.Text = " SIGN IN";
+                page.IsAuthenticating = false;
+            }
+        }
         private bool ClosingAnimationFinished;
 
         private void FinishedClosingAnimation(object sender, EventArgs e)

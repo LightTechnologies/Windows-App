@@ -10,6 +10,7 @@
  * --------------------------------------------
  */
 using LightVPN.Auth.Models;
+using System;
 using System.Collections.Generic;
 using System.Net;
 using System.Threading.Tasks;
@@ -27,5 +28,6 @@ namespace LightVPN.Auth.Interfaces
         Task<AuthResponse> LoginAsync(string username, string password);
         Task<bool> CachedConfigs();
         Task<bool> HasOpenVPN();
+        Task<bool> ValidateSession(string username, Guid guid);
     }
 }

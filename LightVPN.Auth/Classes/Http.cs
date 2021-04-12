@@ -58,6 +58,18 @@ namespace LightVPN.Auth
                 return null;
             }
         }
+        public async Task<bool> ValidateSession(string username, Guid guid)
+        {
+            _apiclient.DefaultRequestHeaders.TryAddWithoutValidation("Authorization", $"{username} {guid}");
+            var resp = await _apiclient.GetAsync("https://lightvpn.org/api/profile");
+
+            if (resp.IsSuccessStatusCode) return true;
+            else
+            {
+                _apiclient.DefaultRequestHeaders.Remove("Authorization");
+                return false;
+            }
+        }
         public async Task GetUpdatesAsync()
         {
             await Task.Delay(1000);// flux ratelimit system is utter aids and needs to be redone entirely because retardation  i dont want to have this here but I have no option ~ Toshi (is gay)
