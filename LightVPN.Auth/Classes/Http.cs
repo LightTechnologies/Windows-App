@@ -241,7 +241,7 @@ namespace LightVPN.Auth
                 }
                 catch (JsonException)
                 {
-                    throw new InvalidResponseException("You have been ratelimited by flux");
+                    throw new InvalidResponseException("You have been ratelimited by Flux");
                 }
             }
             if(resp.StatusCode == HttpStatusCode.UpgradeRequired)

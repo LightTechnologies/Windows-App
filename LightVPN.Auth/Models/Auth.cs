@@ -10,13 +10,14 @@
  * --------------------------------------------
  */
 
+using System;
+
 namespace LightVPN.Auth.Models
 {
     public struct AuthFile
     {
         public string Username { get; set; }
-        public string Password { get; set; }
-        public System.Guid SessionId { get; set; }
+        public Guid SessionId { get; set; }
 
     }
 }

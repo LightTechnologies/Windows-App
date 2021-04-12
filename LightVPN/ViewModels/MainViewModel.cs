@@ -9,8 +9,11 @@
  * 
  * --------------------------------------------
  */
+using LightVPN.Common.v2.Models;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
+using System.Windows;
+using System.Windows.Input;
 
 namespace LightVPN.ViewModels
 {
@@ -27,6 +30,22 @@ namespace LightVPN.ViewModels
             }
 
             return false;
+        }
+
+        public ICommand HideWindowCommand
+        {
+            get
+            {
+                return new TrayDelegate
+                {
+                    CommandAction = () =>
+                    {
+                        Globals.IsMinimizedToTray = true;
+                        Application.Current.MainWindow.Hide();
+                    },
+                    CanExecuteFunc = () => Globals.IsMinimizedToTray == false
+                };
+            }
         }
     }
 }

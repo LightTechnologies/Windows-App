@@ -17,7 +17,7 @@
     <Copyright>Copyright 2021 (C) Light Technologies, LLC</Copyright>
     <PackageProjectUrl>https://github.com/LightTechnologies/LightVPN-Win</PackageProjectUrl>
     <ApplicationManifest>app.manifest</ApplicationManifest>
-    <ApplicationIcon>lightvpnlogo_black(2).ico</ApplicationIcon>
+    <ApplicationIcon>lightvpn.ico</ApplicationIcon>
     <PackageLicenseFile>License.txt</PackageLicenseFile>
     <AssemblyVersion>2.0.0.0</AssemblyVersion>
     <FileVersion>2.0.0.0</FileVersion>
@@ -34,6 +34,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="Resources\banner.png" />
     <None Remove="Resources\Flags\Abkhazia.png" />
     <None Remove="Resources\Flags\Afghanistan.png" />
     <None Remove="Resources\Flags\Aland.png" />
@@ -297,22 +298,8 @@
     <None Remove="Resources\Flags\Yemen.png" />
     <None Remove="Resources\Flags\Zambia.png" />
     <None Remove="Resources\Flags\Zimbabwe.png" />
-    <None Remove="Resources\lightvpn-s.png" />
     <None Remove="Resources\lightvpn-w.png" />
     <None Remove="Resources\lightvpn.ico" />
-    <None Remove="Resources\lightvpn.png" />
-    <None Remove="Resources\logo-dark.png" />
-    <None Remove="Resources\logo-light.png" />
-    <None Remove="Views\text.png" />
-    <None Remove="Windows\asdasdasd.jpg" />
-    <None Remove="Windows\sdfdfdfsdfsdfsdfsdfsdfsdf.jpg" />
-    <None Remove="Windows\sdfsdfsdf.jpg" />
-    <None Remove="Windows\test.jpg" />
-    <None Remove="Windows\test2.jpg" />
-    <None Include="..\..\..\License.txt">
-      <Pack>True</Pack>
-      <PackagePath></PackagePath>
-    </None>
   </ItemGroup>
 
   <ItemGroup>
@@ -342,6 +329,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Resource Include="Resources\banner.png" />
     <Resource Include="Resources\Flags\Abkhazia.png" />
     <Resource Include="Resources\Flags\Afghanistan.png" />
     <Resource Include="Resources\Flags\Aland.png" />
@@ -605,18 +593,8 @@
     <Resource Include="Resources\Flags\Yemen.png" />
     <Resource Include="Resources\Flags\Zambia.png" />
     <Resource Include="Resources\Flags\Zimbabwe.png" />
-    <Resource Include="Resources\lightvpn-s.png" />
     <Resource Include="Resources\lightvpn-w.png" />
     <Resource Include="Resources\lightvpn.ico" />
-    <Resource Include="Resources\lightvpn.png" />
-    <Resource Include="Resources\logo-dark.png" />
-    <Resource Include="Resources\logo-light.png" />
-    <Resource Include="Views\text.png" />
-    <Resource Include="Windows\asdasdasd.jpg" />
-    <Resource Include="Windows\sdfdfdfsdfsdfsdfsdfsdfsdf.jpg" />
-    <Resource Include="Windows\sdfsdfsdf.jpg" />
-    <Resource Include="Windows\test.jpg" />
-    <Resource Include="Windows\test2.jpg" />
   </ItemGroup>
 
   <ItemGroup>

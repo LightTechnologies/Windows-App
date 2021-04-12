@@ -40,7 +40,7 @@ using LightVPN.OpenVPN.Classes;
 namespace LightVPN
 {
     /*
-     * Hi RavelCros!
+     * Hi HoverCore!
      * Just to let you know, John licensed this source code under the Light Technologies Open Source license
      * That means that since LightVPN is a trademark of Light Technologies LLC, a registered company in the US (pending)
      * We can sue the living shit out of you, so just warning you not to steal any of our code
@@ -80,12 +80,12 @@ namespace LightVPN
                 NoCache = true
             };
             Globals.container.Register<IEncryption, Encryption>(Lifestyle.Singleton);
-            Globals.container.Register<HttpClientHandler>(() => httpClientHandler, Lifestyle.Singleton);
+            Globals.container.Register(() => httpClientHandler, Lifestyle.Singleton);
             Globals.container.Register<IThemeUtils, ThemeUtils>(Lifestyle.Singleton);
             Globals.container.Register<IKillswitch>(() => new Killswitch("LightVPN-TAP"), Lifestyle.Singleton);
             Globals.container.Register<IDiscordRpc, DiscordRpc>(Lifestyle.Singleton);
             Globals.container.Register<INative, Native>(Lifestyle.Singleton);
-            Globals.container.Register<HttpClient>(() => httpClient, Lifestyle.Singleton);
+            Globals.container.Register(() => httpClient, Lifestyle.Singleton);
             Globals.container.Register<SSLCheckingHttpClient>(Lifestyle.Singleton);
             Globals.container.Register<IHttp, Http>(Lifestyle.Singleton);
             Globals.container.Register<ITapManager>(() => new TapManager(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "LightVPN", "ovpn", "tapctl.exe")), Lifestyle.Singleton);
@@ -118,10 +118,12 @@ namespace LightVPN
 
                 // Adds all the required resource dictionaries
                 Uri uri = new("pack://application:,,,/LightVPN;component/Resources/Style.xaml", UriKind.RelativeOrAbsolute);
+                Uri uri1 = new("pack://application:,,,/LightVPN;component/Resources/TrayStyle.xaml", UriKind.RelativeOrAbsolute);
                 Uri mdUri = new("pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesignTheme.Defaults.xaml", UriKind.RelativeOrAbsolute);
                 Uri mdUri1 = new("pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesignTheme.PopupBox.xaml", UriKind.RelativeOrAbsolute);
 
                 res.MergedDictionaries.Add(new ResourceDictionary() { Source = uri });
+                res.MergedDictionaries.Add(new ResourceDictionary() { Source = uri1 });
                 res.MergedDictionaries.Add(new ResourceDictionary() { Source = mdUri });
                 res.MergedDictionaries.Add(new ResourceDictionary() { Source = mdUri1 });
 

@@ -25,8 +25,7 @@ namespace LightVPN.Common.v2.Models
         public static readonly string OpenVpnPath = Path.Combine(SettingsPath, "ovpn");
         public static readonly string OpenVpnDriversPath = Path.Combine(SettingsPath, "drivers");
         public static readonly string AuthPath = Path.Combine(SettingsPath, "auth.bin");
-        public static string OpenVpnUsername { get; set; }
-        public static string OpenVpnPassword { get; set; }
+        public static bool IsMinimizedToTray = false;
         public static readonly Container container = new();
     }
 }

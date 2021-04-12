@@ -63,8 +63,8 @@
                     <LinearGradientBrush.Transform>
                         <RotateTransform CenterX="75" CenterY="75" />
                     </LinearGradientBrush.Transform>
-                    <GradientStop Offset="1" Color="#fe2983" />
-                    <GradientStop Offset="0" Color="#ff6f61" />
+                    <GradientStop Offset="1" Color="#935bf9" />
+                    <GradientStop Offset="0" Color="#727cf5" />
                 </LinearGradientBrush>
             </Setter.Value>
         </Setter>

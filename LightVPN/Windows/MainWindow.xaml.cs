@@ -34,6 +34,7 @@ using LightVPN.Settings.Interfaces;
 using System.Windows.Threading;
 using System.Diagnostics;
 using LightVPN.OpenVPN.Models;
+using Hardcodet.Wpf.TaskbarNotification;
 
 namespace LightVPN
 {
@@ -52,7 +53,11 @@ namespace LightVPN
 
         private readonly BeginStoryboard viewUnloaded = null;
 
+        private TaskbarIcon notifyIcon;
+
         public DateTime connectedAt = new();
+
+        private SettingsModel _settings = Globals.container.GetInstance<ISettingsManager<SettingsModel>>().Load();
 
         public bool IsProcessing
         {
@@ -81,6 +86,7 @@ namespace LightVPN
             viewLoaded = this.FindResource("ShowFrame") as BeginStoryboard; // push this update - shut up toshi
             viewUnloaded = this.FindResource("HideFrame") as BeginStoryboard;
             NavigatePage(new Home(this, true));
+            notifyIcon = (TaskbarIcon)FindResource("NotifyIcon");
         }
 
         private async void ConnectionError(object sender, string message)
@@ -140,10 +146,13 @@ namespace LightVPN
         private async void LoginFailed(object sender)
         {
             connectedAt = DateTime.MinValue;
-            await Globals.container.GetInstance<IDiscordRpc>().SetPresenceObjectAsync(new DiscordRPC.RichPresence
+            if (_settings.DiscordRPC)
             {
-                State = "Disconnected"
-            });
+                await Globals.container.GetInstance<IDiscordRpc>().SetPresenceObjectAsync(new DiscordRPC.RichPresence
+                {
+                    State = "Disconnected"
+                });
+            }
             _connectionState = ConnectionState.Disconnected;
             await Dispatcher.InvokeAsync(async () =>
             {
@@ -205,10 +214,13 @@ namespace LightVPN
             if (!notUpdateUi)
             {
                 ShowSnackbar($"Disconnected!");
-                await Globals.container.GetInstance<IDiscordRpc>().SetPresenceObjectAsync(new DiscordRPC.RichPresence
+                if (_settings.DiscordRPC)
                 {
-                    State = "Disconnected"
-                });
+                    await Globals.container.GetInstance<IDiscordRpc>().SetPresenceObjectAsync(new DiscordRPC.RichPresence
+                    {
+                        State = "Disconnected"
+                    });
+                }
             }
             _manager.Disconnect();
             _connectionState = ConnectionState.Disconnected;
@@ -223,7 +235,7 @@ namespace LightVPN
         private void MainWindow_StateChanged(object sender, EventArgs e)
         {
             //Handles Windows Aero maximize changes
-            if (this.WindowState == WindowState.Maximized)
+            if (WindowState == WindowState.Maximized)
             {
                 MaxIcon.Kind = PackIconKind.WindowRestore;
             }
@@ -292,10 +304,13 @@ namespace LightVPN
                 home.UpdateViaConnectionState();
                 await home.UpdateUIAsync();
             }
-            await Globals.container.GetInstance<IDiscordRpc>().SetPresenceObjectAsync(new DiscordRPC.RichPresence
+            if (_settings.DiscordRPC)
             {
-                State = "Connecting"
-            });
+                await Globals.container.GetInstance<IDiscordRpc>().SetPresenceObjectAsync(new DiscordRPC.RichPresence
+                {
+                    State = "Connecting"
+                });
+            }
             ShowSnackbar($"Connecting...");
             UpdateFooter();
             _manager.Connect(ovpnFn);
@@ -406,12 +421,17 @@ namespace LightVPN
 
         private bool ClosingAnimationFinished;
 
-        private void FinishedClosingAnimation(object sender, EventArgs e)
+        private async void FinishedClosingAnimation(object sender, EventArgs e)
         {
             try
             {
+                if (_settings.DiscordRPC)
+                {
+                    await Globals.container.GetInstance<IDiscordRpc>().StopAsync();
+                }
                 _manager.Disconnect();
                 _manager.Dispose();
+                notifyIcon.Dispose();
             }
             catch (Exception)
             {
@@ -425,8 +445,6 @@ namespace LightVPN
         {
             if (!ClosingAnimationFinished)
             {
-                this.MinHeight = 460;
-                this.MinWidth = 780;
                 BeginStoryboard sb = this.FindResource("CloseAnim") as BeginStoryboard;
                 sb.Storyboard.Begin();
                 e.Cancel = true;

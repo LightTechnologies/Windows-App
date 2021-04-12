@@ -101,9 +101,6 @@ namespace LightVPN.Discord
         /// <returns>Tuple of whether it was successful, and if not a description on the error</returns>
         public async Task<Tuple<bool, string>> SetPresenceObjectAsync(RichPresence richPresence)
         {
-            if (!(await Globals.container.GetInstance< LightVPN.Settings.Interfaces.ISettingsManager<SettingsModel>>().LoadAsync()).DiscordRPC)
-                return new Tuple<bool, string>(false, "DiscordRPC turned off in settings");
-
             if (_client == null)
             {
                 return Tuple.Create(false, "Client is null or not set to instance of an object");

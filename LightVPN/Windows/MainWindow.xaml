@@ -177,13 +177,6 @@
                 <ColumnDefinition Width="50" />
                 <ColumnDefinition Width="750*" />
             </Grid.ColumnDefinitions>
-            <tb:TaskbarIcon
-                x:Name="trayIcon"
-                IconSource="/Resources/lightvpn.ico"
-                MenuActivation="RightClick"
-                PopupActivation="LeftOrDoubleClick"
-                ToolTipText="LightVPN"
-                Visibility="Visible" />
             <Frame
                 Name="ConnectingFrame"
                 Grid.ColumnSpan="2"
@@ -210,7 +203,7 @@
                             Width="50"
                             Background="{x:Null}"
                             BorderBrush="{x:Null}"
-                            Click="CaptionButton_Click"
+                            Command="{Binding HideWindowCommand}"
                             Cursor="Arrow"
                             Foreground="White"
                             ToolTip="Minimize"

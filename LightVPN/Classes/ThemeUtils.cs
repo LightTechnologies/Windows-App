@@ -34,7 +34,7 @@ namespace LightVPN
                 IBaseTheme baseTheme = colorObject.DarkMode == true ? Theme.Dark : Theme.Light;
                 if (colorObject.PrimaryColor == "Default")
                 {
-                    ITheme defaultTheme = Theme.Create(baseTheme, Color.FromRgb(207, 56, 82), Color.FromRgb(219, 81, 103));
+                    ITheme defaultTheme = Theme.Create(baseTheme, Color.FromRgb(147, 91, 249), Color.FromRgb(114, 124, 245));
                     ResourceDictionaryExtensions.SetTheme(Application.Current.Resources, defaultTheme);
                     return;
                 }
