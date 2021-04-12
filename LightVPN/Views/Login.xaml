@@ -11,7 +11,7 @@
     xmlns:window="clr-namespace:LightVPN.Windows"
     Name="view"
     Title="Login"
-    d:DesignHeight="390"
+    d:DesignHeight="435"
     d:DesignWidth="308"
     FontFamily="{DynamicResource MaterialDesignFont}"
     TextElement.FontSize="13"
@@ -32,7 +32,7 @@
                 Name="LogoImage"
                 Width="188"
                 Height="50"
-                Margin="0,70,0,0"
+                Margin="0,90,0,0"
                 HorizontalAlignment="Center"
                 VerticalAlignment="Top"
                 Source="/Resources/banner.png" />
@@ -43,6 +43,7 @@
                 VerticalAlignment="Top"
                 x:FieldModifier="public"
                 IsEnabled="{Binding IsAuthenticating, Converter={StaticResource converter}, ElementName=view}"
+                MaxLength="30"
                 Style="{StaticResource MaterialDesignOutlinedTextBox}"
                 ToolTip="Enter your LightVPN account ID">
                 <materialDesign:HintAssist.Hint>
@@ -54,7 +55,7 @@
             </TextBox>
             <PasswordBox
                 Name="PasswordBox"
-                Margin="20,15,20,0"
+                Margin="20,20,20,0"
                 HorizontalAlignment="Stretch"
                 VerticalAlignment="Top"
                 x:FieldModifier="public"
