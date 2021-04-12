@@ -3,7 +3,7 @@ using System.IO;
 using System.Net.Http;
 using System.Threading.Tasks;
 
-namespace CyberSniff.Updater
+namespace LightVPN.Updater
 {
     public class HttpClientDownloadWithProgress : IDisposable
     {

@@ -62,7 +62,7 @@
                     Margin="0,100,0,0"
                     HorizontalAlignment="Center"
                     VerticalAlignment="Top"
-                    Source="/Resources/logo-dark.png" />
+                    Source="/Resources/banner.png" />
                 <TextBlock
                     Margin="0,20,0,0"
                     HorizontalAlignment="Center"

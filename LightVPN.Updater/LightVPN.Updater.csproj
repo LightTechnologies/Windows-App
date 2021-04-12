@@ -16,12 +16,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <None Remove="Resources\lightvpn-s.png" />
-    <None Remove="Resources\lightvpn-w.png" />
+    <None Remove="Resources\banner.png" />
     <None Remove="Resources\lightvpn.ico" />
-    <None Remove="Resources\lightvpn.png" />
-    <None Remove="Resources\logo-dark.png" />
-    <None Remove="Resources\logo-light.png" />
   </ItemGroup>
 
   <ItemGroup>
@@ -31,12 +27,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Resource Include="Resources\lightvpn-s.png" />
-    <Resource Include="Resources\lightvpn-w.png" />
+    <Resource Include="Resources\banner.png" />
     <Resource Include="Resources\lightvpn.ico" />
-    <Resource Include="Resources\lightvpn.png" />
-    <Resource Include="Resources\logo-dark.png" />
-    <Resource Include="Resources\logo-light.png" />
   </ItemGroup>
 
   <ItemGroup>

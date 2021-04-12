@@ -8,7 +8,6 @@ using System.Windows;
 using System.Diagnostics;
 using SharpCompress.Archives;
 using SharpCompress.Archives.Rar;
-using CyberSniff.Updater;
 using SharpCompress.Common;
 
 namespace LightVPN.Updater
@@ -36,9 +35,9 @@ namespace LightVPN.Updater
                 ProgressBar.IsIndeterminate = false;
                 await client.StartDownload();
                 client.Dispose();
-                //txtStatus.Text = "Installing...";
-                //progressUpdate.Value = -1;
-                //progressUpdate.IsIndeterminate = true;
+                ProgressText.Text = "Installing...";
+                ProgressBar.Value = -1;
+                ProgressBar.IsIndeterminate = true;
                 using (var archive = RarArchive.Open(path))
                 {
                     foreach (var entry in archive.Entries.Where(entry => !entry.IsDirectory))
