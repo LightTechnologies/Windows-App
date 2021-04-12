@@ -24,6 +24,19 @@
         <Setter Property="FontWeight" Value="Bold" />
         <Setter Property="FontFamily" Value="{DynamicResource MaterialDesignFont}" />
     </Style>
+    <Style x:Key="DarkSmall" TargetType="TextBlock">
+        <Setter Property="Foreground" Value="Black" />
+        <Setter Property="FontSize" Value="14" />
+        <Setter Property="Opacity" Value="0.5" />
+        <Setter Property="FontWeight" Value="Bold" />
+        <Setter Property="FontFamily" Value="{DynamicResource MaterialDesignFont}" />
+    </Style>
+    <Style x:Key="Small" TargetType="TextBlock">
+        <Setter Property="FontSize" Value="14" />
+        <Setter Property="Opacity" Value="0.5" />
+        <Setter Property="FontWeight" Value="Bold" />
+        <Setter Property="FontFamily" Value="{DynamicResource MaterialDesignFont}" />
+    </Style>
     <Style x:Key="DarkHeadline" TargetType="TextBlock">
         <Setter Property="Foreground" Value="Black" />
         <Setter Property="FontSize" Value="20" />
@@ -33,12 +46,6 @@
     <Style x:Key="Headline" TargetType="TextBlock">
         <Setter Property="FontSize" Value="20" />
         <Setter Property="FontWeight" Value="UltraBold" />
-        <Setter Property="FontFamily" Value="{DynamicResource MaterialDesignFont}" />
-    </Style>
-    <Style x:Key="Small" TargetType="TextBlock">
-        <Setter Property="FontSize" Value="14" />
-        <Setter Property="Opacity" Value="0.5" />
-        <Setter Property="FontWeight" Value="Bold" />
         <Setter Property="FontFamily" Value="{DynamicResource MaterialDesignFont}" />
     </Style>
     <Style x:Key="GradientBackground" TargetType="materialDesign:Card">
@@ -56,8 +63,8 @@
                     <LinearGradientBrush.Transform>
                         <RotateTransform CenterX="75" CenterY="75" />
                     </LinearGradientBrush.Transform>
-                    <GradientStop Offset="1" Color="#fe2983" />
-                    <GradientStop Offset="0" Color="#ff6f61" />
+                    <GradientStop Offset="1" Color="#935bf9" />
+                    <GradientStop Offset="0" Color="#727cf5" />
                 </LinearGradientBrush>
             </Setter.Value>
         </Setter>
@@ -77,8 +84,8 @@
                     <LinearGradientBrush.Transform>
                         <RotateTransform CenterX="0" CenterY="0" />
                     </LinearGradientBrush.Transform>
-                    <GradientStop Offset="1" Color="#fe2983" />
-                    <GradientStop Offset="0" Color="#ff6f61" />
+                    <GradientStop Offset="1" Color="#935bf9" />
+                    <GradientStop Offset="0" Color="#727cf5" />
                 </LinearGradientBrush>
             </Setter.Value>
         </Setter>

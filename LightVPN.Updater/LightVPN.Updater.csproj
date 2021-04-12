@@ -5,6 +5,16 @@
     <TargetFramework>net5.0-windows</TargetFramework>
     <UseWPF>true</UseWPF>
     <ApplicationManifest>app.manifest</ApplicationManifest>
+    <ApplicationIcon>lightvpn.ico</ApplicationIcon>
+    <PackageId>LightVPN Updater</PackageId>
+    <Version>2.0.0.0</Version>
+    <Authors>LightVPN Technologies, LLC</Authors>
+    <Company>LightVPN Technologies, LLC.</Company>
+    <Product>LightVPN Windows Client</Product>
+    <Description>Compiled binary for the LightVPN Auto-updater program.</Description>
+    <Copyright>Copyright 2021 (C) Light Technologies, LLC</Copyright>
+    <PackageProjectUrl>https://github.com/LightTechnologies/LightVPN-Win</PackageProjectUrl>
+    <NeutralLanguage>en-US</NeutralLanguage>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">

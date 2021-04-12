@@ -20,6 +20,7 @@ namespace LightVPN.Updater
         public MainWindow()
         {
             InitializeComponent();
+            ThemeUtils.SwitchTheme();
         }
 
         private async void Window_Loaded(object sender, RoutedEventArgs e)
