@@ -177,7 +177,7 @@ namespace LightVPN.Views
             RecentConnectButton.IsEnabled = settings.PreviousServer is not null;
 
             var servers = await Globals.container.GetInstance<IHttp>().GetServersAsync();
-            foreach (var server in servers.OrderByDescending(x => x.Type))
+            foreach (var server in servers.OrderByDescending(x => x.Type).ThenBy(x => x.ServerName))
             {
                 gridObjects.Add(new ServersGrid { ServerName = server.ServerName, Country = server.Location, Server = server.FileName, Id = server.Id, Type = server.Type, Flag = $"pack://application:,,,/LightVPN;Component/Resources/Flags/{server.Country.Replace(' ', '-')}.png"
             });
