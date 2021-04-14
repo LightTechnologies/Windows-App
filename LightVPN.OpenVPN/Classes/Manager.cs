@@ -29,7 +29,7 @@ namespace LightVPN.OpenVPN
         private void RunOpenVpnProcess(string ovpn)
         {
             this.prc.StartInfo.CreateNoWindow = true;
-            this.prc.StartInfo.Arguments = $"--config \"{this.config}\" --dev-node {this.tap}";
+            this.prc.StartInfo.Arguments = $"--config \"{this.config}\"";
             this.prc.StartInfo.FileName = this.openVpnExePath;
             this.prc.StartInfo.WindowStyle = ProcessWindowStyle.Hidden;
             this.prc.StartInfo.WorkingDirectory = Path.GetDirectoryName(ovpn);
