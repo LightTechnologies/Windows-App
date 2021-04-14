@@ -76,7 +76,7 @@ namespace LightVPN.Windows
                 TimeSpan.FromSeconds(duration));
         }
 
-        /* Toshi is bad at C# */
+        /* Toshi is bad at C# nigga I was tired and didn't give a shit I was planning on changing it */
         internal async Task ProcessLoginAsync(bool isSessionAuth = false, Guid sessionId = default)
         {
             try
@@ -114,7 +114,7 @@ namespace LightVPN.Windows
                 if (!isSessionAuth)
                 {
                     var encryption = Globals.container.GetInstance<IEncryption>();
-                    await File.WriteAllTextAsync(Globals.AuthPath, encryption.Encrypt(JsonConvert.SerializeObject(new AuthFile { Username = page.UsernameBox.Text, SessionId = authResponse.Session })));
+                    await File.WriteAllTextAsync(Globals.AuthPath, encryption.Encrypt(JsonConvert.SerializeObject(new AuthFile { Username = page.UsernameBox.Text, Password = page.PasswordBox.Password, SessionId = authResponse.Session })));
                 }
                 if (!await Globals.container.GetInstance<IHttp>().CachedConfigs())
                 {
@@ -234,7 +234,7 @@ namespace LightVPN.Windows
                 var encryption = Globals.container.GetInstance<IEncryption>();
                 var auth = JsonConvert.DeserializeObject<AuthFile>(encryption.Decrypt(File.ReadAllText(Globals.AuthPath)));
                 page.UsernameBox.Text = auth.Username;
-                page.PasswordBox.Password = "you found an easter egg";
+                page.PasswordBox.Password = auth.Password;
                 if (auth.SessionId != default)
                 {
                     await ProcessLoginAsync(true, auth.SessionId);
