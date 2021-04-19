@@ -109,6 +109,7 @@ namespace LightVPN
                 else
                 {
                     ShowSnackbar(message);
+                    retryCount = 0;
                 }
 
             });
