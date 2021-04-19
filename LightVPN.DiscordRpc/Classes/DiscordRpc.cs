@@ -39,6 +39,7 @@ namespace LightVPN.Discord
         /// <param name="client">The DiscordRpcClient instance</param>
         public DiscordRpc(DiscordRpcClient client)
         {
+            client.OnError += Client_OnError;
             _client = client;
             _assets = new Assets
             {
@@ -55,6 +56,12 @@ namespace LightVPN.Discord
                 Buttons = _buttons
             };
         }
+
+        private void Client_OnError(object sender, DiscordRPC.Message.ErrorMessage args)
+        {
+            throw new Exception(args.Message);
+        }
+
         /// <summary>
         /// Invokes the DiscordRpc instance
         /// </summary>
@@ -132,13 +139,10 @@ namespace LightVPN.Discord
                 {
                     return Tuple.Create(false, "Client is null or not set to instance of an object");
                 }
-                await Task.Run(async () =>
+                await Task.Run(() =>
                 {
-                    if ((await Globals.container.GetInstance<LightVPN.Settings.Interfaces.ISettingsManager<SettingsModel>>().LoadAsync()).DiscordRPC)
-                    {
-                        _client.SetPresence(_presence);
-                    }
-                    _client.Initialize();
+                    _client.SetPresence(_presence);
+                    if (!_client.Initialize()) throw new Exception("Couldn't initialize Client");
                 });
                 _isRunning = true;
                 return Tuple.Create(true, string.Empty);

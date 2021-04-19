@@ -51,8 +51,6 @@ namespace LightVPN.Windows
 
         private readonly FileLogger logger = new ErrorLogger(Globals.ErrorLogPath);
 
-        private readonly SettingsModel _settings = Globals.container.GetInstance<ISettingsManager<SettingsModel>>().Load();
-
         private static bool _idk; /* Nice code, Toshi */
         public LoginWindow()
         {
@@ -79,6 +77,7 @@ namespace LightVPN.Windows
         /* Toshi is bad at C# nigga I was tired and didn't give a shit I was planning on changing it */
         internal async Task ProcessLoginAsync(bool isSessionAuth = false, Guid sessionId = default)
         {
+            var settings = Globals.container.GetInstance<ISettingsManager<SettingsModel>>().Load();
             try
             {
                 if (string.IsNullOrWhiteSpace(page.UsernameBox.Text) || string.IsNullOrWhiteSpace(page.PasswordBox.Password)) return;
@@ -139,7 +138,7 @@ namespace LightVPN.Windows
                     Globals.container.GetInstance<ITapManager>().CreateTapAdapter();
                 }
                 page.SignInText.Text = " LOADING UI...";
-                if (_settings.DiscordRPC)
+                if (settings.DiscordRPC)
                 {
                     await Globals.container.GetInstance<IDiscordRpc>().SetPresenceObjectAsync(new DiscordRPC.RichPresence
                     {

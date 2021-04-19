@@ -83,7 +83,7 @@ namespace LightVPN
             _manager.Connected += Manager_Connected;
             _manager.LoginFailed += LoginFailed;
             _manager.Error += ConnectionError;
-            viewLoaded = this.FindResource("ShowFrame") as BeginStoryboard; // push this update - shut up toshi
+            viewLoaded = this.FindResource("ShowFrame") as BeginStoryboard;
             viewUnloaded = this.FindResource("HideFrame") as BeginStoryboard;
             NavigatePage(new Home(this, true));
             notifyIcon = (TaskbarIcon)FindResource("NotifyIcon");
@@ -97,7 +97,7 @@ namespace LightVPN
                 State = "Disconnected"
             });
             _connectionState = ConnectionState.Disconnected;
-            await Dispatcher.InvokeAsync(() => //  make kill switch u wont - shut up toshi
+            await Dispatcher.InvokeAsync(async () =>
             {
                 _connectionState = ConnectionState.Disconnected;
                 IsProcessing = false;
@@ -105,9 +105,8 @@ namespace LightVPN
                 StatusFooter.Content = "Status: Disconnected";
                 if (message == "Unknown error connecting to server, reinstall your TAP adapter and try again" || message == "Couldn't find adapter")
                 {
-                    Globals.container.GetInstance<ITapManager>().RemoveTapAdapter();
-                    Globals.container.GetInstance<ITapManager>().CreateTapAdapter();
-                    ShowSnackbar("Reinstalled TAP Adapter, please connect again");
+                    ShowSnackbar("Reinstalled TAP Adapter, connecting to server now");
+                    await ConnectToServerAsync(CurrentServerId, CurrentServer);
                 }
                 else
                 {
