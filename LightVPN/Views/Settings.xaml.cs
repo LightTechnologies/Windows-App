@@ -76,11 +76,12 @@ namespace LightVPN.Views
             });
             if(DiscordRPCCheckBox.IsChecked.Value)
             {
-                await Globals.container.GetInstance<IDiscordRpc>().StartAsync();
+                Globals.container.GetInstance<IDiscordRpc>().Initalize();
+                Globals.container.GetInstance<IDiscordRpc>().ClearPresence();
             }
             else
             {
-                await Globals.container.GetInstance<IDiscordRpc>().StopAsync();
+                Globals.container.GetInstance<IDiscordRpc>().Deinitialize();
             }
             await SaveSettingsAsync();
         }

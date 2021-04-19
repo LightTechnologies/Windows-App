@@ -138,11 +138,7 @@ namespace LightVPN.Windows
                 page.SignInText.Text = " LOADING UI...";
                 if (settings.DiscordRPC)
                 {
-                    await Globals.container.GetInstance<IDiscordRpc>().SetPresenceObjectAsync(new DiscordRPC.RichPresence
-                    {
-                        State = "Disconnected"
-                    });
-                    await Globals.container.GetInstance<IDiscordRpc>().StartAsync();
+                    Globals.container.GetInstance<IDiscordRpc>().Initalize();
                 }
                 Application.Current.MainWindow = new MainWindow();
                 Application.Current.MainWindow.Show();

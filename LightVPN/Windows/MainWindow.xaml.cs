@@ -90,10 +90,7 @@ namespace LightVPN
         private async void ConnectionError(object sender, string message)
         {
             connectedAt = DateTime.MinValue;
-            await Globals.container.GetInstance<IDiscordRpc>().SetPresenceObjectAsync(new DiscordRPC.RichPresence
-            {
-                State = "Disconnected"
-            });
+            Globals.container.GetInstance<IDiscordRpc>().ClearPresence();
             _connectionState = ConnectionState.Disconnected;
             await Dispatcher.InvokeAsync(async () =>
             {
@@ -120,10 +117,11 @@ namespace LightVPN
 
         private async void Manager_Connected(object sender)
         {
-            await Globals.container.GetInstance<IDiscordRpc>().SetPresenceObjectAsync(new DiscordRPC.RichPresence
+            if (Globals.container.GetInstance<ISettingsManager<SettingsModel>>().Load().DiscordRPC)
             {
-                State = $"Connected to {CurrentServer}",
-            });
+                Globals.container.GetInstance<IDiscordRpc>().UpdateTimestamps();
+                Globals.container.GetInstance<IDiscordRpc>().UpdateState($"Connected to {CurrentServer}");
+            }
             _connectionState = ConnectionState.Connected;
             await Dispatcher.InvokeAsync(async () =>
             {
@@ -145,10 +143,7 @@ namespace LightVPN
             connectedAt = DateTime.MinValue;
             if (Globals.container.GetInstance<ISettingsManager<SettingsModel>>().Load().DiscordRPC)
             {
-                await Globals.container.GetInstance<IDiscordRpc>().SetPresenceObjectAsync(new DiscordRPC.RichPresence
-                {
-                    State = "Disconnected"
-                });
+                Globals.container.GetInstance<IDiscordRpc>().ClearPresence();
             }
             _connectionState = ConnectionState.Disconnected;
             await Dispatcher.InvokeAsync(async () =>
@@ -213,10 +208,8 @@ namespace LightVPN
                 ShowSnackbar($"Disconnected!");
                 if (Globals.container.GetInstance<ISettingsManager<SettingsModel>>().Load().DiscordRPC)
                 {
-                    await Globals.container.GetInstance<IDiscordRpc>().SetPresenceObjectAsync(new DiscordRPC.RichPresence
-                    {
-                        State = "Disconnected"
-                    });
+                    Globals.container.GetInstance<IDiscordRpc>().ResetTimestamps();
+                    Globals.container.GetInstance<IDiscordRpc>().ClearPresence();
                 }
             }
             _manager.Disconnect();
@@ -301,12 +294,10 @@ namespace LightVPN
                 home.UpdateViaConnectionState();
                 await home.UpdateUIAsync();
             }
-            if (Globals.container.GetInstance<ISettingsManager<SettingsModel>>().Load().DiscordRPC)
+            var settings = await Globals.container.GetInstance<ISettingsManager<SettingsModel>>().LoadAsync();
+            if (settings.DiscordRPC)
             {
-                await Globals.container.GetInstance<IDiscordRpc>().SetPresenceObjectAsync(new DiscordRPC.RichPresence
-                {
-                    State = "Connecting"
-                });
+                Globals.container.GetInstance<IDiscordRpc>().UpdateState("Connecting...");
             }
             ShowSnackbar($"Connecting...");
             UpdateFooter();
@@ -418,13 +409,13 @@ namespace LightVPN
 
         private bool ClosingAnimationFinished;
 
-        private async void FinishedClosingAnimation(object sender, EventArgs e)
+        private void FinishedClosingAnimation(object sender, EventArgs e)
         {
             try
             {
                 if (Globals.container.GetInstance<ISettingsManager<SettingsModel>>().Load().DiscordRPC)
                 {
-                    await Globals.container.GetInstance<IDiscordRpc>().StopAsync();
+                    Globals.container.GetInstance<IDiscordRpc>().Dispose();
                 }
                 _manager.Disconnect();
                 _manager.Dispose();

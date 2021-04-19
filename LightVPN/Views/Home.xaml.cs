@@ -105,10 +105,7 @@ namespace LightVPN.Views
             {
                 _host.connectedAt = DateTime.MinValue;
                 _host.ShowSnackbar($"Disconnected!");
-                await Globals.container.GetInstance<IDiscordRpc>().SetPresenceObjectAsync(new DiscordRPC.RichPresence
-                {
-                    State = "Disconnected"
-                });
+                Globals.container.GetInstance<IDiscordRpc>().ClearPresence();
                 _host._connectionState = ConnectionState.Disconnected;
                 UpdateViaConnectionState();
                 _host._manager.Disconnect();
