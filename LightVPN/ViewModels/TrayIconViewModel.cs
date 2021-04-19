@@ -18,7 +18,7 @@ namespace LightVPN.ViewModels
         {
             get
             {
-                return new TrayDelegate
+                return new CommandDelegate
                 {
                     CanExecuteFunc = () => Globals.IsMinimizedToTray == true,
                     CommandAction = () =>
@@ -37,7 +37,7 @@ namespace LightVPN.ViewModels
         {
             get
             {
-                return new TrayDelegate
+                return new CommandDelegate
                 {
                     CommandAction = () => 
                     {
@@ -57,7 +57,7 @@ namespace LightVPN.ViewModels
         {
             get
             {
-                return new TrayDelegate { CommandAction = () => Application.Current.Shutdown() };
+                return new CommandDelegate { CommandAction = () => Application.Current.Shutdown() };
             }
         }
     }

@@ -71,6 +71,8 @@ namespace LightVPN
 
         private Page CurrentView;
 
+        private int retryCount = 0;
+
         public MainWindow()
         {
             InitializeComponent();
@@ -98,9 +100,10 @@ namespace LightVPN
                 IsProcessing = false;
                 UpdateFooter();
                 StatusFooter.Content = "Status: Disconnected";
-                if (message == "Unknown error connecting to server, reinstall your TAP adapter and try again" || message == "Couldn't find adapter")
+                if (retryCount != 3 && message == "Unknown error connecting to server, reinstall your TAP adapter and try again" || message == "Couldn't find adapter")
                 {
-                    ShowSnackbar("Reinstalled TAP Adapter, connecting to server now");
+                    retryCount++;
+                    ShowSnackbar($"Reinstalled TAP Adapter, reconnecting to server now... ({retryCount}/3 attempts)");
                     await ConnectToServerAsync(CurrentServerId, CurrentServer);
                 }
                 else
@@ -132,6 +135,8 @@ namespace LightVPN
                 }
                 UpdateFooter();
                 StatusFooter.Content = "Status: Connected!";
+
+                retryCount = 0;
 
                 ShowSnackbar($"You are now connected to {CurrentServer}");
             });

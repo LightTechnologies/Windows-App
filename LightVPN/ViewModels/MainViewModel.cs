@@ -36,7 +36,7 @@ namespace LightVPN.ViewModels
         {
             get
             {
-                return new TrayDelegate
+                return new CommandDelegate
                 {
                     CommandAction = () =>
                     {
