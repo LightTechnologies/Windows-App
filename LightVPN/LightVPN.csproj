@@ -21,7 +21,7 @@
     <PackageLicenseFile>License.txt</PackageLicenseFile>
     <AssemblyVersion>2.0.1.1</AssemblyVersion>
     <FileVersion>2.0.1.1</FileVersion>
-    <Version>2.0.1.1</Version>
+    <Version>2.0.1.2</Version>
     <NeutralLanguage>en-US</NeutralLanguage>
   </PropertyGroup>
 
