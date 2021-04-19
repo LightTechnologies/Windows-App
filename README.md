@@ -1,5 +1,5 @@
 # LightVPN Windows Client
-The official LightVPN Windows client written in C#
+The official LightVPN Windows client written in C# with WPF
 
 ## License
 Licensed under the GNU Affero General Public License v3.0, see LICENSE.md
