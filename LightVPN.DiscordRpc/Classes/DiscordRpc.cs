@@ -40,6 +40,8 @@ namespace LightVPN.Discord
         public DiscordRpc(DiscordRpcClient client)
         {
             client.OnError += Client_OnError;
+            client.OnReady += Client_OnReady;
+            client.OnConnectionEstablished += Client_OnConnectionEstablished;
             _client = client;
             _assets = new Assets
             {
@@ -55,6 +57,15 @@ namespace LightVPN.Discord
                 Assets = _assets,
                 Buttons = _buttons
             };
+        }
+
+        private void Client_OnConnectionEstablished(object sender, DiscordRPC.Message.ConnectionEstablishedMessage args)
+        {
+        }
+
+        private void Client_OnReady(object sender, DiscordRPC.Message.ReadyMessage args)
+        {
+            var x = 0;
         }
 
         private void Client_OnError(object sender, DiscordRPC.Message.ErrorMessage args)

@@ -22,7 +22,7 @@ namespace LightVPN.Settings
     /// <typeparam name="T">The class to save to disk</typeparam>
     public class SettingsManager<T> : ISettingsManager<T>
     {
-        private string _path;
+        private readonly string _path;
         /// <summary>
         /// Initalizes a new instance of the SettingsManager
         /// </summary>

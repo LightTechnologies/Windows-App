@@ -34,15 +34,14 @@ namespace LightVPN.Auth
     {
         // I wrote this sexy http class (khrysus)
         private readonly HttpClient _apiclient = null;
-        private readonly HttpClient _client = null;
+        private static DateTime _lastRetrieved = DateTime.MinValue;
+        private static List<Server> servers;
         /// <summary>
         /// Initalizes the class
         /// </summary>
         /// <param name="client">The instance of HttpClient the class will use</param>
-        public Http(HttpClient client, SSLCheckingHttpClient checkingClient)
+        public Http(SSLCheckingHttpClient checkingClient)
         {
-
-            _client = client;
             _apiclient = checkingClient;
             checkingClient.DefaultRequestHeaders.TryAddWithoutValidation("X-Client-Version", $"Windows {Assembly.GetEntryAssembly().GetName().Version}");
         }
@@ -117,10 +116,16 @@ namespace LightVPN.Auth
         /// <returns>List of servers in a enumerable list of server objects</returns>
         public async Task<List<Server>> GetServersAsync()
         {
+            if (DateTime.Now < _lastRetrieved.AddHours(1)) 
+            {
+                return servers;
+            }
             var resp = await _apiclient.GetAsync($"https://lightvpn.org/api/servers");
             var content = await resp.Content.ReadAsStringAsync();
             await CheckResponse(resp);
-            return JsonConvert.DeserializeObject<List<Server>>(content);
+            servers = JsonConvert.DeserializeObject<List<Server>>(content);
+            _lastRetrieved = DateTime.Now;
+            return servers;
         }
         /// <summary>
         /// Fetches the OpenVPN binaries required for operation of connecting to servers
@@ -227,7 +232,7 @@ namespace LightVPN.Auth
             await CheckResponse(resp);
             return JsonConvert.DeserializeObject<T>(await resp.Content.ReadAsStringAsync());
         }
-        public async Task CheckResponse(HttpResponseMessage resp)
+        private static async Task CheckResponse(HttpResponseMessage resp)
         {
             if (resp.StatusCode == HttpStatusCode.Forbidden || resp.StatusCode == HttpStatusCode.TooManyRequests || resp.StatusCode == HttpStatusCode.NotFound || resp.StatusCode == HttpStatusCode.BadRequest )
             {

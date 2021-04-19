@@ -90,7 +90,7 @@ namespace LightVPN
             Globals.container.Register<IHttp, Http>(Lifestyle.Singleton);
             Globals.container.Register<ITapManager>(() => new TapManager(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "LightVPN", "ovpn", "tapctl.exe")), Lifestyle.Singleton);
             Globals.container.Register<IManager>(() => new Manager(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "LightVPN", "ovpn", "openvpn.exe")), Lifestyle.Singleton);
-            Globals.container.Register(() => new DiscordRpcClient("817163355260583957"), Lifestyle.Singleton);
+            Globals.container.Register(() => new DiscordRpcClient("833767448041226301"), Lifestyle.Singleton);
             Globals.container.Register<ISettingsManager<SettingsModel>>(() => new SettingsManager<SettingsModel>(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "LightVPN", "config.json")), Lifestyle.Singleton);
 
             Globals.container.Verify();

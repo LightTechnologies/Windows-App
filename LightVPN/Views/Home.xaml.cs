@@ -81,7 +81,7 @@ namespace LightVPN.Views
                 LastServerTitle.Text = "Your last server";
             }
 
-            DispatcherTimer timer = new DispatcherTimer(TimeSpan.FromSeconds(1), DispatcherPriority.Background, (object sender, EventArgs e) =>
+            var timer = new DispatcherTimer(TimeSpan.FromSeconds(1), DispatcherPriority.Background, (object sender, EventArgs e) =>
             {
                 if (_host._connectionState == ConnectionState.Connected)
                 {
@@ -161,12 +161,6 @@ namespace LightVPN.Views
             _host.StatusFooter.Content = $"Status: {_host._connectionState}";
         }
 
-        private void ChangeToIcon(PackIconKind kind)
-        {
-            IsProcessingTwo = false;
-            ConnectButtonIcon.Kind = kind;
-        }
-
         private async Task DownloadServers()
         {
             var settings = await Globals.container.GetInstance<ISettingsManager<SettingsModel>>().LoadAsync();
@@ -182,9 +176,9 @@ namespace LightVPN.Views
                 gridObjects.Add(new ServersGrid { ServerName = server.ServerName, Country = server.Location, Server = server.FileName, Id = server.Id, Type = server.Type, Flag = $"pack://application:,,,/LightVPN;Component/Resources/Flags/{server.Country.Replace(' ', '-')}.png"
             });
             }
-            if (settings.PreviousServer is not null && settings.AutoConnect && gridObjects.Any(x => x.Country == settings.PreviousServer?.ServerName) && _wasFirstLoad)
+            if (settings.PreviousServer is not null && settings.AutoConnect && gridObjects.Any(x => x.Server == settings.PreviousServer?.Id) && _wasFirstLoad)
             {
-                var server = gridObjects.FirstOrDefault(x => x.Country == settings.PreviousServer?.ServerName);
+                var server = gridObjects.FirstOrDefault(x => x.Server == settings.PreviousServer?.Id);
                 await _host.ConnectToServerAsync(server.Server, server.ServerName);
                 await UpdateUIAsync();
                 return;
@@ -260,7 +254,7 @@ namespace LightVPN.Views
                         PreviousServer = new PreviousServer
                         {
                             Id = item.Server,
-                            ServerName = item.Country
+                            ServerName = item.ServerName
                         },
                         KillSwitch = existingSettings.KillSwitch,
                         DarkMode = existingSettings.DarkMode

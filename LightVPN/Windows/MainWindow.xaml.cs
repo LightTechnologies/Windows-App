@@ -53,11 +53,9 @@ namespace LightVPN
 
         private readonly BeginStoryboard viewUnloaded = null;
 
-        private TaskbarIcon notifyIcon;
+        private readonly TaskbarIcon notifyIcon;
 
         public DateTime connectedAt = new();
-
-        private SettingsModel _settings = Globals.container.GetInstance<ISettingsManager<SettingsModel>>().Load();
 
         public bool IsProcessing
         {
@@ -145,7 +143,7 @@ namespace LightVPN
         private async void LoginFailed(object sender)
         {
             connectedAt = DateTime.MinValue;
-            if (_settings.DiscordRPC)
+            if (Globals.container.GetInstance<ISettingsManager<SettingsModel>>().Load().DiscordRPC)
             {
                 await Globals.container.GetInstance<IDiscordRpc>().SetPresenceObjectAsync(new DiscordRPC.RichPresence
                 {
@@ -213,7 +211,7 @@ namespace LightVPN
             if (!notUpdateUi)
             {
                 ShowSnackbar($"Disconnected!");
-                if (_settings.DiscordRPC)
+                if (Globals.container.GetInstance<ISettingsManager<SettingsModel>>().Load().DiscordRPC)
                 {
                     await Globals.container.GetInstance<IDiscordRpc>().SetPresenceObjectAsync(new DiscordRPC.RichPresence
                     {
@@ -303,7 +301,7 @@ namespace LightVPN
                 home.UpdateViaConnectionState();
                 await home.UpdateUIAsync();
             }
-            if (_settings.DiscordRPC)
+            if (Globals.container.GetInstance<ISettingsManager<SettingsModel>>().Load().DiscordRPC)
             {
                 await Globals.container.GetInstance<IDiscordRpc>().SetPresenceObjectAsync(new DiscordRPC.RichPresence
                 {
@@ -424,7 +422,7 @@ namespace LightVPN
         {
             try
             {
-                if (_settings.DiscordRPC)
+                if (Globals.container.GetInstance<ISettingsManager<SettingsModel>>().Load().DiscordRPC)
                 {
                     await Globals.container.GetInstance<IDiscordRpc>().StopAsync();
                 }

@@ -36,6 +36,7 @@ namespace LightVPN.OpenVPN
             this.prc.StartInfo.RedirectStandardOutput = true;
             this.prc.StartInfo.RedirectStandardError = true;
             this.prc.StartInfo.UseShellExecute = false;
+            prc.StartInfo.Verb = "runas";
             this.prc.OutputDataReceived += this.Prc_OutputDataReceived;
             this.prc.ErrorDataReceived += this.Prc_ErrorDataReceived;
             this.prc.Start();
@@ -83,6 +84,10 @@ namespace LightVPN.OpenVPN
             else if (e.Data.Contains("Error opening configuration file"))
             {
                 InvokeError("Error opening configuration file, you should clear your VPN server cache");
+            }
+            else if (e.Data.Contains("Exiting due to fatal error"))
+            {
+                InvokeError("A fatal error occured connecting to the vpn server please connect again");
             }
             else if (e.Data.Contains("Server poll timeout"))
             {
@@ -136,7 +141,7 @@ namespace LightVPN.OpenVPN
             {
             }
             this.openVpnExePath = openVpnExeFileName;
-            this.tap = tap;
+            this._tap = tap;
             this.IsDisposed = false;
         }
         /// <summary>
@@ -207,7 +212,7 @@ namespace LightVPN.OpenVPN
 
         private string config;
 
-        private readonly string tap;
+        private readonly string _tap;
 
         private readonly Process prc = new();
 

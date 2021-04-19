@@ -50,8 +50,6 @@ namespace LightVPN.Windows
         private readonly Views.Login page = new ();
 
         private readonly FileLogger logger = new ErrorLogger(Globals.ErrorLogPath);
-
-        private static bool _idk; /* Nice code, Toshi */
         public LoginWindow()
         {
             InitializeComponent();
