@@ -69,7 +69,7 @@ namespace LightVPN.Discord
                 Assets = new Assets
                 {
                     LargeImageKey = "lvpn",
-                    LargeImageText = $"Stable [version 2.0.1.4]",
+                    LargeImageText = $"Stable [version {Assembly.GetEntryAssembly().GetName().Version}]",
                 },
             };
         }
