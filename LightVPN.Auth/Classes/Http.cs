@@ -61,7 +61,7 @@ namespace LightVPN.Auth
         {
             _apiclient.DefaultRequestHeaders.TryAddWithoutValidation("Authorization", $"{username} {guid}");
             var resp = await _apiclient.GetAsync("https://lightvpn.org/api/profile");
-
+            await CheckResponse(resp);
             if (resp.IsSuccessStatusCode) return true;
             else
             {
@@ -234,12 +234,11 @@ namespace LightVPN.Auth
         }
         private static async Task CheckResponse(HttpResponseMessage resp)
         {
+            var content = await resp.Content.ReadAsStringAsync();
             if (resp.StatusCode == HttpStatusCode.Forbidden || resp.StatusCode == HttpStatusCode.TooManyRequests || resp.StatusCode == HttpStatusCode.NotFound || resp.StatusCode == HttpStatusCode.BadRequest )
             {
                 try
                 {
-                    var content = await resp.Content.ReadAsStringAsync();
-
                     var errorresp = JsonConvert.DeserializeObject<GenericResponse>(content);
 
                     throw new InvalidResponseException(errorresp.Message);
