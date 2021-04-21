@@ -7,7 +7,7 @@ using System.Windows.Input;
 
 namespace LightVPN
 {
-    class TrayDelegate : ICommand
+    class CommandDelegate : ICommand
     {
         public Action CommandAction { get; set; }
         public Func<bool> CanExecuteFunc { get; set; }

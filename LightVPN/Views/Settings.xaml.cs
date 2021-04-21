@@ -24,6 +24,7 @@ using static LightVPN.Auth.ApiException;
 using System.Reflection;
 using LightVPN.Common.v2;
 using LightVPN.Discord.Interfaces;
+using System;
 
 namespace LightVPN.Views
 {
@@ -74,13 +75,21 @@ namespace LightVPN.Views
                 SecondaryColor = "Default",
                 PrimaryColor = "Default"
             });
-            if(DiscordRPCCheckBox.IsChecked.Value)
+            try
             {
-                await Globals.container.GetInstance<IDiscordRpc>().StartAsync();
+                if (DiscordRPCCheckBox.IsChecked.Value)
+                {
+                    Globals.container.GetInstance<IDiscordRpc>().Initalize();
+                    Globals.container.GetInstance<IDiscordRpc>().ClearPresence();
+                }
+                else
+                {
+                    Globals.container.GetInstance<IDiscordRpc>().Deinitialize();
+                }
             }
-            else
+            catch (Exception)
             {
-                await Globals.container.GetInstance<IDiscordRpc>().StopAsync();
+
             }
             await SaveSettingsAsync();
         }

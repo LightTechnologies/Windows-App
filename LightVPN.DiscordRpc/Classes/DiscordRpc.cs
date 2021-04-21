@@ -1,203 +1,130 @@
-﻿/* --------------------------------------------
- * 
- * Discord Rich Presence - Main class
- * Copyright (C) Light Technologies LLC
- * 
- * File: DiscordRpc.cs
- * 
- * Created: 04-03-21 Khrysus
- * 
- * NOTES: This really needs improvements, will get to it soon
- * - Khrysus
- * 
- * --------------------------------------------
- */
+﻿using DiscordRPC;
+using DiscordRPC.Message;
+using LightVPN.Common.v2;
+using LightVPN.Discord.Exceptions;
 using LightVPN.Discord.Interfaces;
-using DiscordRPC;
 using System;
-using System.Threading.Tasks;
-using LightVPN.Common.v2.Models;
+using System.Diagnostics;
+using System.Reflection;
 
 namespace LightVPN.Discord
 {
-    public class DiscordRpc : IDiscordRpc
+    /// <summary>
+    /// The new DiscordRpc class, because the previous one had many issues and needed a rewrite anyway
+    /// </summary>
+    public class DiscordRpc : IDisposable, IDiscordRpc
     {
-        public bool _isRunning = false;
-
-        private readonly Assets _assets = null;
-
-        private readonly DiscordRpcClient _client = null;
-
-        private RichPresence _presence = null;
-
-        private Timestamps _timestamps = null;
-
-        private readonly Button[] _buttons = null;
-        /// <summary>
-        /// Constructs the DiscordRpc wrapper class
-        /// </summary>
-        /// <param name="client">The DiscordRpcClient instance</param>
+        private readonly DiscordRpcClient _client;
         public DiscordRpc(DiscordRpcClient client)
         {
-            client.OnError += Client_OnError;
-            client.OnReady += Client_OnReady;
-            client.OnConnectionEstablished += Client_OnConnectionEstablished;
             _client = client;
-            _assets = new Assets
+            _client.OnError += Rpc_OnError;
+            _client.OnReady += Rpc_Ready;
+            _client.SetPresence(GetBaseRichPresence());
+
+        }
+
+        private void Rpc_Ready(object sender, ReadyMessage args)
+        {
+            Debug.WriteLine($"DiscordRpc ready for {args.User.Username}#{args.User.Discriminator}");
+        }
+
+        private void Rpc_OnError(object sender, ErrorMessage args)
+        {
+            throw new RpcException($"[{args.Type}] {args.Message} ({args.Code})");
+        }
+        /// <summary>
+        /// Resets the presence to the generated base presence and invokes the DiscordRpc client
+        /// </summary>
+        public void ClearPresence()
+        {
+            _client.SetPresence(GetBaseRichPresence());
+            _client.Invoke();
+        }
+        /// <summary>
+        /// Initializes the DiscordRpc client and invokes it
+        /// </summary>
+        public void Initalize()
+        {
+            _client.Initialize();
+            _client.Invoke();
+        }
+        /// <summary>
+        /// Generates a base presence object
+        /// </summary>
+        /// <returns>The newly generated presence object</returns>
+        public static RichPresence GetBaseRichPresence()
+        {
+            return new RichPresence
             {
-                LargeImageKey = "main"
+                State = "Disconnected",
+                Buttons = new Button[]
+                {
+                    new Button
+                    {
+                        Label = "Visit our website",
+                        Url = "https://lightvpn.org"
+                    }
+                },
+                Assets = new Assets
+                {
+                    LargeImageKey = "lvpn",
+                    LargeImageText = $"Stable [version 2.0.1.4]",
+                },
             };
-            _buttons = new Button[]
-            {
-                new Button() { Label = "Visit website", Url = "https://lightvpn.org" },
-            };
-            _presence = new RichPresence()
-            {
-                Timestamps = _timestamps,
-                Assets = _assets,
-                Buttons = _buttons
-            };
-        }
-
-        private void Client_OnConnectionEstablished(object sender, DiscordRPC.Message.ConnectionEstablishedMessage args)
-        {
-        }
-
-        private void Client_OnReady(object sender, DiscordRPC.Message.ReadyMessage args)
-        {
-            var x = 0;
-        }
-
-        private void Client_OnError(object sender, DiscordRPC.Message.ErrorMessage args)
-        {
-            throw new Exception(args.Message);
-        }
-
-        /// <summary>
-        /// Invokes the DiscordRpc instance
-        /// </summary>
-        /// <returns>Tuple of whether it was successful, and if not a description on the error</returns>
-        public async Task<Tuple<bool, string>> InvokeAsync()
-        {
-            if (_client == null)
-            {
-                return Tuple.Create(false, "Client is null or not set to instance of an object");
-            }
-            await Task.Run(() =>
-            {
-                _client.Invoke();
-            });
-            return Tuple.Create(true, string.Empty);
         }
         /// <summary>
-        /// Sets the default presence and invokes the DiscordRpc instance
+        /// Updates the DiscordRpc details
         /// </summary>
-        /// <returns>Tuple of whether it was successful, and if not a description on the error</returns>
-        public async Task<Tuple<bool, string>> SetPresenceAsync()
+        /// <param name="details">The new details you wish to put on the presence</param>
+        public void UpdateDetails(string details)
         {
-            if (_client == null)
-            {
-                return Tuple.Create(false, "Client is null or not set to instance of an object");
-            }
-            await Task.Run(() =>
-            {
-                _presence = new RichPresence
-                {
-                    Timestamps = _timestamps,
-                    Assets = _assets,
-                    Buttons = _buttons
-                };
-                _client.SetPresence(_presence);
-                _client.Invoke();
-            });
-            return Tuple.Create(true, string.Empty);
+            _client.UpdateDetails(details);
+            _client.Invoke();
         }
         /// <summary>
-        /// Sets a passed in RichPresence object to be used by the DiscordRpc instance
+        /// Updates the DiscordRpc state
         /// </summary>
-        /// <param name="richPresence"></param>
-        /// <returns>Tuple of whether it was successful, and if not a description on the error</returns>
-        public async Task<Tuple<bool, string>> SetPresenceObjectAsync(RichPresence richPresence)
+        /// <param name="state">The new state you wish to put on the presence</param>
+        public void UpdateState(string state)
         {
-            if (_client == null)
-            {
-                return Tuple.Create(false, "Client is null or not set to instance of an object");
-            }
-            if (richPresence.State.Contains("Connected"))
-                _timestamps = new Timestamps(DateTime.UtcNow);
-            else
-                _timestamps = null;
-            await Task.Run(() =>
-            {
-                richPresence.Buttons = _buttons;
-                richPresence.Assets = _assets;
-                richPresence.Timestamps = _timestamps;
-                _presence = richPresence;
-                _client.SetPresence(_presence);
-            });
-
-            return Tuple.Create(true, string.Empty);
+            _client.UpdateState(state);
+            _client.Invoke();
         }
         /// <summary>
-        /// Starts the DiscordRpc instance
+        /// Updates the presence timestamps to the latest timestamps from the current date and time
         /// </summary>
-        /// <returns>Tuple of whether it was successful, and if not a description on the error</returns>
-        public async Task<Tuple<bool, string>> StartAsync()
+        public void UpdateTimestamps()
         {
-            if (!_isRunning)
-            {
-                if (_client == null)
-                {
-                    return Tuple.Create(false, "Client is null or not set to instance of an object");
-                }
-                await Task.Run(() =>
-                {
-                    _client.SetPresence(_presence);
-                    if (!_client.Initialize()) throw new Exception("Couldn't initialize Client");
-                });
-                _isRunning = true;
-                return Tuple.Create(true, string.Empty);
-            }
-            return Tuple.Create(false, "Client is already running");
+            _client.UpdateStartTime(DateTime.UtcNow);
+            _client.Invoke();
         }
         /// <summary>
-        /// Stops the DiscordRpc instance
+        /// Resets the presence timestamps to null, meaning they disappear
         /// </summary>
-        /// <returns>Tuple of whether it was successful, and if not a description on the error</returns>
-        public async Task<Tuple<bool, string>> StopAsync()
+        public void ResetTimestamps()
         {
-            if (_isRunning)
-            {
-                if (_client == null)
-                {
-                    return Tuple.Create(false, "Client is null or not set to instance of an object");
-                }
-                await Task.Run(() =>
-                {
-                    _client.ClearPresence();
-                    _client.Deinitialize();
-                });
-                _isRunning = false;
-                return Tuple.Create(true, string.Empty);
-            }
-            return Tuple.Create(false, "Client is not running");
+            _client.UpdateClearTime();
+            _client.Invoke();
         }
         /// <summary>
-        /// Updates the DiscordRpc instance with fresh timestamps
+        /// Disposes the DiscordRpc class
         /// </summary>
-        /// <returns>Tuple of whether it was successful, and if not a description on the error</returns>
-        public async Task<Tuple<bool, string>> UpdateTimestampsAsync()
+        public void Dispose()
         {
-            if (_client == null)
-            {
-                return Tuple.Create(false, "Client is null or not set to instance of an object");
-            }
-            await Task.Run(() =>
-            {
-                //_timestamps = new Timestamps(DateTime.UtcNow);
-                //_presence.Timestamps = _timestamps;
-            });
-            return Tuple.Create(true, string.Empty);
+            ClearPresence();
+            Deinitialize();
+            _client.Dispose();
+            GC.SuppressFinalize(this);
+        }
+        /// <summary>
+        /// Deinitializes the DiscordRpc client
+        /// </summary>
+        public void Deinitialize()
+        {
+            ClearPresence();
+            _client.Deinitialize();
+            _client.Invoke();
         }
     }
 }

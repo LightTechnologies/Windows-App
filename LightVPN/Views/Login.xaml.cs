@@ -37,13 +37,5 @@ namespace LightVPN.Views
         {
             InitializeComponent();
         }
-
-        private void Button_Click(object sender, RoutedEventArgs e)
-        {
-            var process = new Process();
-            process.StartInfo.UseShellExecute = true;
-            process.StartInfo.FileName = ("https://lightvpn.org/dash/generate");
-            process.Start();
-        }
     }
 }
