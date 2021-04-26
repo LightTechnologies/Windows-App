@@ -165,16 +165,26 @@ namespace LightVPN.OpenVPN
         public void Disconnect()
         {
             //GenerateConsoleCtrlEvent(ConsoleCtrlEvent.CTRL_C, prc.Id);
-            if (AttachConsole((uint)prc.Id) && SetConsoleCtrlHandler(null, true) && GenerateConsoleCtrlEvent(0, 0))
+            if (AttachConsole((uint)prc.Id))
             {
-                FreeConsole();
+                SetConsoleCtrlHandler(null, true);
+                try
+                {
+                    if (!GenerateConsoleCtrlEvent(0, 0))
+                    prc.WaitForExit();
+                }
+                finally
+                {
+                    SetConsoleCtrlHandler(null, false);
+                    FreeConsole();
+                }
             }
             else
             {
                 errorLogger.Write("[FATAL] AttachConsole, SetConsoleCtrlHandler & GenerateConsoleCtrlEvent has failed! This is bad!!!!");
             }
 
-            prc.WaitForExit();
+            prc.WaitForExit(10 * 1000);
             prc.OutputDataReceived -= Prc_OutputDataReceived;
             prc.ErrorDataReceived -= Prc_ErrorDataReceived;
             prc.CancelOutputRead();

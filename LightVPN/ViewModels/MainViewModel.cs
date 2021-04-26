@@ -137,14 +137,17 @@ namespace LightVPN.ViewModels
             LastServer = $"{friendlyName} ({serverType})";
         }
 
-        internal void Disconnect()
+        internal async Task DisconnectAsync()
         {
             if (Globals.container.GetInstance<ISettingsManager<SettingsModel>>().Load().DiscordRpc)
             {
                 Globals.container.GetInstance<IDiscordRpc>().ResetTimestamps();
                 Globals.container.GetInstance<IDiscordRpc>().ClearPresence();
             }
-            _manager.Disconnect();
+            await Task.Run(() =>
+            {
+                _manager.Disconnect();
+            });
             ConnectionState = ConnectionState.Disconnected;
         }
 
@@ -158,7 +161,7 @@ namespace LightVPN.ViewModels
                     {
                         if (ConnectionState == ConnectionState.Connected)
                         {
-                            Disconnect();
+                            await DisconnectAsync();
                         }
 
                         SaveServer(args.Server, args.ServerName, args.Type);
@@ -407,7 +410,7 @@ namespace LightVPN.ViewModels
                     {
                         if (ConnectionState == ConnectionState.Connected)
                         {
-                            Disconnect();
+                            await DisconnectAsync();
                             return;
                         }
 
