@@ -11,20 +11,11 @@
     Title="LightVPN"
     Width="308"
     Height="435"
-    AllowsTransparency="True"
-    Background="{DynamicResource MaterialDesignPaper}"
     Closing="Window_Closing"
-    FontFamily="{DynamicResource MaterialDesignFont}"
-    Foreground="Black"
     Loaded="Window_Loaded"
     ResizeMode="NoResize"
-    TextElement.FontSize="13"
-    TextElement.FontWeight="Regular"
-    TextElement.Foreground="{DynamicResource MaterialDesignBody}"
-    TextOptions.TextFormattingMode="Ideal"
-    TextOptions.TextRenderingMode="Auto"
+    Style="{StaticResource LightUIWindow}"
     WindowStartupLocation="CenterScreen"
-    WindowStyle="None"
     mc:Ignorable="d">
     <Window.DataContext>
         <viewModels:LoginWindowViewModel />

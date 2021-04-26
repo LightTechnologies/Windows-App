@@ -4,21 +4,16 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:converters="clr-namespace:LightVPN.Converters"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:i="clr-namespace:System.Windows.Interactivity;assembly=System.Windows.Interactivity"
     xmlns:local="clr-namespace:LightVPN.Views"
     xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:viewModels="clr-namespace:LightVPN.ViewModels"
-    Name="SettingsView"
+    Name="SettingsPage"
     Title="Settings"
-    d:DesignHeight="418"
-    d:DesignWidth="749"
-    FontFamily="{DynamicResource MaterialDesignFont}"
-    KeepAlive="True"
-    TextElement.FontSize="13"
-    TextElement.FontWeight="Regular"
-    TextElement.Foreground="{DynamicResource MaterialDesignBody}"
-    TextOptions.TextFormattingMode="Ideal"
-    TextOptions.TextRenderingMode="Auto"
+    d:DesignHeight="383"
+    d:DesignWidth="548"
+    Style="{StaticResource LightUIView}"
     mc:Ignorable="d">
     <Page.DataContext>
         <viewModels:SettingsViewModel />
@@ -26,255 +21,227 @@
     <Page.Resources>
         <converters:InverseBooleanConverter x:Key="converter" />
     </Page.Resources>
-    <ScrollViewer>
-        <Grid>
-            <StackPanel>
-                <StackPanel Orientation="Horizontal">
-                    <materialDesign:PackIcon
-                        Width="20"
-                        Height="20"
-                        Margin="45,25,0,20"
-                        HorizontalAlignment="Left"
-                        VerticalAlignment="Center"
-                        Kind="SettingsOutline" />
+    <i:Interaction.Triggers>
+        <i:EventTrigger EventName="Loaded">
+            <i:InvokeCommandAction Command="{Binding LoadCommand}" />
+        </i:EventTrigger>
+    </i:Interaction.Triggers>
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="55" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+        <StackPanel Grid.Row="0" Orientation="Horizontal">
+            <Button
+                Name="backButton"
+                Width="50"
+                Margin="15,0,0,0"
+                materialDesign:RippleAssist.Feedback="{DynamicResource MaterialDesignBody}"
+                Background="{x:Null}"
+                BorderBrush="{x:Null}"
+                Click="BackToHome"
+                Cursor="Arrow"
+                ToolTip="Back to home">
+                <materialDesign:PackIcon Foreground="{DynamicResource MaterialDesignBody}" Kind="ArrowBack" />
+            </Button>
+            <TextBlock
+                Margin="10,15,0,0"
+                HorizontalAlignment="Left"
+                VerticalAlignment="Top"
+                Style="{StaticResource Headline}"
+                Text="Settings" />
+        </StackPanel>
+        <ScrollViewer
+            Grid.Row="1"
+            HorizontalScrollBarVisibility="Disabled"
+            VerticalScrollBarVisibility="Auto">
+            <Grid>
+                <StackPanel HorizontalAlignment="Stretch" VerticalAlignment="Top">
                     <TextBlock
-                        Margin="10,25,0,20"
+                        Margin="20,15,0,15"
                         HorizontalAlignment="Left"
                         VerticalAlignment="Top"
-                        Style="{StaticResource Headline}"
-                        Text="Settings" />
-                </StackPanel>
-                <materialDesign:Card
-                    Height="320"
-                    Margin="40,0,40,20"
-                    HorizontalAlignment="Stretch"
-                    VerticalAlignment="Top">
-                    <Grid>
+                        Style="{StaticResource Semibold}"
+                        Text="General" />
+                    <materialDesign:Card
+                        Margin="20,0,25,20"
+                        HorizontalAlignment="Stretch"
+                        VerticalAlignment="Top">
                         <StackPanel>
-                            <StackPanel Orientation="Horizontal">
-                                <materialDesign:PackIcon
-                                    Margin="15,15,0,15"
+                            <Grid HorizontalAlignment="Stretch" VerticalAlignment="Top">
+                                <TextBlock
+                                    Margin="20"
                                     HorizontalAlignment="Left"
                                     VerticalAlignment="Center"
-                                    Kind="FileDocumentOutline" />
-                                <TextBlock
-                                    Margin="10,15,0,15"
-                                    HorizontalAlignment="Left"
+                                    Text="Auto-connect" />
+                                <ToggleButton
+                                    Name="autoConnectSwitch"
+                                    Margin="20"
+                                    HorizontalAlignment="Right"
                                     VerticalAlignment="Top"
-                                    Style="{StaticResource MaterialDesignSubtitle2TextBlock}"
-                                    Text="General" />
-                            </StackPanel>
-                            <StackPanel
-                                Margin="15,0,0,10"
-                                HorizontalAlignment="Left"
-                                VerticalAlignment="Top"
-                                Opacity="0.5"
-                                Orientation="Horizontal" />
-                            <StackPanel Orientation="Horizontal">
-                                <ToggleButton
-                                    x:Name="AutoConnectCheckbox"
-                                    Margin="15,10,0,10"
-                                    VerticalAlignment="Center"
-                                    Command="{x:Static local:Settings.HandleCheckChanges}"
-                                    Style="{StaticResource MaterialDesignSwitchToggleButton}" />
+                                    Command="{Binding HandleSettingsChangesCommand}"
+                                    IsChecked="{Binding AutoConnect}"
+                                    Style="{DynamicResource MaterialDesignSwitchToggleButton}" />
+                            </Grid>
+                            <Separator Opacity="0.2" />
+                            <Grid HorizontalAlignment="Stretch" VerticalAlignment="Top">
                                 <TextBlock
-                                    Margin="10,0,0,0"
-                                    VerticalAlignment="Center"
-                                    FontSize="13"
-                                    Text="Auto connect"
-                                    TextWrapping="Wrap" />
-                            </StackPanel>
-                            <StackPanel
-                                Margin="15,0,0,10"
-                                HorizontalAlignment="Left"
-                                VerticalAlignment="Top"
-                                Opacity="0.5"
-                                Orientation="Horizontal">
-                                <materialDesign:PackIcon
-                                    HorizontalAlignment="Center"
-                                    VerticalAlignment="Center"
-                                    Kind="InfoCircleOutline" />
-                                <TextBlock
-                                    HorizontalAlignment="Center"
-                                    VerticalAlignment="Center"
-                                    FontSize="11"
-                                    Text=" LightVPN will automatically connect when you open the program"
-                                    TextWrapping="Wrap" />
-                            </StackPanel>
-                            <StackPanel Orientation="Horizontal" />
-
-                            <StackPanel
-                                Margin="15,0,0,10"
-                                HorizontalAlignment="Left"
-                                VerticalAlignment="Top"
-                                Opacity="0.5"
-                                Orientation="Horizontal" />
-                            <StackPanel Orientation="Horizontal">
-                                <ToggleButton
-                                    x:Name="DiscordRPCCheckBox"
-                                    Margin="15,10,0,10"
-                                    VerticalAlignment="Center"
-                                    Command="{x:Static local:Settings.HandleCheckChanges}"
-                                    Style="{StaticResource MaterialDesignSwitchToggleButton}" />
-                                <TextBlock
-                                    Margin="10,0,0,0"
-                                    VerticalAlignment="Center"
-                                    FontSize="13"
-                                    Text="Discord RPC"
-                                    TextWrapping="Wrap" />
-                            </StackPanel>
-                            <StackPanel
-                                Margin="15,0,0,10"
-                                HorizontalAlignment="Left"
-                                VerticalAlignment="Top"
-                                Opacity="0.5"
-                                Orientation="Horizontal">
-                                <materialDesign:PackIcon
-                                    HorizontalAlignment="Center"
-                                    VerticalAlignment="Center"
-                                    Kind="InfoCircleOutline" />
-                                <TextBlock
-                                    HorizontalAlignment="Center"
-                                    VerticalAlignment="Center"
-                                    FontSize="11"
-                                    Text=" LightVPN will show a nice little status on your Discord"
-                                    TextWrapping="Wrap" />
-                            </StackPanel>
-                            <StackPanel Orientation="Horizontal" />
-                            <StackPanel
-                                Margin="15,0,0,10"
-                                HorizontalAlignment="Left"
-                                VerticalAlignment="Top"
-                                Opacity="0.5"
-                                Orientation="Horizontal" />
-                            <StackPanel>
-                                <TextBlock
-                                    Margin="15,10,0,0"
+                                    Margin="20"
                                     HorizontalAlignment="Left"
                                     VerticalAlignment="Center"
-                                    FontSize="13"
-                                    Text="Clear VPN server cache"
-                                    TextWrapping="Wrap" />
+                                    Text="Discord rich presence" />
+                                <ToggleButton
+                                    Name="discordRpcSwitch"
+                                    Margin="20"
+                                    HorizontalAlignment="Right"
+                                    VerticalAlignment="Top"
+                                    Command="{Binding HandleSettingsChangesCommand}"
+                                    IsChecked="{Binding DiscordRpc}"
+                                    Style="{DynamicResource MaterialDesignSwitchToggleButton}" />
+                            </Grid>
+                            <Separator Opacity="0.2" />
+                            <Grid HorizontalAlignment="Stretch" VerticalAlignment="Top">
+                                <TextBlock
+                                    Margin="20"
+                                    HorizontalAlignment="Left"
+                                    VerticalAlignment="Center"
+                                    Text="Dark mode" />
+                                <ToggleButton
+                                    Name="darkModeSwitch"
+                                    Margin="20"
+                                    HorizontalAlignment="Right"
+                                    VerticalAlignment="Top"
+                                    Command="{Binding HandleSettingsChangesCommand}"
+                                    IsChecked="{Binding DarkMode}"
+                                    Style="{DynamicResource MaterialDesignSwitchToggleButton}" />
+                            </Grid>
+                        </StackPanel>
+                    </materialDesign:Card>
+                    <TextBlock
+                        Margin="20,15,0,15"
+                        HorizontalAlignment="Left"
+                        VerticalAlignment="Top"
+                        Style="{StaticResource Semibold}"
+                        Text="Logs" />
+                    <materialDesign:Card
+                        Margin="20,0,25,20"
+                        HorizontalAlignment="Stretch"
+                        VerticalAlignment="Top">
+                        <StackPanel>
+                            <Grid HorizontalAlignment="Stretch" VerticalAlignment="Top">
+                                <TextBlock
+                                    Margin="20"
+                                    HorizontalAlignment="Left"
+                                    VerticalAlignment="Center"
+                                    Text="View OpenVPN logs" />
                                 <Button
-                                    x:Name="RefreshCacheButton"
-                                    Width="135"
-                                    Margin="15,10,0,0"
-                                    HorizontalAlignment="Left"
+                                    Name="viewOpenVpnLogButton"
+                                    Margin="15"
+                                    HorizontalAlignment="Right"
                                     VerticalAlignment="Top"
-                                    materialDesign:ButtonProgressAssist.IsIndeterminate="True"
-                                    materialDesign:ButtonProgressAssist.IsIndicatorVisible="{Binding ElementName=SettingsView, Path=IsWorking}"
-                                    materialDesign:ButtonProgressAssist.Value="0"
-                                    Command="{x:Static local:Settings.RefreshCacheCommand}"
+                                    Command="{Binding ViewOpenVpnLogCommand}"
                                     Cursor="Arrow"
-                                    IsEnabled="{Binding IsWorking, Converter={StaticResource converter}, ElementName=SettingsView}"
-                                    Style="{StaticResource MaterialDesignRaisedButton}">
+                                    Style="{DynamicResource MaterialDesignRaisedButton}">
                                     <StackPanel Orientation="Horizontal">
-                                        <materialDesign:PackIcon Kind="BinOutline" />
-                                        <TextBlock Text=" CLEAR" />
+                                        <materialDesign:PackIcon Kind="ExternalLink" />
+                                        <TextBlock Style="{StaticResource Semibold}" Text=" VIEW" />
                                     </StackPanel>
                                 </Button>
-
-                                <StackPanel
-                                    Margin="15,10,0,0"
+                            </Grid>
+                            <Separator Opacity="0.2" />
+                            <Grid HorizontalAlignment="Stretch" VerticalAlignment="Top">
+                                <TextBlock
+                                    Margin="20"
                                     HorizontalAlignment="Left"
+                                    VerticalAlignment="Center"
+                                    Text="View error logs" />
+                                <Button
+                                    Name="viewErrorLogButton"
+                                    Margin="15"
+                                    HorizontalAlignment="Right"
                                     VerticalAlignment="Top"
-                                    Opacity="0.5"
-                                    Orientation="Horizontal">
-                                    <materialDesign:PackIcon
-                                        HorizontalAlignment="Center"
-                                        VerticalAlignment="Center"
-                                        Kind="InfoCircleOutline" />
-                                    <TextBlock
-                                        HorizontalAlignment="Center"
-                                        VerticalAlignment="Center"
-                                        FontSize="11"
-                                        Text=" The VPN cache will be cleared and redownloaded"
-                                        TextWrapping="Wrap" />
-                                </StackPanel>
-                            </StackPanel>
+                                    Command="{Binding ViewErrorLogCommand}"
+                                    Cursor="Arrow"
+                                    Style="{DynamicResource MaterialDesignRaisedButton}">
+                                    <StackPanel Orientation="Horizontal">
+                                        <materialDesign:PackIcon Kind="ExternalLink" />
+                                        <TextBlock Style="{StaticResource Semibold}" Text=" VIEW" />
+                                    </StackPanel>
+                                </Button>
+                            </Grid>
                         </StackPanel>
-                    </Grid>
-                </materialDesign:Card>
-                <materialDesign:Card
-                    Height="100"
-                    Margin="40,0,40,20"
-                    HorizontalAlignment="Stretch"
-                    VerticalAlignment="Top">
-                    <Grid>
+                    </materialDesign:Card>
+                    <TextBlock
+                        Margin="20,15,0,15"
+                        HorizontalAlignment="Left"
+                        VerticalAlignment="Top"
+                        Style="{StaticResource Semibold}"
+                        Text="Miscellaneous" />
+                    <materialDesign:Card
+                        Margin="20,0,25,20"
+                        HorizontalAlignment="Stretch"
+                        VerticalAlignment="Top">
                         <StackPanel>
-                            <StackPanel Orientation="Horizontal">
-                                <materialDesign:PackIcon
-                                    Margin="15,15,0,15"
+                            <Grid HorizontalAlignment="Stretch" VerticalAlignment="Top">
+                                <TextBlock
+                                    Margin="20"
                                     HorizontalAlignment="Left"
                                     VerticalAlignment="Center"
-                                    Kind="PaletteOutline" />
-                                <TextBlock
-                                    Margin="10,15,0,15"
-                                    HorizontalAlignment="Left"
+                                    Text="Refresh VPN server cache" />
+                                <Button
+                                    Name="clearServerCacheButton"
+                                    Margin="15"
+                                    HorizontalAlignment="Right"
                                     VerticalAlignment="Top"
-                                    Style="{StaticResource MaterialDesignSubtitle2TextBlock}"
-                                    Text="Appearance" />
-                            </StackPanel>
-                            <StackPanel Orientation="Horizontal">
-                                <ToggleButton
-                                    x:Name="DarkModeCheckbox"
-                                    Margin="15,10,0,10"
-                                    HorizontalAlignment="Left"
-                                    VerticalAlignment="Center"
-                                    Command="{x:Static local:Settings.HandleCheckChanges}"
-                                    Style="{StaticResource MaterialDesignSwitchToggleButton}" />
+                                    materialDesign:ButtonProgressAssist.IsIndeterminate="True"
+                                    materialDesign:ButtonProgressAssist.IsIndicatorVisible="{Binding IsRefreshingServerCache}"
+                                    materialDesign:ButtonProgressAssist.Value="-1"
+                                    Command="{Binding RefreshServerCacheCommand}"
+                                    Cursor="Arrow"
+                                    Style="{DynamicResource MaterialDesignRaisedButton}">
+                                    <StackPanel Orientation="Horizontal">
+                                        <materialDesign:PackIcon Kind="Refresh" />
+                                        <TextBlock Style="{StaticResource Semibold}" Text=" REFRESH" />
+                                    </StackPanel>
+                                </Button>
+                            </Grid>
+                            <Separator Opacity="0.2" />
+                            <Grid HorizontalAlignment="Stretch" VerticalAlignment="Top">
                                 <TextBlock
-                                    Margin="10,0,0,0"
+                                    Margin="20"
                                     HorizontalAlignment="Left"
                                     VerticalAlignment="Center"
-                                    FontSize="13"
-                                    Text="Dark mode"
-                                    TextWrapping="Wrap" />
-                            </StackPanel>
-                        </StackPanel>
-                    </Grid>
-                </materialDesign:Card>
-                <materialDesign:Card
-                    Height="160"
-                    Margin="40,0,40,20"
-                    HorizontalAlignment="Stretch"
-                    VerticalAlignment="Top">
-                    <Grid>
-                        <StackPanel>
-                            <StackPanel Orientation="Horizontal">
-                                <materialDesign:PackIcon
-                                    Margin="15,15,0,15"
-                                    HorizontalAlignment="Left"
-                                    VerticalAlignment="Center"
-                                    Kind="InfoCircleOutline" />
-                                <TextBlock
-                                    Margin="10,15,0,15"
-                                    HorizontalAlignment="Left"
+                                    Text="Reinstall OpenVPN TAP adapter" />
+                                <Button
+                                    Name="reinstallTapButton"
+                                    Margin="15"
+                                    HorizontalAlignment="Right"
                                     VerticalAlignment="Top"
-                                    Style="{StaticResource MaterialDesignSubtitle2TextBlock}"
-                                    Text="About" />
-                            </StackPanel>
-                            <TextBlock
-                                Name="LightVpnHeadlineText"
-                                Margin="15,5,0,0"
-                                HorizontalAlignment="Left"
-                                VerticalAlignment="Top"
-                                Style="{DynamicResource MaterialDesignSubtitle2TextBlock}"
-                                Text="LightVPN Windows Client (version 1.0.0.0)" />
-                            <TextBlock
-                                Margin="15,15,0,0"
-                                HorizontalAlignment="Left"
-                                VerticalAlignment="Top"
-                                Text="Copyright 2021 (C) Light Technologies, LLC." />
-                            <TextBlock
-                                Margin="15,10,0,0"
-                                HorizontalAlignment="Left"
-                                VerticalAlignment="Top"
-                                Text="https://github.com/LightTechnologies/LightVPN-Win" />
+                                    materialDesign:ButtonProgressAssist.IsIndeterminate="True"
+                                    materialDesign:ButtonProgressAssist.IsIndicatorVisible="{Binding IsReinstallingTap}"
+                                    materialDesign:ButtonProgressAssist.Value="-1"
+                                    Command="{Binding ReinstallTapCommand}"
+                                    Cursor="Arrow"
+                                    Style="{DynamicResource MaterialDesignRaisedButton}">
+                                    <StackPanel Orientation="Horizontal">
+                                        <materialDesign:PackIcon Kind="DownloadCircleOutline" />
+                                        <TextBlock Style="{StaticResource Semibold}" Text=" REINSTALL" />
+                                    </StackPanel>
+                                </Button>
+                            </Grid>
+                            <Separator Opacity="0.2" />
+                            <Grid HorizontalAlignment="Stretch" VerticalAlignment="Top">
+                                <TextBlock
+                                    Name="versionText"
+                                    Margin="20"
+                                    HorizontalAlignment="Left"
+                                    VerticalAlignment="Center"
+                                    Text="LightVPN Windows Client [beta version]" />
+                            </Grid>
                         </StackPanel>
-                    </Grid>
-                </materialDesign:Card>
-            </StackPanel>
-        </Grid>
-    </ScrollViewer>
+                    </materialDesign:Card>
+                </StackPanel>
+            </Grid>
+        </ScrollViewer>
+    </Grid>
 </Page>

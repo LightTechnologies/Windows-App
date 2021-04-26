@@ -9,7 +9,7 @@
  * 
  * --------------------------------------------
  */
-namespace LightVPN.Common.v2.Interfaces
+namespace LightVPN.Common.Interfaces
 {
     public interface INative
     {

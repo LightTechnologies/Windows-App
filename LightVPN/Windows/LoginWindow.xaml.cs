@@ -13,7 +13,7 @@
  */
 using LightVPN.Auth.Interfaces;
 using LightVPN.Auth.Models;
-using LightVPN.Common.v2.Models;
+using LightVPN.Common.Models;
 using Exceptionless;
 using LightVPN.Discord.Interfaces;
 using LightVPN.Interfaces;
@@ -113,7 +113,7 @@ namespace LightVPN.Windows
                     var encryption = Globals.container.GetInstance<IEncryption>();
                     await File.WriteAllTextAsync(Globals.AuthPath, encryption.Encrypt(JsonConvert.SerializeObject(new AuthFile { Username = page.UsernameBox.Text, Password = page.PasswordBox.Password, SessionId = authResponse.Session })));
                 }
-                if (!await Globals.container.GetInstance<IHttp>().CachedConfigs())
+                if (!await Globals.container.GetInstance<IHttp>().IsConfigsCachedAsync())
                 {
                     page.SignInText.Text = " FETCHING SERVERS...";
                     await Task.Run(async () =>
@@ -136,9 +136,9 @@ namespace LightVPN.Windows
                     Globals.container.GetInstance<ITapManager>().CreateTapAdapter();
                 }
                 page.SignInText.Text = " LOADING UI...";
-                if (settings.DiscordRPC)
+                if (settings.DiscordRpc)
                 {
-                    Globals.container.GetInstance<IDiscordRpc>().Initalize();
+                    Globals.container.GetInstance<IDiscordRpc>().Initialize();
                 }
                 Application.Current.MainWindow = new MainWindow();
                 Application.Current.MainWindow.Show();

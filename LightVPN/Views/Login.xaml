@@ -13,12 +13,7 @@
     Title="Login"
     d:DesignHeight="435"
     d:DesignWidth="308"
-    FontFamily="{DynamicResource MaterialDesignFont}"
-    TextElement.FontSize="13"
-    TextElement.FontWeight="Regular"
-    TextElement.Foreground="{DynamicResource MaterialDesignBody}"
-    TextOptions.TextFormattingMode="Ideal"
-    TextOptions.TextRenderingMode="Auto"
+    Style="{StaticResource LightUIView}"
     mc:Ignorable="d">
     <Page.DataContext>
         <viewModels:LoginViewModel />
@@ -71,7 +66,6 @@
             </PasswordBox>
             <Button
                 Name="SignInBtn"
-                Height="40"
                 Margin="20,30,20,0"
                 VerticalAlignment="Top"
                 materialDesign:ButtonProgressAssist.IsIndeterminate="True"
@@ -85,7 +79,10 @@
                 ToolTip="Attempts to log you in as the specified user">
                 <StackPanel Orientation="Horizontal">
                     <materialDesign:PackIcon Kind="Login" />
-                    <TextBlock x:Name="SignInText" Text=" SIGN IN" />
+                    <TextBlock
+                        x:Name="SignInText"
+                        Style="{StaticResource Semibold}"
+                        Text=" SIGN IN" />
                 </StackPanel>
             </Button>
         </StackPanel>

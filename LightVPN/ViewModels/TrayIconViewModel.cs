@@ -1,4 +1,4 @@
-﻿using LightVPN.Common.v2.Models;
+﻿using LightVPN.Common.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;

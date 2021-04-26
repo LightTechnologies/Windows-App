@@ -12,7 +12,7 @@
 
 using LightVPN.Auth;
 using LightVPN.Auth.Interfaces;
-using LightVPN.Common.v2.Models;
+using LightVPN.Common.Models;
 using LightVPN.OpenVPN.Interfaces;
 using System;
 using System.Collections.Generic;

@@ -12,7 +12,7 @@
 using LightVPN.Auth.Classes;
 using LightVPN.Auth.Interfaces;
 using LightVPN.Auth.Models;
-using LightVPN.Common.v2.Models;
+using LightVPN.Common.Models;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -207,7 +207,7 @@ namespace LightVPN.Auth
                 File.Delete(vpnzip);
             }
         }
-        public Task<bool> CachedConfigs()
+        public Task<bool> IsConfigsCachedAsync()
         {
             return Task.FromResult<bool>(Directory.Exists(Globals.ConfigPath) && Directory.EnumerateFiles(Globals.ConfigPath).Any());
         }

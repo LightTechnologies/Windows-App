@@ -11,10 +11,10 @@
  */
 using System.Diagnostics;
 using System.Runtime.Versioning;
-using LightVPN.Common.v2.Interfaces;
+using LightVPN.Common.Interfaces;
 using Microsoft.Win32;
 
-namespace LightVPN.Common.v2
+namespace LightVPN.Common
 {
     public class Native : INative
     {

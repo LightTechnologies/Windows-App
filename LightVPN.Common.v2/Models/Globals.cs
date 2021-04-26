@@ -13,7 +13,7 @@ using SimpleInjector;
 using System;
 using System.IO;
 
-namespace LightVPN.Common.v2.Models
+namespace LightVPN.Common.Models
 {
     public static class Globals
     {

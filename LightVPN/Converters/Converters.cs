@@ -1,6 +1,6 @@
 ﻿/* --------------------------------------------
  * 
- * XAML converters - Main class
+ * UI (WPF) converters - Main class
  * Copyright (C) Light Technologies LLC
  * 
  * File: Converters.cs
@@ -10,13 +10,82 @@
  * --------------------------------------------
  */
 
+using LightVPN.Common.Models;
+using LightVPN.Models;
+using MaterialDesignThemes.Wpf;
 using System;
+using System.ComponentModel;
 using System.Globalization;
+using System.Reflection;
 using System.Windows;
 using System.Windows.Data;
+using System.Windows.Markup;
 
 namespace LightVPN.Converters
 {
+
+    [ValueConversion(typeof(ConnectionState), typeof(PackIconKind))]
+    public class ConnectionStateToPackIconKindConverter : IValueConverter
+    {
+        /// <summary>
+        /// Convert a ConnectionState enum to PackIconKind (this is my custom converter) - Khrysus
+        /// </summary>
+        /// <param name="value">ConnectionState enum</param>
+        /// <param name="targetType"></param>
+        /// <param name="parameter"></param>
+        /// <param name="culture"></param>
+        /// <returns>PackIconKind</returns>
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            if (value is not ConnectionState connState) return null;
+            return connState switch
+            {
+                ConnectionState.Connected => PackIconKind.Close,
+                _ => PackIconKind.Connection,
+            };
+        }
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            throw new NotImplementedException();
+        }
+    }
+
+    //Source: https://brianlagunas.com/a-better-way-to-data-bind-enums-in-wpf/
+    public class EnumDescriptionTypeConverter : EnumConverter
+    {
+        public EnumDescriptionTypeConverter(Type type)
+            : base(type)
+        {
+        }
+        /// <summary>
+        /// This is for WPF bindings, since we are only using MVVM to display data. This method should only be called by WPF therefore it's params are not documented
+        /// </summary>
+        /// <param name="context"></param>
+        /// <param name="culture"></param>
+        /// <param name="value"></param>
+        /// <param name="destinationType"></param>
+        /// <returns></returns>
+        public override object ConvertTo(ITypeDescriptorContext context, CultureInfo culture, object value, Type destinationType)
+        {
+            if (destinationType == typeof(string))
+            {
+                if (value != null)
+                {
+                    FieldInfo fi = value.GetType().GetField(value.ToString());
+                    if (fi != null)
+                    {
+                        var attributes = (DescriptionAttribute[])fi.GetCustomAttributes(typeof(DescriptionAttribute), false);
+                        return ((attributes.Length > 0) && (!string.IsNullOrEmpty(attributes[0].Description))) ? attributes[0].Description : value.ToString();
+                    }
+                }
+
+                return string.Empty;
+            }
+
+            return base.ConvertTo(context, culture, value, destinationType);
+        }
+    }
+
     [ValueConversion(typeof(bool), typeof(bool))]
     public class InverseBooleanConverter : IValueConverter
     {

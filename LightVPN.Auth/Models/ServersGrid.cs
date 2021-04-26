@@ -9,6 +9,7 @@
  * 
  * --------------------------------------------
  */
+using LightVPN.Common.Models;
 using System.ComponentModel;
 using System.Net;
 

@@ -1,6 +1,6 @@
 ﻿using DiscordRPC;
 using DiscordRPC.Message;
-using LightVPN.Common.v2;
+using LightVPN.Common;
 using LightVPN.Discord.Exceptions;
 using LightVPN.Discord.Interfaces;
 using System;
@@ -44,7 +44,7 @@ namespace LightVPN.Discord
         /// <summary>
         /// Initializes the DiscordRpc client and invokes it
         /// </summary>
-        public void Initalize()
+        public void Initialize()
         {
             _client.Initialize();
             _client.Invoke();

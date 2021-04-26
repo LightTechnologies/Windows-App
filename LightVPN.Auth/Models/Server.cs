@@ -9,6 +9,7 @@
  * 
  * --------------------------------------------
  */
+using LightVPN.Common.Models;
 using Newtonsoft.Json;
 
 namespace LightVPN.Auth.Models
@@ -31,12 +32,11 @@ namespace LightVPN.Auth.Models
 
         [JsonProperty("pritunlName")] 
         public string FileName { get; set; }
-    }
-    public enum ServerType
-    {
-        Regular,
-        Speed,
-        Privacy,
-        Game
+
+        [JsonProperty("DevicesOnline")]
+        public long DevicesOnline { get; set; }
+
+        [JsonProperty("status")]
+        public bool Status { get; set; }
     }
 }

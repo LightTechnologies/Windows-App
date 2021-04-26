@@ -5,7 +5,7 @@
         void ClearPresence();
         void Deinitialize();
         void Dispose();
-        void Initalize();
+        void Initialize();
         void ResetTimestamps();
         void UpdateDetails(string details);
         void UpdateState(string state);

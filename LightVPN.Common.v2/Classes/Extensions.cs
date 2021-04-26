@@ -15,7 +15,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Reflection;
 
-namespace LightVPN.Common.v2
+namespace LightVPN.Common
 {
     public static class Extensions
     {

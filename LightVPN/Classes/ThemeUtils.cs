@@ -9,7 +9,7 @@
  * 
  * --------------------------------------------
  */
-using LightVPN.Common.v2.Models;
+using LightVPN.Common.Models;
 using LightVPN.Interfaces;
 using LightVPN.Logger;
 using LightVPN.Logger.Base;

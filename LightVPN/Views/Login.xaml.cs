@@ -14,7 +14,7 @@ using System;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media.Imaging;
-using LightVPN.Common.v2.Models;
+using LightVPN.Common.Models;
 using LightVPN.Settings.Interfaces;
 using System.Diagnostics;
 
@@ -25,6 +25,9 @@ namespace LightVPN.Views
     /// </summary>
     public partial class Login : Page
     {
+        /*
+            I can't be bothered to MVVM the Login window I'll do it later.
+        */
         public static readonly DependencyProperty IsAuthenticatingProperty =
             DependencyProperty.Register("IsAuthenticating", typeof(bool),
             typeof(Page), new(false));

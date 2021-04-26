@@ -15,8 +15,11 @@ using System.Linq;
 using System.Diagnostics;
 using System.IO;
 using LightVPN.Logger;
-using LightVPN.Common.v2.Models;
+using LightVPN.Common.Models;
 using LightVPN.Logger.Base;
+using System.Runtime.InteropServices;
+using static LightVPN.OpenVPN.Classes.Native;
+using LightVPN.OpenVPN.Classes;
 
 namespace LightVPN.OpenVPN
 {
@@ -29,10 +32,11 @@ namespace LightVPN.OpenVPN
         private void RunOpenVpnProcess(string ovpn)
         {
             this.prc.StartInfo.CreateNoWindow = true;
-            this.prc.StartInfo.Arguments = $"--config \"{this.config}\"";
+            this.prc.StartInfo.Arguments = $"--config \"{this.config}\" --dhcp-renew --dhcp-pre-release";
             this.prc.StartInfo.FileName = this.openVpnExePath;
             this.prc.StartInfo.WindowStyle = ProcessWindowStyle.Hidden;
             this.prc.StartInfo.WorkingDirectory = Path.GetDirectoryName(ovpn);
+            this.prc.StartInfo.RedirectStandardInput = true;
             this.prc.StartInfo.RedirectStandardOutput = true;
             this.prc.StartInfo.RedirectStandardError = true;
             this.prc.StartInfo.UseShellExecute = false;
@@ -87,7 +91,7 @@ namespace LightVPN.OpenVPN
             }
             else if (e.Data.Contains("Exiting due to fatal error"))
             {
-                InvokeError("A fatal error occured connecting to the vpn server please connect again");
+                InvokeError("A fatal error occured connecting to the VPN server please connect again");
             }
             else if (e.Data.Contains("Server poll timeout"))
             {
@@ -99,7 +103,7 @@ namespace LightVPN.OpenVPN
             }
             else if(e.Data.Contains("Adapter 'LightVPN-TAP' not found"))
             {
-                InvokeError("Couldn't find adapter");
+                InvokeError("Couldn't find TAP adapter, reinstall your TAP adapter and try again");
             }
             else if (e.Data.Contains("Initialization Sequence Completed"))
             {
@@ -160,12 +164,21 @@ namespace LightVPN.OpenVPN
         /// </summary>
         public void Disconnect()
         {
+            //GenerateConsoleCtrlEvent(ConsoleCtrlEvent.CTRL_C, prc.Id);
+            if (AttachConsole((uint)prc.Id) && SetConsoleCtrlHandler(null, true) && GenerateConsoleCtrlEvent(0, 0))
+            {
+                FreeConsole();
+            }
+            else
+            {
+                errorLogger.Write("[FATAL] AttachConsole, SetConsoleCtrlHandler & GenerateConsoleCtrlEvent has failed! This is bad!!!!");
+            }
+
+            prc.WaitForExit();
             prc.OutputDataReceived -= Prc_OutputDataReceived;
             prc.ErrorDataReceived -= Prc_ErrorDataReceived;
             prc.CancelOutputRead();
             prc.CancelErrorRead();
-            prc.Kill();
-            prc.WaitForExit(1000);
             IsConnected = false;
         }
         public bool IsConnected { get; private set; }
@@ -209,6 +222,7 @@ namespace LightVPN.OpenVPN
         }
 
         private readonly FileLogger logger = new OpenVpnLogger(Globals.OpenVpnLogPath);
+        private readonly FileLogger errorLogger = new ErrorLogger(Globals.ErrorLogPath);
 
         private string config;
 
