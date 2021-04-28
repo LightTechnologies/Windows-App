@@ -13,8 +13,7 @@
     <tb:TaskbarIcon
         x:Key="NotifyIcon"
         ContextMenu="{StaticResource SysTrayMenu}"
-        IconSource="/Resources/lightvpn.ico"
-        ToolTipText="LightVPN">
+        IconSource="/Resources/lightvpn.ico">
 
         <tb:TaskbarIcon.DataContext>
             <viewModels:TrayIconViewModel />

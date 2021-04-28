@@ -23,7 +23,6 @@ using System.Windows.Markup;
 
 namespace LightVPN.Converters
 {
-
     [ValueConversion(typeof(ConnectionState), typeof(PackIconKind))]
     public class ConnectionStateToPackIconKindConverter : IValueConverter
     {

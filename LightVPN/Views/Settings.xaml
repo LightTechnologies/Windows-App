@@ -31,7 +31,10 @@
             <RowDefinition Height="55" />
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
-        <StackPanel Grid.Row="0" Orientation="Horizontal">
+        <StackPanel
+            Grid.Row="0"
+            Background="{x:Null}"
+            Orientation="Horizontal">
             <Button
                 Name="backButton"
                 Width="50"
@@ -51,10 +54,12 @@
                 Style="{StaticResource Headline}"
                 Text="Settings" />
         </StackPanel>
+
         <ScrollViewer
+            Name="scrollViewer"
             Grid.Row="1"
             HorizontalScrollBarVisibility="Disabled"
-            VerticalScrollBarVisibility="Auto">
+            VerticalScrollBarVisibility="Visible">
             <Grid>
                 <StackPanel HorizontalAlignment="Stretch" VerticalAlignment="Top">
                     <TextBlock

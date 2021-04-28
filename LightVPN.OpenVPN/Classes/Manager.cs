@@ -20,6 +20,11 @@ using LightVPN.Logger.Base;
 using System.Runtime.InteropServices;
 using static LightVPN.OpenVPN.Classes.Native;
 using LightVPN.OpenVPN.Classes;
+using System.Net.Sockets;
+using System.Net;
+using System.Threading.Tasks;
+using System.Threading;
+using System.Text;
 
 namespace LightVPN.OpenVPN
 {
@@ -32,7 +37,7 @@ namespace LightVPN.OpenVPN
         private void RunOpenVpnProcess(string ovpn)
         {
             this.prc.StartInfo.CreateNoWindow = true;
-            this.prc.StartInfo.Arguments = $"--config \"{this.config}\" --dhcp-renew --dhcp-pre-release";
+            this.prc.StartInfo.Arguments = $"--config \"{this.config}\" --register-dns --dev-node LightVPN-TAP --management 127.0.0.1 33333";
             this.prc.StartInfo.FileName = this.openVpnExePath;
             this.prc.StartInfo.WindowStyle = ProcessWindowStyle.Hidden;
             this.prc.StartInfo.WorkingDirectory = Path.GetDirectoryName(ovpn);
@@ -109,6 +114,8 @@ namespace LightVPN.OpenVPN
             {
                 if (Connected == null) return;
                 Connected.Invoke(this);
+                // EXPERIMENTAL: CONNECT TO MANAGEMENT SERVER ON LOCALHOST
+                await ConnectToManagementServerAsync(33333);
             }
             else
             {
@@ -164,25 +171,7 @@ namespace LightVPN.OpenVPN
         /// </summary>
         public void Disconnect()
         {
-            //GenerateConsoleCtrlEvent(ConsoleCtrlEvent.CTRL_C, prc.Id);
-            if (AttachConsole((uint)prc.Id))
-            {
-                SetConsoleCtrlHandler(null, true);
-                try
-                {
-                    if (!GenerateConsoleCtrlEvent(0, 0))
-                    prc.WaitForExit();
-                }
-                finally
-                {
-                    SetConsoleCtrlHandler(null, false);
-                    FreeConsole();
-                }
-            }
-            else
-            {
-                errorLogger.Write("[FATAL] AttachConsole, SetConsoleCtrlHandler & GenerateConsoleCtrlEvent has failed! This is bad!!!!");
-            }
+            ShutdownManagementServer();
 
             prc.WaitForExit(10 * 1000);
             prc.OutputDataReceived -= Prc_OutputDataReceived;
@@ -194,6 +183,8 @@ namespace LightVPN.OpenVPN
         public bool IsConnected { get; private set; }
 
         public bool IsDisposed { get; private set; }
+
+        private Socket ManagementSocket;
         /// <summary>
         /// Disposes the OpenVPN manager
         /// </summary>
@@ -201,6 +192,40 @@ namespace LightVPN.OpenVPN
         {
             this.Dispose(true);
             GC.SuppressFinalize(this);
+        }
+
+        internal async Task ConnectToManagementServerAsync(ushort port, CancellationToken cancellationToken = default)
+         {
+                var ip = IPAddress.Parse("127.0.0.1");
+                var endpoint = new IPEndPoint(ip, 33333);
+
+                ManagementSocket ??= new(ip.AddressFamily,
+                    SocketType.Stream, ProtocolType.Tcp);
+
+                await ManagementSocket.ConnectAsync(endpoint, cancellationToken);
+        }
+
+        internal string SendBufferToManagementServer(string buffer)
+        {
+            byte[] bytes = new byte[1024];
+
+            byte[] msg = Encoding.UTF8.GetBytes(buffer + "\r\n");
+
+            int bytesSent = ManagementSocket.Send(msg);
+
+            int bytesRecv = ManagementSocket.Receive(bytes);
+
+            return Encoding.UTF8.GetString(bytes);
+        }
+
+        internal void ShutdownManagementServer()
+        {
+            if (ManagementSocket is null || !ManagementSocket.Connected) return;
+
+            SendBufferToManagementServer("signal SIGTERM");
+
+            ManagementSocket.Shutdown(SocketShutdown.Both);
+            ManagementSocket.Close();
         }
 
         protected virtual void Dispose(bool disposing)

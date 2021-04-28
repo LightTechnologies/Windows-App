@@ -78,6 +78,7 @@ namespace LightVPN
                 {
                     hasHandle = true;
                 }
+                
                 ExceptionlessClient.Default.Register();
                 var httpClientHandler = new HttpClientHandler
                 {
@@ -139,6 +140,9 @@ namespace LightVPN
                     res.MergedDictionaries.Add(new ResourceDictionary() { Source = mdUri });
                     res.MergedDictionaries.Add(new ResourceDictionary() { Source = mdUri1 });
 
+                    AppDomain.CurrentDomain.UnhandledException += CurrentDomain_UnhandledException;
+                    App.Current.DispatcherUnhandledException += Current_DispatcherUnhandledException;
+
                     // Executes the app
                     a.Run();
 
@@ -163,6 +167,24 @@ namespace LightVPN
                 if (hasHandle)
                     mutex.ReleaseMutex();
             }
+        }
+
+        private static void Current_DispatcherUnhandledException(object sender, System.Windows.Threading.DispatcherUnhandledExceptionEventArgs e)
+        {
+            e.Exception.ToExceptionless().Submit();
+            //else
+            MessageBox.Show($"An exception has occurred. It has been written to the log file and uploaded to the server, please open an issue on GitHub with the log file attached so the developers can resolve the issue.", "LightVPN", MessageBoxButton.OK, MessageBoxImage.Error);
+
+            logger.Write(e.ToString());
+            Environment.Exit(0);
+        }
+
+        private static void CurrentDomain_UnhandledException(object sender, UnhandledExceptionEventArgs e)
+        {
+            MessageBox.Show($"An exception has occurred. It has been written to the log file as it couldn't be sent to the server, please open an issue on GitHub with the log file attached so the developers can resolve the issue.", "LightVPN", MessageBoxButton.OK, MessageBoxImage.Error);
+
+            logger.Write(e.ExceptionObject.ToString());
+            Environment.Exit(0);
         }
     }
 }
