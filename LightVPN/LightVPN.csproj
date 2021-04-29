@@ -19,9 +19,9 @@
 		<ApplicationManifest>app.manifest</ApplicationManifest>
 		<ApplicationIcon>lightvpn.ico</ApplicationIcon>
 		<PackageLicenseFile>License.txt</PackageLicenseFile>
-		<AssemblyVersion>2.1.1.2</AssemblyVersion>
-		<FileVersion>2.1.1.2</FileVersion>
-		<Version>2.1.1.2</Version>
+		<AssemblyVersion>2.1.1.3</AssemblyVersion>
+		<FileVersion>2.1.1.3</FileVersion>
+		<Version>2.1.1.3</Version>
 		<NeutralLanguage>en-US</NeutralLanguage>
 		<ProjectGuid>f35bd589-5219-4668-9f78-b646442b1661</ProjectGuid>
 	</PropertyGroup>
