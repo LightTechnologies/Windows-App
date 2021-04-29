@@ -205,6 +205,7 @@ namespace LightVPN.OpenVPN
         public bool IsDisposed { get; private set; }
 
         private Socket ManagementSocket;
+        private EndPoint ManagementEP;
 
         /// <summary>
         /// Disposes the OpenVPN manager
@@ -216,18 +217,33 @@ namespace LightVPN.OpenVPN
             GC.SuppressFinalize(this);
         }
 
+        internal void CreateSocket()
+        {
+            errorLogger.Write("(Manager/CreateSocket) Creating new socket & endpoint");
+
+            var ip = IPAddress.Parse("127.0.0.1");
+            ManagementEP = new IPEndPoint(ip, 33333);
+
+            ManagementSocket = new(ip.AddressFamily,
+                        SocketType.Stream, ProtocolType.Tcp);
+        }
+
         internal async Task ConnectToManagementServerAsync(CancellationToken cancellationToken = default)
         {
-            var ip = IPAddress.Parse("127.0.0.1");
-            var endpoint = new IPEndPoint(ip, 33333);
-
-            ManagementSocket ??= new(ip.AddressFamily,
-                SocketType.Stream, ProtocolType.Tcp);
-
-            if (!ManagementSocket.Connected)
+            try
             {
-                errorLogger.Write($"(Manager/ConnectToManagementServer) Establishing (sock type: {ManagementSocket.SocketType}, proto: {ManagementSocket.ProtocolType}) connection to endpoint: {endpoint}");
-                await ManagementSocket.ConnectAsync(endpoint, cancellationToken);
+                if (ManagementSocket is null || !ManagementSocket.Connected)
+                {
+                    CreateSocket();
+
+                    errorLogger.Write($"(Manager/ConnectToManagementServer) Establishing (sock type: {ManagementSocket.SocketType}, proto: {ManagementSocket.ProtocolType}) connection to endpoint: {ManagementEP}");
+                    await ManagementSocket.ConnectAsync(ManagementEP, cancellationToken);
+                }
+            }
+            catch (ObjectDisposedException)
+            {
+                CreateSocket();
+                await ConnectToManagementServerAsync(cancellationToken);
             }
         }
 
