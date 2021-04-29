@@ -23,11 +23,11 @@ namespace LightVPN.Auth.Interfaces
         Task GetUpdatesAsync();
         Task FetchOpenVpnDriversAsync();
         Task CacheConfigsAsync(bool force = false);
-        Task<bool> GetOpenVPNBinariesAsync();
+        Task<bool> GetOpenVpnBinariesAsync();
         Task<List<Server>> GetServersAsync();
         Task<AuthResponse> LoginAsync(string username, string password);
         Task<bool> IsConfigsCachedAsync();
-        Task<bool> HasOpenVPN();
-        Task<bool> ValidateSession(string username, Guid guid);
+        Task<bool> HasOpenVpnAsync();
+        Task<bool> ValidateSessionAsync(string username, Guid guid);
     }
 }

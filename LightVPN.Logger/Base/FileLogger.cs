@@ -41,13 +41,13 @@ namespace LightVPN.Logger.Base
         public void Write(string line)
         {
             Verify();
-            File.AppendAllText(_fileName, line + "\n");
+            File.AppendAllText(_fileName, $"[UTC: {DateTime.UtcNow}]: {line}\n");
         }
 
         public async Task WriteAsync(string line)
         {
             Verify();
-            await File.AppendAllTextAsync(_fileName, line + "\n");
+            await File.AppendAllTextAsync(_fileName, $"[UTC: {DateTime.UtcNow}]: {line}\n");
         }
 
         public void Clear()

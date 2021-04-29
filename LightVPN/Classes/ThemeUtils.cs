@@ -22,7 +22,7 @@ namespace LightVPN
 {
     public class ThemeUtils : IThemeUtils
     {
-        private readonly FileLogger logger = new ErrorLogger(Globals.ErrorLogPath);
+        private readonly FileLogger logger = new ErrorLogger();
         /// <summary>
         /// Switches the theme to the data provided in the color object
         /// </summary>

@@ -44,13 +44,13 @@ namespace LightVPN
 {
     public class Startup : Application
     {
-        internal static readonly FileLogger logger = new ErrorLogger(Globals.ErrorLogPath);
+        internal static readonly FileLogger logger = new ErrorLogger();
        
 
         [STAThread]
         public static void Main()
         {
-
+            logger.Write($"LightVPN Windows Client [version {Assembly.GetEntryAssembly().GetName().Version}]");
             /* https://stackoverflow.com/questions/229565/what-is-a-good-pattern-for-using-a-global-mutex-in-c/229567 */
 
             string mutexId = string.Format("Global\\{{{0}}}", "f35bd589-5219-4668-9f78-b646442b1661");
@@ -72,7 +72,10 @@ namespace LightVPN
                 {
                     hasHandle = mutex.WaitOne(5000, false);
                     if (hasHandle == false)
+                    {
+                        logger.Write("(Startup/Main) Timeout waiting for exclusive access");
                         throw new TimeoutException("Timeout waiting for exclusive access");
+                    }
                 }
                 catch (AbandonedMutexException)
                 {
@@ -113,6 +116,7 @@ namespace LightVPN
                 Globals.container.Register<ISettingsManager<SettingsModel>>(() => new SettingsManager<SettingsModel>(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "LightVPN", "config.json")), Lifestyle.Singleton);
 
                 Globals.container.Verify();
+                logger.Write("(Startup/Main) Injected deps");
                 try
                 {
 
@@ -143,11 +147,9 @@ namespace LightVPN
                     AppDomain.CurrentDomain.UnhandledException += CurrentDomain_UnhandledException;
                     App.Current.DispatcherUnhandledException += Current_DispatcherUnhandledException;
 
+                    logger.Write("(Startup/Main) Resources injected, executing app...");
                     // Executes the app
                     a.Run();
-
-                    // Keeps the mutex alive whilst the app is
-                    GC.KeepAlive(mutex);
 
                     return;
                 }

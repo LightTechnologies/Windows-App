@@ -49,7 +49,7 @@ namespace LightVPN.Windows
 
         private readonly Views.Login page = new ();
 
-        private readonly FileLogger logger = new ErrorLogger(Globals.ErrorLogPath);
+        private readonly FileLogger logger = new ErrorLogger();
         public LoginWindow()
         {
             InitializeComponent();
@@ -84,7 +84,7 @@ namespace LightVPN.Windows
                 AuthResponse authResponse = new();
                 if (isSessionAuth)
                 {
-                    var loginResponse = await Globals.container.GetInstance<IHttp>().ValidateSession(page.UsernameBox.Text, sessionId);
+                    var loginResponse = await Globals.container.GetInstance<IHttp>().ValidateSessionAsync(page.UsernameBox.Text, sessionId);
                     if (!loginResponse)
                     {
                         ShowSnackbar("Your session is invalid, please sign in again.");
@@ -121,12 +121,12 @@ namespace LightVPN.Windows
                         await Globals.container.GetInstance<IHttp>().CacheConfigsAsync();
                     });
                 }
-                if (!await Globals.container.GetInstance<IHttp>().HasOpenVPN())
+                if (!await Globals.container.GetInstance<IHttp>().HasOpenVpnAsync())
                 {
                     page.SignInText.Text = " FETCHING BINARIES...";
                     await Task.Run(async () =>
                     {
-                        await Globals.container.GetInstance<IHttp>().GetOpenVPNBinariesAsync();
+                        await Globals.container.GetInstance<IHttp>().GetOpenVpnBinariesAsync();
                     });
                 }
                 page.SignInText.Text = " CHECKING TAP ADAPTER...";

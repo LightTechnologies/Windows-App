@@ -9,13 +9,14 @@
  * 
  * --------------------------------------------
  */
+using LightVPN.Common.Models;
 using LightVPN.Logger.Base;
 
 namespace LightVPN.Logger
 {
     public class ErrorLogger : FileLogger
     {
-        public ErrorLogger(string fileName) : base(fileName)
+        public ErrorLogger() : base(Globals.ErrorLogPath)
         {
 
         }
