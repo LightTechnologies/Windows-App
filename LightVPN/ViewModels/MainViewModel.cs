@@ -83,7 +83,7 @@ namespace LightVPN.ViewModels
 
         internal async Task ConnectAsync(string serverName)
         {
-            if (_manager.IsConnected) return;
+            if (_manager.IsConnected || ConnectionState == ConnectionState.Connecting) return;
 
             ConnectionState = ConnectionState.Connecting;
             IsConnecting = true;
@@ -139,6 +139,7 @@ namespace LightVPN.ViewModels
 
         internal async Task DisconnectAsync()
         {
+            IsConnecting = true;
             if (Globals.container.GetInstance<ISettingsManager<SettingsModel>>().Load().DiscordRpc)
             {
                 Globals.container.GetInstance<IDiscordRpc>().ResetTimestamps();
@@ -148,6 +149,7 @@ namespace LightVPN.ViewModels
             {
                 _manager.Disconnect();
             });
+            IsConnecting = false;
             ConnectionState = ConnectionState.Disconnected;
         }
 

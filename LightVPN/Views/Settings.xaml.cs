@@ -27,7 +27,7 @@ namespace LightVPN.Views
         {
             InitializeComponent();
             _host = host;
-            versionText.Text = $"LightVPN Windows Client [beta version {Assembly.GetEntryAssembly().GetName().Version}]";
+            versionText.Text = $"LightVPN Windows Client [stable version {Assembly.GetEntryAssembly().GetName().Version}]";
         }
 
         private void BackToHome(object sender, RoutedEventArgs e)
