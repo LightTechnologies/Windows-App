@@ -117,7 +117,7 @@ namespace LightVPN.ViewModels
             }
         }
 
-        internal void StartNotepadProcess(string filePath)
+        internal static void StartNotepadProcess(string filePath)
         {
             var process = new Process
             {
