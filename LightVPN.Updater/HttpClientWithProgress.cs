@@ -34,7 +34,8 @@ namespace LightVPN.Updater
             _httpClient = new HttpClient
             {
                 Timeout = TimeSpan.FromDays(1),
-                BaseAddress = new Uri("https://lightvpn.cc")
+                BaseAddress = new Uri("https://lightvpn.org"),
+                DefaultRequestVersion = new Version("2.0.0.0"),
             };
 
             using var response = await _httpClient.GetAsync(_downloadUrl, HttpCompletionOption.ResponseHeadersRead);

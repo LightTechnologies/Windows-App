@@ -45,7 +45,7 @@ namespace LightVPN.ViewModels
         {
             MessageBox.Show($"A problem has occurred whilst connecting to the server;\n\n{message}", "LightVPN", MessageBoxButton.OK, MessageBoxImage.Error);
             IsConnecting = false;
-            ConnectionState = ConnectionState.Connected;
+            ConnectionState = ConnectionState.Disconnected;
         }
 
         private void Connected(object sender)
