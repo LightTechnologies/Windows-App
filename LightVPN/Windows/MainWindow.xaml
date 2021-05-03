@@ -5,6 +5,7 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:ei="http://schemas.microsoft.com/expression/2010/interactions"
     xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
+    xmlns:lightvpn="clr-namespace:LightVPN"
     xmlns:local="clr-namespace:LightVPN.Windows"
     xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
@@ -19,6 +20,7 @@
     StateChanged="MainWindowStateChanged"
     Style="{StaticResource LightUIWindow}"
     WindowStartupLocation="CenterScreen"
+    WindowStyle="None"
     mc:Ignorable="d">
     <Window.DataContext>
         <viewModels:MainWindowViewModel />
@@ -76,6 +78,7 @@
             CaptionHeight="35"
             CornerRadius="0,0,0,0"
             GlassFrameThickness="0"
+            NonClientFrameEdges="None"
             ResizeBorderThickness="7"
             UseAeroCaptionButtons="False" />
     </WindowChrome.WindowChrome>

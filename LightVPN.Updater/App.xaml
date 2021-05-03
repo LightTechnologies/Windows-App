@@ -4,7 +4,7 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:local="clr-namespace:LightVPN.Updater"
     xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
-    StartupUri="MainWindow.xaml">
+    StartupUri="Windows/MainWindow.xaml">
     <Application.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>

@@ -39,7 +39,7 @@ namespace LightVPN.ViewModels
             {
                 return new CommandDelegate
                 {
-                    CommandAction = () => 
+                    CommandAction = () =>
                     {
                         Globals.IsMinimizedToTray = true;
                         Application.Current.MainWindow.Hide();

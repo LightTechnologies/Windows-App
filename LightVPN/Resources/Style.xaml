@@ -11,6 +11,14 @@
             </DataTrigger>
         </Style.Triggers>
     </Style>
+    <Style x:Key="Body" TargetType="TextBlock">
+        <Setter Property="FontSize" Value="14" />
+        <Setter Property="FontFamily" Value="pack://application:,,,/LightVPN;component/Resources/Fonts/#Inter Bold" />
+    </Style>
+    <Style x:Key="ConsoleBody" TargetType="TextBlock">
+        <Setter Property="FontSize" Value="14" />
+        <Setter Property="FontFamily" Value="Consolas" />
+    </Style>
     <Style x:Key="LightUIView" TargetType="Page">
         <Setter Property="FontFamily" Value="pack://application:,,,/LightVPN;component/Resources/Fonts/#Inter Medium" />
         <Setter Property="Background" Value="{DynamicResource MaterialDesignPaper}" />
@@ -26,7 +34,7 @@
         <Setter Property="FontSize" Value="13" />
         <Setter Property="TextOptions.TextFormattingMode" Value="Ideal" />
         <Setter Property="TextOptions.TextRenderingMode" Value="Aliased" />
-        <Setter Property="AllowsTransparency" Value="True" />
+        <Setter Property="AllowsTransparency" Value="False" />
         <Setter Property="WindowStyle" Value="None" />
     </Style>
     <Style x:Key="BrightHeadline" TargetType="TextBlock">
@@ -75,6 +83,10 @@
         <Setter Property="FontSize" Value="20" />
         <Setter Property="Foreground" Value="{DynamicResource MaterialDesignBody}" />
         <Setter Property="FontFamily" Value="pack://application:,,,/LightVPN;component/Resources/Fonts/#Inter Extra Bold" />
+    </Style>
+    <Style x:Key="Body" TargetType="TextBlock">
+        <Setter Property="FontSize" Value="14" />
+        <Setter Property="FontFamily" Value="pack://application:,,,/LightVPN.Updater;component/Resources/Fonts/#Inter Bold" />
     </Style>
     <Style x:Key="GradientBackground" TargetType="materialDesign:Card">
         <Setter Property="Background">

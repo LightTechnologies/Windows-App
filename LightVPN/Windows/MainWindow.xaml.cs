@@ -50,14 +50,7 @@ namespace LightVPN.Windows
         private void MainWindowStateChanged(object sender, EventArgs e)
         {
             //Handles Windows Aero maximize changes
-            if (WindowState == WindowState.Maximized)
-            {
-                MaxIcon.Kind = PackIconKind.WindowRestore;
-            }
-            else
-            {
-                MaxIcon.Kind = PackIconKind.WindowMaximize;
-            }
+            MaxIcon.Kind = WindowState == WindowState.Maximized ? PackIconKind.WindowRestore : PackIconKind.WindowMaximize;
         }
 
         public async void NavigatePage(Page page)

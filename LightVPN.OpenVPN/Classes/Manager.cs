@@ -10,7 +10,6 @@
  * --------------------------------------------
  */
 
-using LightVPN.Common.Models;
 using LightVPN.Logger;
 using LightVPN.Logger.Base;
 using LightVPN.OpenVPN.Interfaces;
@@ -34,45 +33,45 @@ namespace LightVPN.OpenVPN
         /// <param name="ovpn">Path to the OpenVPN config file</param>
         private void RunOpenVpnProcess(string ovpn)
         {
-            errorLogger.Write("(Manager/RunOpenVpnProcess) Configuring and booting OpenVPN CLI...");
-            this.prc.StartInfo.CreateNoWindow = true;
-            this.prc.StartInfo.Arguments = $"--config \"{this.config}\" --register-dns --dev-node LightVPN-TAP --management 127.0.0.1 33333";
-            this.prc.StartInfo.FileName = this.openVpnExePath;
-            this.prc.StartInfo.WindowStyle = ProcessWindowStyle.Hidden;
-            this.prc.StartInfo.WorkingDirectory = Path.GetDirectoryName(ovpn);
-            this.prc.StartInfo.RedirectStandardInput = true;
-            this.prc.StartInfo.RedirectStandardOutput = true;
-            this.prc.StartInfo.RedirectStandardError = true;
-            this.prc.StartInfo.UseShellExecute = false;
-            prc.StartInfo.Verb = "runas";
-            this.prc.OutputDataReceived += this.Prc_OutputDataReceived;
-            this.prc.ErrorDataReceived += this.Prc_ErrorDataReceived;
-            this.prc.Start();
-            errorLogger.Write("(Manager/RunOpenVpnProcess) Booted!");
-            this.prc.BeginOutputReadLine();
-            this.prc.BeginErrorReadLine();
-            ChildProcessTracker.AddProcess(this.prc);
-            errorLogger.Write("(Manager/RunOpenVpnProcess) Redirected stdout && added to ChildProcessTracker");
+            _errorLogger.Write("(Manager/RunOpenVpnProcess) Configuring and booting OpenVPN CLI...");
+            _ovpnProcess.StartInfo.CreateNoWindow = true;
+            _ovpnProcess.StartInfo.Arguments = $"--config \"{_config}\" --register-dns --dev-node LightVPN-TAP --management 127.0.0.1 33333";
+            _ovpnProcess.StartInfo.FileName = _ovpnPath;
+            _ovpnProcess.StartInfo.WindowStyle = ProcessWindowStyle.Hidden;
+            _ovpnProcess.StartInfo.WorkingDirectory = Path.GetDirectoryName(ovpn);
+            _ovpnProcess.StartInfo.RedirectStandardInput = true;
+            _ovpnProcess.StartInfo.RedirectStandardOutput = true;
+            _ovpnProcess.StartInfo.RedirectStandardError = true;
+            _ovpnProcess.StartInfo.UseShellExecute = false;
+            _ovpnProcess.StartInfo.Verb = "runas";
+            _ovpnProcess.OutputDataReceived += OutputDataReceived;
+            _ovpnProcess.ErrorDataReceived += ErrorDataReceived;
+            _ovpnProcess.Start();
+            _errorLogger.Write("(Manager/RunOpenVpnProcess) Booted!");
+            _ovpnProcess.BeginOutputReadLine();
+            _ovpnProcess.BeginErrorReadLine();
+            ChildProcessTracker.AddProcess(_ovpnProcess);
+            _errorLogger.Write("(Manager/RunOpenVpnProcess) Redirected stdout && added to ChildProcessTracker");
         }
 
-        public event Manager.outputRecieved OnOutput;
+        public event OutputReceived OnOutput;
 
-        public event Manager.OutputEvent Output;
+        public event OutputEvent Output;
 
-        public event Manager.LoginFailedEvent LoginFailed;
+        public event LoginFailedEvent LoginFailed;
 
-        public event Manager.ConnectedEvent Connected;
+        public event ConnectedEvent Connected;
 
-        public event Manager.ErrorEvent Error;
+        public event ErrorEvent Error;
 
         /// <summary>
         /// The error data recieved event, invoked whenever an error is thrown by OpenVPN
         /// </summary>
         /// <param name="sender">Sender</param>
         /// <param name="e">Event arguments</param>
-        private void Prc_ErrorDataReceived(object sender, DataReceivedEventArgs e)
+        private void ErrorDataReceived(object sender, DataReceivedEventArgs e)
         {
-            Manager.outputRecieved onOutput = this.OnOutput;
+            OutputReceived onOutput = this.OnOutput;
             if (Output == null)
             {
                 return;
@@ -85,47 +84,47 @@ namespace LightVPN.OpenVPN
         /// </summary>
         /// <param name="sender">Sender</param>
         /// <param name="e">Event arguments</param>
-        private async void Prc_OutputDataReceived(object sender, DataReceivedEventArgs e)
+        private async void OutputDataReceived(object sender, DataReceivedEventArgs e)
         {
             if (string.IsNullOrWhiteSpace(e.Data)) return;
 
-            await logger.WriteAsync(e.Data);
+            await _logger.WriteAsync(e.Data);
 
             if (e.Data.Contains("Received control message: AUTH_FAILED"))
             {
-                errorLogger.Write("(Manager/OpenVpnOutputHandler) Recieved control message: AUTH_FAILED");
+                _errorLogger.Write("(Manager/OpenVpnOutputHandler) Recieved control message: AUTH_FAILED");
                 if (LoginFailed == null) return;
                 LoginFailed.Invoke(this);
                 Disconnect();
             }
             else if (e.Data.Contains("Error opening configuration file"))
             {
-                errorLogger.Write("(Manager/OpenVpnOutputHandler) Failed to open config");
+                _errorLogger.Write("(Manager/OpenVpnOutputHandler) Failed to open config");
                 InvokeError("Error opening configuration file, you should clear your VPN server cache");
             }
             else if (e.Data.Contains("Exiting due to fatal error"))
             {
-                errorLogger.Write("(Manager/OpenVpnOutputHandler) OpenVPN CLI has exited!");
+                _errorLogger.Write("(Manager/OpenVpnOutputHandler) OpenVPN CLI has exited due to fatal error!");
                 InvokeError("A fatal error occured connecting to the VPN server please connect again");
             }
             else if (e.Data.Contains("Server poll timeout"))
             {
-                errorLogger.Write("(Manager/OpenVpnOutputHandler) Server conn timeout");
+                _errorLogger.Write("(Manager/OpenVpnOutputHandler) Server conn timeout");
                 InvokeError("Timed out connecting to server"); // yes i know i can use Output?.Invoke i just dont want to as its not as clean
             }
             else if (e.Data.Contains("Unknown error"))
             {
-                errorLogger.Write("(Manager/OpenVpnOutputHandler) Unknown error (this is not good)");
+                _errorLogger.Write("(Manager/OpenVpnOutputHandler) Unknown error (this is not good)");
                 InvokeError("Unknown error connecting to server, reinstall your TAP adapter and try again");
             }
             else if (e.Data.Contains("Adapter 'LightVPN-TAP' not found"))
             {
-                errorLogger.Write("(Manager/OpenVpnOutputHandler) No OVPN-TAP");
+                _errorLogger.Write("(Manager/OpenVpnOutputHandler) No OVPN-TAP");
                 InvokeError("Couldn't find TAP adapter, reinstall your TAP adapter and try again");
             }
             else if (e.Data.Contains("Initialization Sequence Completed"))
             {
-                errorLogger.Write("(Manager/OpenVpnOutputHandler) We connected sir!");
+                _errorLogger.Write("(Manager/OpenVpnOutputHandler) We connected sir!");
                 if (Connected == null) return;
                 Connected.Invoke(this);
                 // EXPERIMENTAL: CONNECT TO MANAGEMENT SERVER ON LOCALHOST
@@ -159,7 +158,7 @@ namespace LightVPN.OpenVPN
         {
             try
             {
-                errorLogger.Write("(Manager/ctor) Cleaning...");
+                _errorLogger.Write("(Manager/ctor) Cleaning...");
                 Process.GetProcessesByName("openvpn").ToList().ForEach(x =>
                 {
                     x.Kill();
@@ -168,9 +167,8 @@ namespace LightVPN.OpenVPN
             catch
             {
             }
-            this.openVpnExePath = openVpnExeFileName;
-            this._tap = tap;
-            this.IsDisposed = false;
+            _ovpnPath = openVpnExeFileName;
+            IsDisposed = false;
         }
 
         /// <summary>
@@ -180,8 +178,8 @@ namespace LightVPN.OpenVPN
         public void Connect(string configpath)
         {
             if (IsConnected) throw new Exception("Already connected to the VPN");
-            this.config = configpath;
-            this.RunOpenVpnProcess(openVpnExePath);
+            _config = configpath;
+            RunOpenVpnProcess(_ovpnPath);
             IsConnected = true;
         }
 
@@ -192,11 +190,11 @@ namespace LightVPN.OpenVPN
         {
             await ShutdownManagementServerAsync();
 
-            prc.WaitForExit(10 * 1000);
-            prc.OutputDataReceived -= Prc_OutputDataReceived;
-            prc.ErrorDataReceived -= Prc_ErrorDataReceived;
-            prc.CancelOutputRead();
-            prc.CancelErrorRead();
+            _ovpnProcess.WaitForExit(10 * 1000);
+            _ovpnProcess.OutputDataReceived -= OutputDataReceived;
+            _ovpnProcess.ErrorDataReceived -= ErrorDataReceived;
+            _ovpnProcess.CancelOutputRead();
+            _ovpnProcess.CancelErrorRead();
             IsConnected = false;
         }
 
@@ -204,27 +202,27 @@ namespace LightVPN.OpenVPN
 
         public bool IsDisposed { get; private set; }
 
-        private Socket ManagementSocket;
-        private EndPoint ManagementEP;
+        private Socket _managementSocket;
+        private EndPoint _managementEp;
 
         /// <summary>
         /// Disposes the OpenVPN manager
         /// </summary>
         public void Dispose()
         {
-            errorLogger.Write("(Manager/Dispose) Disposing myself...");
+            _errorLogger.Write("(Manager/Dispose) Disposing myself...");
             this.Dispose(true);
             GC.SuppressFinalize(this);
         }
 
         internal void CreateSocket()
         {
-            errorLogger.Write("(Manager/CreateSocket) Creating new socket & endpoint");
+            _errorLogger.Write("(Manager/CreateSocket) Creating new socket & endpoint");
 
             var ip = IPAddress.Parse("127.0.0.1");
-            ManagementEP = new IPEndPoint(ip, 33333);
+            _managementEp = new IPEndPoint(ip, 33333);
 
-            ManagementSocket = new(ip.AddressFamily,
+            _managementSocket = new(ip.AddressFamily,
                         SocketType.Stream, ProtocolType.Tcp);
         }
 
@@ -232,12 +230,12 @@ namespace LightVPN.OpenVPN
         {
             try
             {
-                if (ManagementSocket is null || !ManagementSocket.Connected)
+                if (_managementSocket is null || !_managementSocket.Connected)
                 {
                     CreateSocket();
 
-                    errorLogger.Write($"(Manager/ConnectToManagementServer) Establishing (sock type: {ManagementSocket.SocketType}, proto: {ManagementSocket.ProtocolType}) connection to endpoint: {ManagementEP}");
-                    await ManagementSocket.ConnectAsync(ManagementEP, cancellationToken);
+                    _errorLogger.Write($"(Manager/ConnectToManagementServer) Establishing (sock type: {_managementSocket.SocketType}, proto: {_managementSocket.ProtocolType}) connection to endpoint: {_managementEp}");
+                    await _managementSocket.ConnectAsync(_managementEp, cancellationToken);
                 }
             }
             catch (ObjectDisposedException)
@@ -245,18 +243,20 @@ namespace LightVPN.OpenVPN
                 CreateSocket();
                 await ConnectToManagementServerAsync(cancellationToken);
             }
+            catch (Exception)
+            {
+                return;
+            }
         }
 
         internal async Task<string> SendBufferToManagementServer(string buffer, CancellationToken cancellationToken = default)
         {
-            try
+            _errorLogger.Write("(Manager/SendBuffer) Checking socket connection status...");
+            await ConnectToManagementServerAsync(cancellationToken);
+
+            if (_managementSocket is null || !_managementSocket.Connected)
             {
-                errorLogger.Write("(Manager/SendBuffer) Checking socket connection status...");
-                await ConnectToManagementServerAsync(cancellationToken);
-            }
-            catch (Exception)
-            {
-                errorLogger.Write("(SendBuffer) Failed to reconnect to OpenVPN Management server on localhost, the server could be inactive or dead");
+                _errorLogger.Write("(Manager/SendBuffer) Socket is null or not connected after ConnectToManagementServer called, the management server is dead, returning null");
                 return null;
             }
 
@@ -264,11 +264,11 @@ namespace LightVPN.OpenVPN
 
             byte[] msg = Encoding.UTF8.GetBytes(buffer + "\r\n"); // \r\n is required because OpenVPN Management Interface says so (and it likes legacy).
 
-            int sendBytes = await ManagementSocket.SendAsync(msg, SocketFlags.None, cancellationToken);
-            errorLogger.Write($"(Manager/SendBuffer) Sent {sendBytes} bytes through Socket");
+            int sendBytes = await _managementSocket.SendAsync(msg, SocketFlags.None, cancellationToken);
+            _errorLogger.Write($"(Manager/SendBuffer) Sent {sendBytes} bytes through Socket");
 
-            int recvBytes = await ManagementSocket.ReceiveAsync(bytes, SocketFlags.None, cancellationToken);
-            errorLogger.Write($"(Manager/SendBuffer) Recv {recvBytes} bytes back from Socket");
+            int recvBytes = await _managementSocket.ReceiveAsync(bytes, SocketFlags.None, cancellationToken);
+            _errorLogger.Write($"(Manager/SendBuffer) Recv {recvBytes} bytes back from Socket");
 
             return Encoding.UTF8.GetString(bytes);
         }
@@ -277,25 +277,25 @@ namespace LightVPN.OpenVPN
         {
             await SendBufferToManagementServer("signal SIGTERM");
 
-            ManagementSocket.Shutdown(SocketShutdown.Both);
-            ManagementSocket.Close();
-            errorLogger.Write("(Manager/ShutdownManagementServer) Shut down and closed ManagementSocket");
+            _managementSocket.Shutdown(SocketShutdown.Both);
+            _managementSocket.Close();
+            _errorLogger.Write("(Manager/ShutdownManagementServer) Shut down and closed ManagementSocket");
         }
 
         protected virtual void Dispose(bool disposing)
         {
-            if (!this.IsDisposed)
+            if (!IsDisposed)
             {
                 if (disposing)
                 {
-                    this.prc.Kill();
+                    _ovpnProcess.Kill();
 
-                    if (this.prc != null)
+                    if (_ovpnProcess != null)
                     {
-                        this.prc.WaitForExit();
+                        _ovpnProcess.WaitForExit();
                     }
                 }
-                this.IsDisposed = true;
+                IsDisposed = true;
             }
         }
 
@@ -310,16 +310,14 @@ namespace LightVPN.OpenVPN
             }
         }
 
-        private readonly FileLogger logger = new OpenVpnLogger();
-        private readonly FileLogger errorLogger = new ErrorLogger();
+        private readonly FileLogger _logger = new OpenVpnLogger();
+        private readonly FileLogger _errorLogger = new ErrorLogger();
 
-        private string config;
+        private string _config;
 
-        private readonly string _tap;
+        private readonly Process _ovpnProcess = new();
 
-        private readonly Process prc = new();
-
-        private readonly string openVpnExePath;
+        private readonly string _ovpnPath;
 
         /// <summary>
         /// Defines what types of output can be thrown
@@ -331,7 +329,7 @@ namespace LightVPN.OpenVPN
             Error
         }
 
-        public delegate void outputRecieved(object sender, DataReceivedEventArgs e);
+        public delegate void OutputReceived(object sender, DataReceivedEventArgs e);
 
         public delegate void OutputEvent(object sender, OutputType e, string message);
 

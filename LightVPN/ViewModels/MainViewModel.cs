@@ -18,11 +18,19 @@ using System.Windows.Input;
 
 namespace LightVPN.ViewModels
 {
-    public class MainViewModel : INotifyPropertyChanged
+    public class MainViewModel : INotifyPropertyChanged, IDisposable
     {
         public event PropertyChangedEventHandler PropertyChanged;
 
-        private readonly IManager _manager;
+        private IManager _manager;
+
+        public void Dispose()
+        {
+            LastServer = null;
+            IsConnecting = default;
+            Servers = null;
+            GC.SuppressFinalize(this);
+        }
 
         public MainViewModel()
         {
@@ -208,7 +216,7 @@ namespace LightVPN.ViewModels
             }
         }
 
-        public struct ServersModel : INotifyPropertyChanged
+        public class ServersModel : INotifyPropertyChanged
         {
             public event PropertyChangedEventHandler PropertyChanged;
 

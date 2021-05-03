@@ -117,6 +117,13 @@ namespace LightVPN.Auth
             File.Delete(Path.Combine(Globals.OpenVpnDriversPath, "drivers.zip"));
         }
 
+        public async Task<string> GetChangelogAsync()
+        {
+            var changelog = await GetAsync<ChangelogModel>("https://lightvpn.org/api/changelog?platform=windows");
+
+            return changelog.Changelog;
+        }
+
         /// <summary>
         /// Fetches the servers asynchronously from the LightVPN API
         /// </summary>

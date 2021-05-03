@@ -1,6 +1,5 @@
 ﻿using DiscordRPC;
 using DiscordRPC.Message;
-using LightVPN.Common;
 using LightVPN.Discord.Exceptions;
 using LightVPN.Discord.Interfaces;
 using System;

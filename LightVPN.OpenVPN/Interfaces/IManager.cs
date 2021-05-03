@@ -21,7 +21,7 @@ namespace LightVPN.OpenVPN.Interfaces
 
         event Manager.ConnectedEvent Connected;
         event Manager.LoginFailedEvent LoginFailed;
-        event Manager.outputRecieved OnOutput;
+        event Manager.OutputReceived OnOutput;
         event Manager.OutputEvent Output;
         event Manager.ErrorEvent Error;
 

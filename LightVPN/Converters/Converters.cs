@@ -10,7 +10,6 @@
  * --------------------------------------------
  */
 
-using LightVPN.Common.Models;
 using LightVPN.Models;
 using MaterialDesignThemes.Wpf;
 using System;

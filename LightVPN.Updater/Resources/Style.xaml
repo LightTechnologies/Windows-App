@@ -11,42 +11,78 @@
             </DataTrigger>
         </Style.Triggers>
     </Style>
+    <Style x:Key="Body" TargetType="TextBlock">
+        <Setter Property="FontSize" Value="14" />
+        <Setter Property="FontFamily" Value="pack://application:,,,/LightVPN.Updater;component/Resources/Fonts/#Inter Bold" />
+    </Style>
+    <Style x:Key="ConsoleBody" TargetType="TextBlock">
+        <Setter Property="FontSize" Value="14" />
+        <Setter Property="FontFamily" Value="Consolas" />
+    </Style>
+    <Style x:Key="LightUIView" TargetType="Page">
+        <Setter Property="FontFamily" Value="pack://application:,,,/LightVPN.Updater;component/Resources/Fonts/#Inter Medium" />
+        <Setter Property="Background" Value="{DynamicResource MaterialDesignPaper}" />
+        <Setter Property="Foreground" Value="{DynamicResource MaterialDesignBody}" />
+        <Setter Property="FontSize" Value="13" />
+        <Setter Property="TextOptions.TextFormattingMode" Value="Ideal" />
+        <Setter Property="TextOptions.TextRenderingMode" Value="Aliased" />
+    </Style>
+    <Style x:Key="LightUIWindow" TargetType="Window">
+        <Setter Property="FontFamily" Value="pack://application:,,,/LightVPN.Updater;component/Resources/Fonts/#Inter Medium" />
+        <Setter Property="Background" Value="{DynamicResource MaterialDesignPaper}" />
+        <Setter Property="Foreground" Value="{DynamicResource MaterialDesignBody}" />
+        <Setter Property="FontSize" Value="13" />
+        <Setter Property="TextOptions.TextFormattingMode" Value="Ideal" />
+        <Setter Property="TextOptions.TextRenderingMode" Value="Aliased" />
+        <Setter Property="AllowsTransparency" Value="False" />
+        <Setter Property="WindowStyle" Value="None" />
+    </Style>
     <Style x:Key="BrightHeadline" TargetType="TextBlock">
         <Setter Property="Foreground" Value="White" />
         <Setter Property="FontSize" Value="20" />
-        <Setter Property="FontWeight" Value="UltraBold" />
-        <Setter Property="FontFamily" Value="{DynamicResource MaterialDesignFont}" />
+        <Setter Property="FontFamily" Value="pack://application:,,,/LightVPN.Updater;component/Resources/Fonts/#Inter Extra Bold" />
     </Style>
     <Style x:Key="BrightSmall" TargetType="TextBlock">
         <Setter Property="Foreground" Value="White" />
         <Setter Property="FontSize" Value="14" />
         <Setter Property="Opacity" Value="0.5" />
-        <Setter Property="FontWeight" Value="Bold" />
-        <Setter Property="FontFamily" Value="{DynamicResource MaterialDesignFont}" />
+        <Setter Property="FontFamily" Value="pack://application:,,,/LightVPN.Updater;component/Resources/Fonts/#Inter Bold" />
     </Style>
     <Style x:Key="DarkSmall" TargetType="TextBlock">
         <Setter Property="Foreground" Value="Black" />
         <Setter Property="FontSize" Value="14" />
         <Setter Property="Opacity" Value="0.5" />
-        <Setter Property="FontWeight" Value="Bold" />
-        <Setter Property="FontFamily" Value="{DynamicResource MaterialDesignFont}" />
+        <Setter Property="FontFamily" Value="pack://application:,,,/LightVPN.Updater;component/Resources/Fonts/#Inter Bold" />
+    </Style>
+    <Style x:Key="Semibold" TargetType="TextBlock">
+        <Setter Property="FontFamily" Value="pack://application:,,,/LightVPN.Updater;component/Resources/Fonts/#Inter Semi Bold" />
     </Style>
     <Style x:Key="Small" TargetType="TextBlock">
         <Setter Property="FontSize" Value="14" />
         <Setter Property="Opacity" Value="0.5" />
-        <Setter Property="FontWeight" Value="Bold" />
-        <Setter Property="FontFamily" Value="{DynamicResource MaterialDesignFont}" />
+        <Setter Property="Foreground" Value="{DynamicResource MaterialDesignBody}" />
+        <Setter Property="FontFamily" Value="pack://application:,,,/LightVPN.Updater;component/Resources/Fonts/#Inter Bold" />
+    </Style>
+    <Style x:Key="SmallLabel" TargetType="Label">
+        <Setter Property="FontSize" Value="14" />
+        <Setter Property="Opacity" Value="0.5" />
+        <Setter Property="Foreground" Value="{DynamicResource MaterialDesignBody}" />
+        <Setter Property="FontFamily" Value="pack://application:,,,/LightVPN.Updater;component/Resources/Fonts/#Inter Bold" />
     </Style>
     <Style x:Key="DarkHeadline" TargetType="TextBlock">
         <Setter Property="Foreground" Value="Black" />
         <Setter Property="FontSize" Value="20" />
-        <Setter Property="FontWeight" Value="UltraBold" />
-        <Setter Property="FontFamily" Value="{DynamicResource MaterialDesignFont}" />
+        <Setter Property="FontFamily" Value="pack://application:,,,/LightVPN.Updater;component/Resources/Fonts/#Inter Extra Bold" />
     </Style>
     <Style x:Key="Headline" TargetType="TextBlock">
         <Setter Property="FontSize" Value="20" />
-        <Setter Property="FontWeight" Value="UltraBold" />
-        <Setter Property="FontFamily" Value="{DynamicResource MaterialDesignFont}" />
+        <Setter Property="Foreground" Value="{DynamicResource MaterialDesignBody}" />
+        <Setter Property="FontFamily" Value="pack://application:,,,/LightVPN.Updater;component/Resources/Fonts/#Inter Extra Bold" />
+    </Style>
+    <Style x:Key="HeadlineLabel" TargetType="Label">
+        <Setter Property="FontSize" Value="20" />
+        <Setter Property="Foreground" Value="{DynamicResource MaterialDesignBody}" />
+        <Setter Property="FontFamily" Value="pack://application:,,,/LightVPN.Updater;component/Resources/Fonts/#Inter Extra Bold" />
     </Style>
     <Style x:Key="GradientBackground" TargetType="materialDesign:Card">
         <Setter Property="Background">

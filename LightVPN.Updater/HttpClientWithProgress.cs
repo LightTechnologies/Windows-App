@@ -38,6 +38,8 @@ namespace LightVPN.Updater
                 DefaultRequestVersion = new Version("2.0.0.0"),
             };
 
+            _httpClient.DefaultRequestHeaders.TryAddWithoutValidation("User-Agent", "LightVPN/1.0");
+
             using var response = await _httpClient.GetAsync(_downloadUrl, HttpCompletionOption.ResponseHeadersRead);
             await DownloadFileFromHttpResponseMessage(response);
         }

@@ -3,8 +3,6 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.30621.155
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LightVPN", "LightVPN\LightVPN.csproj", "{668852CB-F926-4E4E-B42C-0B79658EFCBD}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LightVPN.OpenVPN", "LightVPN.OpenVPN\LightVPN.OpenVPN.csproj", "{2E6279BC-2D94-4335-AF37-3D204BA2C141}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LightVPN.Discord", "LightVPN.DiscordRpc\LightVPN.Discord.csproj", "{F6A4D50E-FFA2-4275-B0C4-ECC3375FFD13}"
@@ -17,7 +15,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LightVPN.Settings", "LightV
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LightVPN.Updater", "LightVPN.Updater\LightVPN.Updater.csproj", "{4EC3B660-E74F-4856-95F5-C3E12C07F3E4}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LightVPN.Common", "LightVPN.Common.v2\LightVPN.Common.csproj", "{5AA3ED93-BDD2-4680-8CE0-F47B8739F9FF}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LightVPN.Common", "LightVPN.Common\LightVPN.Common.csproj", "{5AA3ED93-BDD2-4680-8CE0-F47B8739F9FF}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LightVPN", "LightVPN\LightVPN.csproj", "{F35BD589-5219-4668-9F78-B646442B1661}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -25,10 +25,6 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{668852CB-F926-4E4E-B42C-0B79658EFCBD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{668852CB-F926-4E4E-B42C-0B79658EFCBD}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{668852CB-F926-4E4E-B42C-0B79658EFCBD}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{668852CB-F926-4E4E-B42C-0B79658EFCBD}.Release|Any CPU.Build.0 = Release|Any CPU
 		{2E6279BC-2D94-4335-AF37-3D204BA2C141}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{2E6279BC-2D94-4335-AF37-3D204BA2C141}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2E6279BC-2D94-4335-AF37-3D204BA2C141}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -57,6 +53,10 @@ Global
 		{5AA3ED93-BDD2-4680-8CE0-F47B8739F9FF}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5AA3ED93-BDD2-4680-8CE0-F47B8739F9FF}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{5AA3ED93-BDD2-4680-8CE0-F47B8739F9FF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F35BD589-5219-4668-9F78-B646442B1661}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F35BD589-5219-4668-9F78-B646442B1661}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F35BD589-5219-4668-9F78-B646442B1661}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F35BD589-5219-4668-9F78-B646442B1661}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
