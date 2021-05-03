@@ -13,7 +13,7 @@
     <tb:TaskbarIcon
         x:Key="NotifyIcon"
         ContextMenu="{StaticResource SysTrayMenu}"
-        IconSource="/Resources/lightvpn.ico">
+        IconSource="/Resources/lightvpn-purple-ico.ico">
 
         <tb:TaskbarIcon.DataContext>
             <viewModels:TrayIconViewModel />

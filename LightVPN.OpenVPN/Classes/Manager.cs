@@ -127,7 +127,8 @@ namespace LightVPN.OpenVPN
                 _errorLogger.Write("(Manager/OpenVpnOutputHandler) We connected sir!");
                 if (Connected == null) return;
                 Connected.Invoke(this);
-                // EXPERIMENTAL: CONNECT TO MANAGEMENT SERVER ON LOCALHOST
+                
+
                 await ConnectToManagementServerAsync();
             }
             else
@@ -214,7 +215,9 @@ namespace LightVPN.OpenVPN
             this.Dispose(true);
             GC.SuppressFinalize(this);
         }
-
+        /// <summary>
+        /// Creates the socket and endpoint, then assigns them to the properties.
+        /// </summary>
         internal void CreateSocket()
         {
             _errorLogger.Write("(Manager/CreateSocket) Creating new socket & endpoint");
@@ -225,7 +228,11 @@ namespace LightVPN.OpenVPN
             _managementSocket = new(ip.AddressFamily,
                         SocketType.Stream, ProtocolType.Tcp);
         }
-
+        /// <summary>
+        /// Connects to the OpenVPN management server on port 33333
+        /// </summary>
+        /// <param name="cancellationToken"></param>
+        /// <returns>Completed task</returns>
         internal async Task ConnectToManagementServerAsync(CancellationToken cancellationToken = default)
         {
             try
@@ -248,40 +255,67 @@ namespace LightVPN.OpenVPN
                 return;
             }
         }
-
-        internal async Task<string> SendBufferToManagementServer(string buffer, CancellationToken cancellationToken = default)
+        /// <summary>
+        /// Sends a buffer to the connected OpenVPN management socket.
+        /// </summary>
+        /// <param name="buffer">The buffer you want to send, gets converted to bytes and sent through the socket</param>
+        /// <param name="shouldRecv">Should we attempt to receive back from the socket, if not the return will always be null</param>
+        /// <param name="cancellationToken"></param>
+        /// <returns>The received back buffer from the socket, will be null if <paramref name="shouldRecv"/> is false</returns>
+        internal async Task<string> SendBufferToManagementServer(string buffer, bool shouldRecv, CancellationToken cancellationToken = default)
         {
-            _errorLogger.Write("(Manager/SendBuffer) Checking socket connection status...");
-            await ConnectToManagementServerAsync(cancellationToken);
-
-            if (_managementSocket is null || !_managementSocket.Connected)
+            try
             {
-                _errorLogger.Write("(Manager/SendBuffer) Socket is null or not connected after ConnectToManagementServer called, the management server is dead, returning null");
+                _errorLogger.Write("(Manager/SendBuffer) Checking socket connection status...");
+                await ConnectToManagementServerAsync(cancellationToken);
+
+                if (_managementSocket is null || !_managementSocket.Connected)
+                {
+                    _errorLogger.Write("(Manager/SendBuffer) Socket is null or not connected after ConnectToManagementServer called, the management server is dead, returning null");
+                    return null;
+                }
+
+                byte[] bytes = new byte[1024];
+
+                byte[] msg = Encoding.UTF8.GetBytes(buffer + "\r\n"); // \r\n is required because OpenVPN Management Interface says so (and it likes legacy).
+
+                int sendBytes = await _managementSocket.SendAsync(msg, SocketFlags.None, cancellationToken);
+                _errorLogger.Write($"(Manager/SendBuffer) Sent {sendBytes} bytes through Socket");
+
+                if (shouldRecv)
+                {
+                    int recvBytes = await _managementSocket.ReceiveAsync(bytes, SocketFlags.None, cancellationToken);
+                    _errorLogger.Write($"(Manager/SendBuffer) Recv {recvBytes} bytes back from Socket");
+
+                    return Encoding.UTF8.GetString(bytes);
+                }
                 return null;
             }
-
-            byte[] bytes = new byte[1024];
-
-            byte[] msg = Encoding.UTF8.GetBytes(buffer + "\r\n"); // \r\n is required because OpenVPN Management Interface says so (and it likes legacy).
-
-            int sendBytes = await _managementSocket.SendAsync(msg, SocketFlags.None, cancellationToken);
-            _errorLogger.Write($"(Manager/SendBuffer) Sent {sendBytes} bytes through Socket");
-
-            int recvBytes = await _managementSocket.ReceiveAsync(bytes, SocketFlags.None, cancellationToken);
-            _errorLogger.Write($"(Manager/SendBuffer) Recv {recvBytes} bytes back from Socket");
-
-            return Encoding.UTF8.GetString(bytes);
+            catch (Exception e)
+            {
+                _errorLogger.Write($"(Manager/SendBuffer) Exception when sending buffer:\n{e}");
+                return null;
+            }
         }
-
+        /// <summary>
+        /// Shuts down the OpenVPN management server asynchronously
+        /// </summary>
+        /// <returns>Completed task</returns>
         internal async Task ShutdownManagementServerAsync()
         {
-            await SendBufferToManagementServer("signal SIGTERM");
+            if (_managementSocket is not null && _managementSocket.Connected)
+            {
+                await SendBufferToManagementServer("signal SIGTERM", false);
 
-            _managementSocket.Shutdown(SocketShutdown.Both);
-            _managementSocket.Close();
-            _errorLogger.Write("(Manager/ShutdownManagementServer) Shut down and closed ManagementSocket");
+                _managementSocket.Shutdown(SocketShutdown.Both);
+                _managementSocket.Close();
+                _errorLogger.Write("(Manager/ShutdownManagementServer) Shut down and closed ManagementSocket");
+            }
         }
-
+        /// <summary>
+        /// Disposes the manager
+        /// </summary>
+        /// <param name="disposing"></param>
         protected virtual void Dispose(bool disposing)
         {
             if (!IsDisposed)

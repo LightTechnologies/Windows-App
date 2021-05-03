@@ -25,17 +25,6 @@ namespace LightVPN.Views
     /// </summary>
     public partial class Login : Page
     {
-        /*
-            I can't be bothered to MVVM the Login window I'll do it later.
-        */
-        public static readonly DependencyProperty IsAuthenticatingProperty =
-            DependencyProperty.Register("IsAuthenticating", typeof(bool),
-            typeof(Page), new(false));
-        public bool IsAuthenticating
-        {
-            get { return (bool)GetValue(IsAuthenticatingProperty); }
-            set { SetValue(IsAuthenticatingProperty, value); }
-        }
         public Login()
         {
             InitializeComponent();

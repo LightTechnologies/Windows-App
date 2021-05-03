@@ -17,13 +17,14 @@
 		<Copyright>Copyright 2021 (C) Light Technologies, LLC</Copyright>
 		<PackageProjectUrl>https://github.com/LightTechnologies/LightVPN-Win</PackageProjectUrl>
 		<ApplicationManifest>app.manifest</ApplicationManifest>
-		<ApplicationIcon>lightvpn.ico</ApplicationIcon>
+		<ApplicationIcon>lightvpn-purple-ico.ico</ApplicationIcon>
 		<PackageLicenseFile>License.txt</PackageLicenseFile>
-		<AssemblyVersion>2.1.1.4</AssemblyVersion>
-		<FileVersion>2.1.1.4</FileVersion>
-		<Version>2.1.1.4</Version>
+		<AssemblyVersion>2.1.2.0</AssemblyVersion>
+		<FileVersion>2.1.2.0</FileVersion>
+		<Version>2.1.2.0</Version>
 		<NeutralLanguage>en-US</NeutralLanguage>
 		<ProjectGuid>f35bd589-5219-4668-9f78-b646442b1661</ProjectGuid>
+		<PackageIcon>lightvpn-purple.png</PackageIcon>
 	</PropertyGroup>
 
 	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
@@ -320,11 +321,18 @@
 		<None Remove="Resources\Fonts\Inter-ThinItalic.ttf" />
 		<None Remove="Resources\lightvpn-black-title.png" />
 		<None Remove="Resources\lightvpn-black.png" />
+		<None Remove="Resources\lightvpn-purple-100.png" />
+		<None Remove="Resources\lightvpn-purple-20.png" />
+		<None Remove="Resources\lightvpn-purple-ico.ico" />
 		<None Remove="Resources\lightvpn-purple-title.png" />
 		<None Remove="Resources\lightvpn-purple.png" />
 		<None Remove="Resources\lightvpn-white-title.png" />
 		<None Remove="Resources\lightvpn-white.png" />
 		<None Remove="Resources\lightvpn.ico" />
+		<None Include="..\..\..\..\Downloads\lightvpn-purple.png">
+		  <Pack>True</Pack>
+		  <PackagePath></PackagePath>
+		</None>
 	</ItemGroup>
 
 	<ItemGroup>
@@ -341,7 +349,6 @@
 
 	<ItemGroup>
 		<ProjectReference Include="..\LightVPN.Auth\LightVPN.Auth.csproj" />
-		<ProjectReference Include="..\LightVPN.Common.v2\LightVPN.Common.csproj" />
 		<ProjectReference Include="..\LightVPN.Common\LightVPN.Common.csproj" />
 		<ProjectReference Include="..\LightVPN.Configuration\LightVPN.Settings.csproj" />
 		<ProjectReference Include="..\LightVPN.DiscordRpc\LightVPN.Discord.csproj" />
@@ -638,6 +645,9 @@
 		<Resource Include="Resources\Fonts\Inter-SemiBoldItalic.ttf" />
 		<Resource Include="Resources\Fonts\Inter-Thin.ttf" />
 		<Resource Include="Resources\Fonts\Inter-ThinItalic.ttf" />
+		<Resource Include="Resources\lightvpn-purple-100.png" />
+		<Resource Include="Resources\lightvpn-purple-20.png" />
+		<Resource Include="Resources\lightvpn-purple-ico.ico" />
 		<Resource Include="Resources\lightvpn-purple-title.png" />
 		<Resource Include="Resources\lightvpn-purple.png" />
 		<Resource Include="Resources\lightvpn.ico" />

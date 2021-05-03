@@ -165,7 +165,7 @@ namespace LightVPN.ViewModels
         {
             get
             {
-                return new ConnectDelegate()
+                return new ConnectCommandArgs()
                 {
                     CommandAction = async (args) =>
                     {

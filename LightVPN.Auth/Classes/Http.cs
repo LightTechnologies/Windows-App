@@ -256,7 +256,7 @@ namespace LightVPN.Auth
         private static async Task CheckResponseAsync(HttpResponseMessage resp)
         {
             var content = await resp.Content.ReadAsStringAsync();
-            if (resp.StatusCode == HttpStatusCode.Forbidden || resp.StatusCode == HttpStatusCode.NotFound || resp.StatusCode == HttpStatusCode.BadRequest )
+            if (resp.StatusCode == HttpStatusCode.Forbidden || resp.StatusCode == HttpStatusCode.NotFound || resp.StatusCode == HttpStatusCode.BadRequest || resp.StatusCode == HttpStatusCode.InternalServerError)
             {
                 try
                 {
@@ -266,16 +266,26 @@ namespace LightVPN.Auth
                 }
                 catch (JsonException)
                 {
-                    throw new InvalidResponseException("You are being ratelimited");
+                    switch (resp.StatusCode)
+                    {
+                        case HttpStatusCode.BadRequest:
+                            throw new InvalidResponseException("Bad request, a manual client update may be required. Please visit the LightVPN dashboard and download the latest installer.");
+                        case HttpStatusCode.NotFound:
+                            throw new InvalidResponseException("Not found, a manual client update may be required. Please visit the LightVPN dashboard and download the latest installer.");
+                        case HttpStatusCode.Unauthorized:
+                            throw new InvalidResponseException("You've been blocked by the edge firewall. You could've requested from a blocked location or typed something in that could cause issues.");
+                        case HttpStatusCode.InternalServerError:
+                            throw new InvalidResponseException("A server error has occurred. Please contact support to inform us about this issue.");
+                    }
                 }
             }
             if (resp.StatusCode == HttpStatusCode.TooManyRequests)
             {
-                throw new RatelimitedException("You are being ratelimited");
+                throw new RatelimitedException("You've been ratelimited due to you sending too many requests, try again in a minute.");
             }
             if(resp.StatusCode == HttpStatusCode.UpgradeRequired)
             {
-                throw new ClientUpdateRequired("A client update is required");
+                throw new ClientUpdateRequired("An update is available.");
             }
             if (!resp.IsSuccessStatusCode)
             {

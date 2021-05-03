@@ -36,12 +36,14 @@ namespace LightVPN.OpenVPN
         /// Constructs the TAP manager, with the specified path for the 'tapctl' binary
         /// </summary>
         /// <param name="path">Path to the tapctl binary</param>
-        /// <param name="driverpath">Just the path to the drivers</param>
         public TapManager(string path = @"C:\Program Files\OpenVPN\bin\tapctl.exe")
         {
             _path = path;
         }
-
+        /// <summary>
+        /// Installs the OpenVPN TAP drivers asynchronously
+        /// </summary>
+        /// <returns>Completed task</returns>
         public Task InstallDriverAsync()
         {
             _proc = new Process
@@ -61,7 +63,10 @@ namespace LightVPN.OpenVPN
 
             return Task.CompletedTask;
         }
-
+        /// <summary>
+        /// Removes the OpenVPN TAP driver asynchronously
+        /// </summary>
+        /// <returns>Completed task</returns>
         public Task RemoveDriversAsync()
         {
             _proc = new Process
@@ -80,7 +85,10 @@ namespace LightVPN.OpenVPN
             _proc.WaitForExit();
             return Task.CompletedTask;
         }
-
+        /// <summary>
+        /// Checks if the OpenVPN TAP driver has been installed
+        /// </summary>
+        /// <returns>True if it is installed, false if it isn't</returns>
         public bool CheckDriverExists()
         {
             bool found = false;

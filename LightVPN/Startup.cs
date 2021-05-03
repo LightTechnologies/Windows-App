@@ -39,13 +39,15 @@ using LightVPN.Common.Models;
 using System.Security.AccessControl;
 using System.Security.Principal;
 using System.Runtime.InteropServices;
+using LightVPN.Windows;
 
 namespace LightVPN
 {
     public class Startup : Application
     {
         internal static readonly FileLogger logger = new ErrorLogger();
-       
+
+        public static LoginWindow LoginWindow { get; set; }
 
         [STAThread]
         public static void Main()

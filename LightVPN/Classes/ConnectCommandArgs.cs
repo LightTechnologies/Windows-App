@@ -4,7 +4,7 @@ using static LightVPN.ViewModels.MainViewModel;
 
 namespace LightVPN
 {
-    internal class ConnectDelegate : ICommand
+    internal class ConnectCommandArgs : ICommand
     {
         #region ICommand Members
         public Action<ServersModel> CommandAction { get; set; }

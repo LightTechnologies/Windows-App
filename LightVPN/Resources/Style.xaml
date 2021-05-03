@@ -35,6 +35,7 @@
         <Setter Property="TextOptions.TextFormattingMode" Value="Ideal" />
         <Setter Property="TextOptions.TextRenderingMode" Value="Aliased" />
         <Setter Property="AllowsTransparency" Value="False" />
+        <Setter Property="Icon" Value="pack://application:,,,/LightVPN;component/Resources/lightvpn-purple-ico.ico" />
         <Setter Property="WindowStyle" Value="None" />
     </Style>
     <Style x:Key="BrightHeadline" TargetType="TextBlock">
@@ -83,10 +84,6 @@
         <Setter Property="FontSize" Value="20" />
         <Setter Property="Foreground" Value="{DynamicResource MaterialDesignBody}" />
         <Setter Property="FontFamily" Value="pack://application:,,,/LightVPN;component/Resources/Fonts/#Inter Extra Bold" />
-    </Style>
-    <Style x:Key="Body" TargetType="TextBlock">
-        <Setter Property="FontSize" Value="14" />
-        <Setter Property="FontFamily" Value="pack://application:,,,/LightVPN.Updater;component/Resources/Fonts/#Inter Bold" />
     </Style>
     <Style x:Key="GradientBackground" TargetType="materialDesign:Card">
         <Setter Property="Background">

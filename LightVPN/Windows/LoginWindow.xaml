@@ -11,8 +11,6 @@
     Title="LightVPN"
     Width="308"
     Height="435"
-    Closing="Window_Closing"
-    Loaded="Window_Loaded"
     ResizeMode="NoResize"
     Style="{StaticResource LightUIWindow}"
     WindowStartupLocation="CenterScreen"
@@ -20,57 +18,6 @@
     <Window.DataContext>
         <viewModels:LoginWindowViewModel />
     </Window.DataContext>
-    <Window.Resources>
-        <BeginStoryboard x:Key="CloseAnim">
-            <Storyboard Completed="FinishedClosingAnimation">
-                <DoubleAnimationUsingKeyFrames Storyboard.TargetName="window" Storyboard.TargetProperty="(UIElement.Opacity)">
-                    <EasingDoubleKeyFrame KeyTime="00:00:00.4000000" Value="0">
-                        <EasingDoubleKeyFrame.EasingFunction>
-                            <QuinticEase EasingMode="EaseInOut" />
-                        </EasingDoubleKeyFrame.EasingFunction>
-                    </EasingDoubleKeyFrame>
-                </DoubleAnimationUsingKeyFrames>
-                <DoubleAnimationUsingKeyFrames Storyboard.TargetName="grid" Storyboard.TargetProperty="(UIElement.RenderTransform).(TransformGroup.Children)[3].(TranslateTransform.Y)">
-                    <EasingDoubleKeyFrame KeyTime="00:00:00.4000000" Value="20">
-                        <EasingDoubleKeyFrame.EasingFunction>
-                            <QuinticEase EasingMode="EaseInOut" />
-                        </EasingDoubleKeyFrame.EasingFunction>
-                    </EasingDoubleKeyFrame>
-                </DoubleAnimationUsingKeyFrames>
-            </Storyboard>
-        </BeginStoryboard>
-        <Storyboard x:Key="OpenAnim">
-            <DoubleAnimationUsingKeyFrames Storyboard.TargetName="window" Storyboard.TargetProperty="(UIElement.Opacity)">
-                <EasingDoubleKeyFrame KeyTime="00:00:00" Value="0">
-                    <EasingDoubleKeyFrame.EasingFunction>
-                        <QuinticEase EasingMode="EaseInOut" />
-                    </EasingDoubleKeyFrame.EasingFunction>
-                </EasingDoubleKeyFrame>
-                <EasingDoubleKeyFrame KeyTime="00:00:00.4000000" Value="1">
-                    <EasingDoubleKeyFrame.EasingFunction>
-                        <QuinticEase EasingMode="EaseInOut" />
-                    </EasingDoubleKeyFrame.EasingFunction>
-                </EasingDoubleKeyFrame>
-            </DoubleAnimationUsingKeyFrames>
-            <DoubleAnimationUsingKeyFrames Storyboard.TargetName="grid" Storyboard.TargetProperty="(UIElement.RenderTransform).(TransformGroup.Children)[3].(TranslateTransform.Y)">
-                <EasingDoubleKeyFrame KeyTime="00:00:00" Value="20">
-                    <EasingDoubleKeyFrame.EasingFunction>
-                        <QuinticEase EasingMode="EaseInOut" />
-                    </EasingDoubleKeyFrame.EasingFunction>
-                </EasingDoubleKeyFrame>
-                <EasingDoubleKeyFrame KeyTime="00:00:00.4000000" Value="0">
-                    <EasingDoubleKeyFrame.EasingFunction>
-                        <QuinticEase EasingMode="EaseInOut" />
-                    </EasingDoubleKeyFrame.EasingFunction>
-                </EasingDoubleKeyFrame>
-            </DoubleAnimationUsingKeyFrames>
-        </Storyboard>
-    </Window.Resources>
-    <Window.Triggers>
-        <EventTrigger RoutedEvent="Window.Loaded">
-            <BeginStoryboard Storyboard="{StaticResource OpenAnim}" />
-        </EventTrigger>
-    </Window.Triggers>
     <WindowChrome.WindowChrome>
         <WindowChrome
             CaptionHeight="32"

@@ -9,6 +9,7 @@
  * 
  * --------------------------------------------
  */
+using LightVPN.Settings.Exceptions;
 using LightVPN.Settings.Interfaces;
 using System;
 using System.IO;
@@ -30,10 +31,12 @@ namespace LightVPN.Settings
         /// <returns>Input string decrypted into plaintext, if decryption was successful</returns>
         public string Decrypt(string cipherText)
         {
-            cipherText = cipherText.Replace(" ", "+");
-            byte[] cipherBytes = Convert.FromBase64String(cipherText);
-            using Aes encryptor = Aes.Create();
-            encryptor.Mode = CipherMode.CBC;
+            try
+            {
+                cipherText = cipherText.Replace(" ", "+");
+                byte[] cipherBytes = Convert.FromBase64String(cipherText);
+                using Aes encryptor = Aes.Create();
+                encryptor.Mode = CipherMode.CBC;
                 Rfc2898DeriveBytes pdb = new(EncryptionKey, new byte[] { 0x49, 0x76, 0x61, 0x6e, 0x20, 0x4d, 0x65, 0x64, 0x76, 0x65, 0x64, 0x65, 0x76 });
                 encryptor.Key = pdb.GetBytes(32);
                 encryptor.IV = pdb.GetBytes(16);
@@ -44,7 +47,12 @@ namespace LightVPN.Settings
                     cs.Close();
                 }
                 cipherText = Encoding.Unicode.GetString(ms.ToArray());
-            return cipherText;
+                return cipherText;
+            }
+            catch (Exception)
+            {
+                throw new CorruptedAuthSettingsException("Authentication file decryption has failed, it seems to have been corrupted. It has been reset to it's original values.");
+            }
         }
         /// <summary>
         /// Encrypts the input plaintext with the AES encryption standard, on the CBC cipher

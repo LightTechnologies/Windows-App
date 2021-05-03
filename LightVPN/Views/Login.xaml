@@ -4,9 +4,11 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:converters="clr-namespace:LightVPN.Converters"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
     xmlns:local="clr-namespace:LightVPN.Views"
     xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:validators="clr-namespace:LightVPN.Validators"
     xmlns:viewModels="clr-namespace:LightVPN.ViewModels"
     xmlns:window="clr-namespace:LightVPN.Windows"
     Name="view"
@@ -15,6 +17,11 @@
     d:DesignWidth="308"
     Style="{StaticResource LightUIView}"
     mc:Ignorable="d">
+    <i:Interaction.Triggers>
+        <i:EventTrigger EventName="Loaded">
+            <i:InvokeCommandAction Command="{Binding LoadCommand}" />
+        </i:EventTrigger>
+    </i:Interaction.Triggers>
     <Page.DataContext>
         <viewModels:LoginViewModel />
     </Page.DataContext>
@@ -25,64 +32,87 @@
         <StackPanel>
             <Image
                 Name="LogoImage"
-                Width="188"
+                Width="50"
                 Height="50"
-                Margin="0,90,0,0"
+                Margin="0,70,0,0"
                 HorizontalAlignment="Center"
                 VerticalAlignment="Top"
-                Source="/Resources/banner.png" />
+                Source="/Resources/lightvpn-purple-100.png" />
+            <TextBlock
+                Margin="0,15,0,0"
+                HorizontalAlignment="Center"
+                VerticalAlignment="Top"
+                Style="{StaticResource Headline}"
+                Text="Please sign in" />
             <TextBox
                 Name="UsernameBox"
-                Margin="20,50,20,0"
+                Margin="20,30,20,0"
                 HorizontalAlignment="Stretch"
                 VerticalAlignment="Top"
                 x:FieldModifier="public"
-                IsEnabled="{Binding IsAuthenticating, Converter={StaticResource converter}, ElementName=view}"
+                IsEnabled="{Binding IsAuthenticating, Converter={StaticResource converter}}"
                 MaxLength="30"
                 Style="{StaticResource MaterialDesignOutlinedTextBox}"
                 ToolTip="Enter your LightVPN account ID">
+                <TextBox.Text>
+                    <Binding
+                        Mode="TwoWay"
+                        NotifyOnValidationError="True"
+                        Path="UserName"
+                        UpdateSourceTrigger="PropertyChanged">
+                        <Binding.ValidationRules>
+                            <validators:AccountIdValidator ValidationStep="RawProposedValue" />
+                        </Binding.ValidationRules>
+                    </Binding>
+                </TextBox.Text>
                 <materialDesign:HintAssist.Hint>
-                    <StackPanel Margin="-2,0,0,0" Orientation="Horizontal">
+                    <StackPanel Orientation="Horizontal">
                         <materialDesign:PackIcon Kind="UserOutline" />
-                        <TextBlock Text=" Account ID" />
+                        <TextBlock Margin="7,0,0,0" Text="Account ID" />
                     </StackPanel>
                 </materialDesign:HintAssist.Hint>
             </TextBox>
             <PasswordBox
                 Name="PasswordBox"
-                Margin="20,20,20,0"
+                Margin="20,25,20,0"
                 HorizontalAlignment="Stretch"
                 VerticalAlignment="Top"
                 x:FieldModifier="public"
-                IsEnabled="{Binding IsAuthenticating, Converter={StaticResource converter}, ElementName=view}"
+                IsEnabled="{Binding IsAuthenticating, Converter={StaticResource converter}}"
                 Style="{StaticResource MaterialDesignOutlinedPasswordBox}"
                 ToolTip="Enter your LightVPN password">
                 <materialDesign:HintAssist.Hint>
-                    <StackPanel Margin="-2,0,0,0" Orientation="Horizontal">
+                    <StackPanel Orientation="Horizontal">
                         <materialDesign:PackIcon Kind="KeyOutline" />
-                        <TextBlock Text=" Password" />
+                        <TextBlock Margin="7,0,0,0" Text="Password" />
                     </StackPanel>
                 </materialDesign:HintAssist.Hint>
+                <i:Interaction.Triggers>
+                    <i:EventTrigger EventName="PasswordChanged">
+                        <i:InvokeCommandAction Command="{Binding PasswordChangedCommand}" CommandParameter="{Binding ElementName=PasswordBox, Mode=OneWay}" />
+                    </i:EventTrigger>
+                </i:Interaction.Triggers>
             </PasswordBox>
             <Button
                 Name="SignInBtn"
+                Height="40"
                 Margin="20,30,20,0"
                 VerticalAlignment="Top"
-                materialDesign:ButtonProgressAssist.IsIndeterminate="True"
-                materialDesign:ButtonProgressAssist.IsIndicatorVisible="{Binding ElementName=view, Path=IsAuthenticating}"
-                materialDesign:ButtonProgressAssist.Value="0"
-                Command="{x:Static window:LoginWindow.SignInCommand}"
+                materialDesign:ButtonProgressAssist.IsIndeterminate="{Binding IsIndeterminate}"
+                materialDesign:ButtonProgressAssist.IsIndicatorVisible="{Binding IsAuthenticating}"
+                materialDesign:ButtonProgressAssist.Value="{Binding ProgressInt}"
+                Command="{Binding LoginCommand}"
                 Cursor="Arrow"
                 IsDefault="True"
-                IsEnabled="{Binding IsAuthenticating, Converter={StaticResource converter}, ElementName=view}"
-                Style="{StaticResource MaterialDesignRaisedButton}"
-                ToolTip="Attempts to log you in as the specified user">
+                IsEnabled="{Binding IsAuthenticating, Converter={StaticResource converter}}"
+                Style="{StaticResource MaterialDesignRaisedButton}">
                 <StackPanel Orientation="Horizontal">
                     <materialDesign:PackIcon Kind="Login" />
                     <TextBlock
                         x:Name="SignInText"
+                        Margin="7,0,0,0"
                         Style="{StaticResource Semibold}"
-                        Text=" SIGN IN" />
+                        Text="{Binding StatusText}" />
                 </StackPanel>
             </Button>
         </StackPanel>
