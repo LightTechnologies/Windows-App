@@ -15,8 +15,8 @@ using LightVPN.Auth.Exceptions;
 using LightVPN.Auth.Interfaces;
 using LightVPN.Auth.Models;
 using LightVPN.Common.Models;
-using LightVPN.Logger;
-using LightVPN.Logger.Base;
+using LightVPN.FileLogger;
+using LightVPN.FileLogger.Base;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -40,7 +40,7 @@ namespace LightVPN.Auth
 
         private readonly HttpClient _apiclient = null;
 
-        private readonly FileLogger _logger = new ErrorLogger();
+        private readonly FileLoggerBase _logger = new ErrorLogger();
 
         /// <summary>
         /// Initalizes the class

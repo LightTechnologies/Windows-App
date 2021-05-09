@@ -24,8 +24,8 @@ using System.Windows;
 using LightVPN.Auth.Interfaces;
 using LightVPN.Auth;
 using System.Net.Http;
-using LightVPN.Logger;
-using LightVPN.Logger.Base;
+using LightVPN.FileLogger;
+using LightVPN.FileLogger.Base;
 using LightVPN.Settings.Interfaces;
 using LightVPN.Settings;
 using LightVPN.Common.Interfaces;
@@ -42,7 +42,7 @@ namespace LightVPN
 {
     public class Startup : Application
     {
-        internal static readonly FileLogger logger = new ErrorLogger();
+        internal static readonly FileLoggerBase logger = new ErrorLogger();
 
         public static LoginWindow LoginWindow { get; set; }
 

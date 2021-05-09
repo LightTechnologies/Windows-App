@@ -10,8 +10,8 @@
  * --------------------------------------------
  */
 
-using LightVPN.Logger;
-using LightVPN.Logger.Base;
+using LightVPN.FileLogger;
+using LightVPN.FileLogger.Base;
 using LightVPN.OpenVPN.Interfaces;
 using System;
 using System.Diagnostics;
@@ -27,9 +27,9 @@ namespace LightVPN.OpenVPN
 {
     public class Manager : IManager
     {
-        private readonly FileLogger _errorLogger = new ErrorLogger();
+        private readonly FileLoggerBase _errorLogger = new ErrorLogger();
 
-        private readonly FileLogger _logger = new OpenVpnLogger();
+        private readonly FileLoggerBase _logger = new OpenVpnLogger();
 
         private readonly string _ovpnPath;
 

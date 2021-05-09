@@ -5,8 +5,8 @@ using LightVPN.Auth.Models;
 using LightVPN.Common.Models;
 using LightVPN.Delegates;
 using LightVPN.Discord.Interfaces;
-using LightVPN.Logger;
-using LightVPN.Logger.Base;
+using LightVPN.FileLogger;
+using LightVPN.FileLogger.Base;
 using LightVPN.OpenVPN.Interfaces;
 using LightVPN.Settings.Exceptions;
 using LightVPN.Settings.Interfaces;
@@ -30,7 +30,7 @@ namespace LightVPN.ViewModels
 
         private bool isIndeterminate = true;
 
-        private FileLogger logger = new ErrorLogger();
+        private FileLoggerBase logger = new ErrorLogger();
 
         private string password;
 

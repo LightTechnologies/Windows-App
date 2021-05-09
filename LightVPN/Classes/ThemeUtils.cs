@@ -11,8 +11,8 @@
  */
 
 using LightVPN.Interfaces;
-using LightVPN.Logger;
-using LightVPN.Logger.Base;
+using LightVPN.FileLogger;
+using LightVPN.FileLogger.Base;
 using MaterialDesignThemes.Wpf;
 using System;
 using System.Windows;
@@ -22,7 +22,7 @@ namespace LightVPN
 {
     public class ThemeUtils : IThemeUtils
     {
-        private FileLogger logger = new ErrorLogger();
+        private FileLoggerBase logger = new ErrorLogger();
 
         /// <summary>
         /// Switches the theme to the data provided in the color object

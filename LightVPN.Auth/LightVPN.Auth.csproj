@@ -26,7 +26,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\LightVPN.Logger\LightVPN.Logger.csproj" />
+    <ProjectReference Include="..\LightVPN.FileLogger\LightVPN.FileLogger.csproj" />
   </ItemGroup>
 
 </Project>

@@ -328,8 +328,8 @@
 		<None Remove="Resources\lightvpn-white.png" />
 		<None Remove="Resources\lightvpn.ico" />
 		<None Include="..\..\..\..\Downloads\lightvpn-purple.png">
-		  <Pack>True</Pack>
-		  <PackagePath></PackagePath>
+			<Pack>True</Pack>
+			<PackagePath></PackagePath>
 		</None>
 	</ItemGroup>
 
@@ -350,7 +350,7 @@
 		<ProjectReference Include="..\LightVPN.Common\LightVPN.Common.csproj" />
 		<ProjectReference Include="..\LightVPN.Configuration\LightVPN.Settings.csproj" />
 		<ProjectReference Include="..\LightVPN.DiscordRpc\LightVPN.Discord.csproj" />
-		<ProjectReference Include="..\LightVPN.Logger\LightVPN.Logger.csproj" />
+		<ProjectReference Include="..\LightVPN.FileLogger\LightVPN.FileLogger.csproj" />
 		<ProjectReference Include="..\LightVPN.OpenVPN\LightVPN.OpenVPN.csproj" />
 	</ItemGroup>
 

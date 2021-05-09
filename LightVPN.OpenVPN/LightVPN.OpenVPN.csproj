@@ -30,7 +30,7 @@
   <ItemGroup>
     <ProjectReference Include="..\LightVPN.Auth\LightVPN.Auth.csproj" />
     <ProjectReference Include="..\LightVPN.Common\LightVPN.Common.csproj" />
-    <ProjectReference Include="..\LightVPN.Logger\LightVPN.Logger.csproj" />
+    <ProjectReference Include="..\LightVPN.FileLogger\LightVPN.FileLogger.csproj" />
   </ItemGroup>
 
   <ItemGroup>

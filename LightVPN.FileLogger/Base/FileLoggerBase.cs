@@ -15,9 +15,9 @@ using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace LightVPN.Logger.Base
+namespace LightVPN.FileLogger.Base
 {
-    public abstract class FileLogger
+    public abstract class FileLoggerBase
     {
         private readonly string _fileName;
 
@@ -25,7 +25,7 @@ namespace LightVPN.Logger.Base
         /// Constructs the FileLogger base class
         /// </summary>
         /// <param name="fileName">The location of the log file that this class will use</param>
-        public FileLogger(string fileName)
+        public FileLoggerBase(string fileName)
         {
             _fileName = fileName;
         }

@@ -1,24 +1,24 @@
 ﻿/* --------------------------------------------
- * 
- * File logger - OpenVPN Logger
+ *
+ * File logger - Error logger
  * Copyright (C) Light Technologies LLC
- * 
- * File: OpenVpnLogger.cs
- * 
+ *
+ * File: ErrorLogger.cs
+ *
  * Created: 04-03-21 Khrysus
- * 
+ *
  * --------------------------------------------
  */
+
 using LightVPN.Common.Models;
-using LightVPN.Logger.Base;
+using LightVPN.FileLogger.Base;
 
-namespace LightVPN.Logger
+namespace LightVPN.FileLogger
 {
-    public class OpenVpnLogger : FileLogger
+    public class ErrorLogger : FileLoggerBase
     {
-        public OpenVpnLogger() : base(Globals.OpenVpnLogPath)
+        public ErrorLogger() : base(Globals.ErrorLogPath)
         {
-
         }
     }
 }
