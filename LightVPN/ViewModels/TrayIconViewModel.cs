@@ -1,9 +1,5 @@
 ﻿using LightVPN.Common.Models;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using LightVPN.Delegates;
 using System.Windows;
 using System.Windows.Input;
 
@@ -12,21 +8,13 @@ namespace LightVPN.ViewModels
     public class TrayIconViewModel
     {
         /// <summary>
-        /// Shows a window, if none is already open.
+        /// Shuts down the application.
         /// </summary>
-        public ICommand ShowWindowCommand
+        public ICommand ExitApplicationCommand
         {
             get
             {
-                return new CommandDelegate
-                {
-                    CanExecuteFunc = () => Globals.IsMinimizedToTray == true,
-                    CommandAction = () =>
-                    {
-                        Globals.IsMinimizedToTray = false;
-                        Application.Current.MainWindow.Show();
-                    }
-                };
+                return new CommandDelegate { CommandAction = (args) => Application.Current.Shutdown() };
             }
         }
 
@@ -39,7 +27,7 @@ namespace LightVPN.ViewModels
             {
                 return new CommandDelegate
                 {
-                    CommandAction = () =>
+                    CommandAction = (args) =>
                     {
                         Globals.IsMinimizedToTray = true;
                         Application.Current.MainWindow.Hide();
@@ -49,15 +37,22 @@ namespace LightVPN.ViewModels
             }
         }
 
-
         /// <summary>
-        /// Shuts down the application.
+        /// Shows a window, if none is already open.
         /// </summary>
-        public ICommand ExitApplicationCommand
+        public ICommand ShowWindowCommand
         {
             get
             {
-                return new CommandDelegate { CommandAction = () => Application.Current.Shutdown() };
+                return new CommandDelegate
+                {
+                    CanExecuteFunc = () => Globals.IsMinimizedToTray == true,
+                    CommandAction = (args) =>
+                    {
+                        Globals.IsMinimizedToTray = false;
+                        Application.Current.MainWindow.Show();
+                    }
+                };
             }
         }
     }

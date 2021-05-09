@@ -1,14 +1,15 @@
 ﻿/* --------------------------------------------
- * 
+ *
  * Servers data model - Model
  * Copyright (C) Light Technologies LLC
- * 
+ *
  * File: ServersGrid.cs
- * 
+ *
  * Created: 04-03-21 Khrysus
- * 
+ *
  * --------------------------------------------
  */
+
 using LightVPN.Common.Models;
 using System.ComponentModel;
 using System.Net;
@@ -19,32 +20,6 @@ namespace LightVPN.Auth.Models
     {
         public event PropertyChangedEventHandler PropertyChanged;
 
-        private string _displayName { set; get; }
-        private string _country { set; get; }
-
-        private string _flag { set; get; }
-
-        private string _id { set; get; }
-
-        private IPAddress _ipAddress { set; get; }
-
-        private string _server { set; get; }
-
-        private ServerType _type { set; get; }
-
-        public string ServerName
-        {
-            get
-            {
-                return _displayName;
-            }
-
-            set
-            {
-                _displayName = value;
-                OnPropertyChanged(nameof(ServerName));
-            }
-        }
         public string Country
         {
             get
@@ -72,6 +47,7 @@ namespace LightVPN.Auth.Models
                 OnPropertyChanged(nameof(Flag));
             }
         }
+
         public string Id
         {
             get
@@ -85,6 +61,7 @@ namespace LightVPN.Auth.Models
                 OnPropertyChanged(nameof(Id));
             }
         }
+
         public IPAddress IpAddress
         {
             get
@@ -113,6 +90,20 @@ namespace LightVPN.Auth.Models
             }
         }
 
+        public string ServerName
+        {
+            get
+            {
+                return _displayName;
+            }
+
+            set
+            {
+                _displayName = value;
+                OnPropertyChanged(nameof(ServerName));
+            }
+        }
+
         public ServerType Type
         {
             get
@@ -126,6 +117,20 @@ namespace LightVPN.Auth.Models
                 OnPropertyChanged(nameof(Type));
             }
         }
+
+        private string _country { set; get; }
+
+        private string _displayName { set; get; }
+
+        private string _flag { set; get; }
+
+        private string _id { set; get; }
+
+        private IPAddress _ipAddress { set; get; }
+
+        private string _server { set; get; }
+
+        private ServerType _type { set; get; }
 
         private void OnPropertyChanged(string propertyName)
         {

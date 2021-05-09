@@ -19,9 +19,7 @@
 		<ApplicationManifest>app.manifest</ApplicationManifest>
 		<ApplicationIcon>lightvpn-purple-ico.ico</ApplicationIcon>
 		<PackageLicenseFile>License.txt</PackageLicenseFile>
-		<AssemblyVersion>2.1.2.0</AssemblyVersion>
-		<FileVersion>2.1.2.0</FileVersion>
-		<Version>2.1.2.0</Version>
+		<Version>2.1.2.1</Version>
 		<NeutralLanguage>en-US</NeutralLanguage>
 		<ProjectGuid>f35bd589-5219-4668-9f78-b646442b1661</ProjectGuid>
 		<PackageIcon>lightvpn-purple.png</PackageIcon>

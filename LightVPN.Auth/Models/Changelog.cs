@@ -2,10 +2,11 @@
 
 namespace LightVPN.Auth.Models
 {
-    public class GenericResponse
+    public struct Changelog
     {
         public int Code { get; set; }
 
-        public string Message { get; set; }
+        [JsonProperty("changelog")]
+        public string Content { get; set; }
     }
 }

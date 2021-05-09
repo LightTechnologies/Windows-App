@@ -9,9 +9,16 @@ using System.Windows.Controls;
 
 namespace LightVPN.Validators
 {
-    public class AccountIdValidator : ValidationRule
+    public class AccountIdValidator : ValidationRule, IDisposable
     {
-        private readonly Regex _regex = new("^[a-zA-Z0-9-]+$", RegexOptions.Compiled);
+        private Regex _regex = new("^[a-zA-Z0-9-]+$", RegexOptions.Compiled);
+
+        public void Dispose()
+        {
+            _regex = null;
+            GC.SuppressFinalize(this);
+        }
+
         public override ValidationResult Validate(object value, CultureInfo cultureInfo)
         {
             if (!_regex.IsMatch(value.ToString()))

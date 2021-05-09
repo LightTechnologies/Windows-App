@@ -1,12 +1,12 @@
 ﻿/* --------------------------------------------
- * 
+ *
  * OpenVPN Manager - Interface
  * Copyright (C) Light Technologies LLC
- * 
+ *
  * File: IManager.cs
- * 
+ *
  * Created: 04-03-21 Toshiro
- * 
+ *
  * --------------------------------------------
  */
 
@@ -16,16 +16,22 @@ namespace LightVPN.OpenVPN.Interfaces
 {
     public interface IManager : IDisposable
     {
-        bool IsConnected { get; }
-        bool IsDisposed { get; }
-
         event Manager.ConnectedEvent Connected;
-        event Manager.LoginFailedEvent LoginFailed;
-        event Manager.OutputReceived OnOutput;
-        event Manager.OutputEvent Output;
+
         event Manager.ErrorEvent Error;
 
+        event Manager.LoginFailedEvent LoginFailed;
+
+        event Manager.OutputReceived OnOutput;
+
+        event Manager.OutputEvent Output;
+
+        bool IsConnected { get; }
+
+        bool IsDisposed { get; }
+
         void Connect(string configpath);
+
         void Disconnect();
     }
 }

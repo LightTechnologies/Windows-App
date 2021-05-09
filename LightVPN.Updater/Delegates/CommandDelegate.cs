@@ -1,31 +1,28 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Input;
 
 namespace LightVPN.Updater
 {
-    class CommandDelegate : ICommand
+    internal class CommandDelegate : ICommand
     {
-        public Action CommandAction { get; set; }
+        public event EventHandler CanExecuteChanged
+        {
+            add { CommandManager.RequerySuggested += value; }
+            remove { CommandManager.RequerySuggested -= value; }
+        }
+
         public Func<bool> CanExecuteFunc { get; set; }
 
-        public void Execute(object parameter)
-        {
-            CommandAction();
-        }
+        public Action CommandAction { get; set; }
 
         public bool CanExecute(object parameter)
         {
             return CanExecuteFunc == null || CanExecuteFunc();
         }
 
-        public event EventHandler CanExecuteChanged
+        public void Execute(object parameter)
         {
-            add { CommandManager.RequerySuggested += value; }
-            remove { CommandManager.RequerySuggested -= value; }
+            CommandAction();
         }
     }
 }

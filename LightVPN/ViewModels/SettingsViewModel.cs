@@ -1,28 +1,38 @@
 ﻿using LightVPN.Auth.Interfaces;
 using LightVPN.Common.Models;
+using LightVPN.Delegates;
 using LightVPN.Discord.Interfaces;
 using LightVPN.Interfaces;
 using LightVPN.OpenVPN.Interfaces;
 using LightVPN.Settings.Interfaces;
+using LightVPN.ViewModels.Base;
 using System;
 using System.ComponentModel;
 using System.Diagnostics;
-using System.IO;
-using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
 
 namespace LightVPN.ViewModels
 {
-    public class SettingsViewModel : INotifyPropertyChanged
+    public class SettingsViewModel : BaseViewModel, INotifyPropertyChanged
     {
-        public event PropertyChangedEventHandler PropertyChanged;
-
         private bool autoConnect;
+
+        private bool darkMode;
+
+        private bool discordRpc;
+
+        private bool isRefreshingServerCache;
+
+        private bool isReinstallingTap;
+
+        private bool saveWindowSize;
+
         public bool AutoConnect
         {
             get { return autoConnect; }
+
             set
             {
                 autoConnect = value;
@@ -30,32 +40,29 @@ namespace LightVPN.ViewModels
             }
         }
 
-        private bool isRefreshingServerCache;
-        public bool IsRefreshingServerCache
+        public bool DarkMode
         {
-            get { return isRefreshingServerCache; }
+            get { return darkMode; }
+
             set
             {
-                isRefreshingServerCache = value;
-                OnPropertyChanged(nameof(IsRefreshingServerCache));
+                darkMode = value;
+
+                Globals.container.GetInstance<IThemeUtils>().SwitchTheme(new Auth.Models.Theme
+                {
+                    DarkMode = value,
+                    SecondaryColor = "Default",
+                    PrimaryColor = "Default"
+                });
+
+                OnPropertyChanged(nameof(DarkMode));
             }
         }
 
-        private bool isReinstallingTap;
-        public bool IsReinstallingTap
-        {
-            get { return isReinstallingTap; }
-            set
-            {
-                isReinstallingTap = value;
-                OnPropertyChanged(nameof(IsReinstallingTap));
-            }
-        }
-
-        private bool discordRpc;
         public bool DiscordRpc
         {
             get { return discordRpc; }
+
             set
             {
                 try
@@ -80,22 +87,73 @@ namespace LightVPN.ViewModels
             }
         }
 
-        private bool darkMode;
-        public bool DarkMode
+        public ICommand HandleSettingsChangesCommand
         {
-            get { return darkMode; }
+            get
+            {
+                return new CommandDelegate()
+                {
+                    CommandAction = (args) =>
+                    {
+                        var settings = Globals.container.GetInstance<ISettingsManager<SettingsModel>>().Load();
+
+                        settings.DarkMode = DarkMode;
+                        settings.AutoConnect = AutoConnect;
+                        settings.DiscordRpc = DiscordRpc;
+                        settings.SizeSaving ??= new();
+                        settings.SizeSaving.IsSavingSize = SaveWindowSize;
+                        settings.SizeSaving.Height = 420;
+                        settings.SizeSaving.Width = 550;
+
+                        Globals.container.GetInstance<ISettingsManager<SettingsModel>>().Save(settings);
+                    }
+                };
+            }
+        }
+
+        public bool IsRefreshingServerCache
+        {
+            get { return isRefreshingServerCache; }
+
             set
             {
-                darkMode = value;
+                isRefreshingServerCache = value;
+                OnPropertyChanged(nameof(IsRefreshingServerCache));
+            }
+        }
 
-                Globals.container.GetInstance<IThemeUtils>().SwitchTheme(new Auth.Models.Theme
+        public bool IsReinstallingTap
+        {
+            get { return isReinstallingTap; }
+
+            set
+            {
+                isReinstallingTap = value;
+                OnPropertyChanged(nameof(IsReinstallingTap));
+            }
+        }
+
+        public ICommand LoadCommand
+        {
+            get
+            {
+                return new CommandDelegate()
                 {
-                    DarkMode = value,
-                    SecondaryColor = "Default",
-                    PrimaryColor = "Default"
-                });
+                    CommandAction = (args) =>
+                    {
+                        var settings = Globals.container.GetInstance<ISettingsManager<SettingsModel>>().Load();
 
-                OnPropertyChanged(nameof(DarkMode));
+                        DarkMode = settings.DarkMode;
+                        AutoConnect = settings.AutoConnect;
+                        DiscordRpc = settings.DiscordRpc;
+
+                        // Prevent crashes on older config versions
+                        settings.SizeSaving ??= new();
+                        Globals.container.GetInstance<ISettingsManager<SettingsModel>>().Save(settings);
+
+                        SaveWindowSize = settings.SizeSaving.IsSavingSize;
+                    }
+                };
             }
         }
 
@@ -105,7 +163,7 @@ namespace LightVPN.ViewModels
             {
                 return new CommandDelegate()
                 {
-                    CommandAction = async () =>
+                    CommandAction = async (args) =>
                     {
                         IsRefreshingServerCache = true;
                         await Globals.container.GetInstance<IHttp>().CacheConfigsAsync(true);
@@ -113,6 +171,71 @@ namespace LightVPN.ViewModels
                         MessageBox.Show("The server cache has been refreshed.", "LightVPN", MessageBoxButton.OK, MessageBoxImage.Information);
                     },
                     CanExecuteFunc = () => !IsRefreshingServerCache
+                };
+            }
+        }
+
+        public ICommand ReinstallTapCommand
+        {
+            get
+            {
+                return new CommandDelegate
+                {
+                    CommandAction = async (args) =>
+                    {
+                        IsReinstallingTap = true;
+                        await Task.Run(() =>
+                        {
+                            var instance = Globals.container.GetInstance<ITapManager>();
+                            if (instance.IsAdapterExistant())
+                            {
+                                instance.RemoveTapAdapter();
+                            }
+                            instance.CreateTapAdapter();
+                        });
+                        IsReinstallingTap = false;
+                        MessageBox.Show("OpenVPN TAP adapter has been reinstalled.", "LightVPN", MessageBoxButton.OK, MessageBoxImage.Information);
+                    },
+                    CanExecuteFunc = () => !IsReinstallingTap
+                };
+            }
+        }
+
+        public bool SaveWindowSize
+        {
+            get { return saveWindowSize; }
+
+            set
+            {
+                saveWindowSize = value;
+                OnPropertyChanged(nameof(SaveWindowSize));
+            }
+        }
+
+        public ICommand ViewErrorLogCommand
+        {
+            get
+            {
+                return new CommandDelegate
+                {
+                    CommandAction = (args) =>
+                    {
+                        StartNotepadProcess(Globals.ErrorLogPath);
+                    }
+                };
+            }
+        }
+
+        public ICommand ViewOpenVpnLogCommand
+        {
+            get
+            {
+                return new CommandDelegate
+                {
+                    CommandAction = (args) =>
+                    {
+                        StartNotepadProcess(Globals.OpenVpnLogPath);
+                    }
                 };
             }
         }
@@ -133,118 +256,6 @@ namespace LightVPN.ViewModels
             {
                 process.Dispose();
             };
-        }
-
-        public ICommand ViewErrorLogCommand
-        {
-            get
-            {
-                return new CommandDelegate
-                {
-                    CommandAction = () =>
-                    {
-                        StartNotepadProcess(Globals.ErrorLogPath);
-                    }
-                };
-            }
-        }
-
-        public ICommand ViewOpenVpnLogCommand
-        {
-            get
-            {
-                return new CommandDelegate
-                {
-                    CommandAction = () =>
-                    {
-                        StartNotepadProcess(Globals.OpenVpnLogPath);
-                    }
-                };
-            }
-        }
-
-
-        public ICommand ReinstallTapCommand
-        {
-            get
-            {
-                return new CommandDelegate
-                {
-                    CommandAction = async () =>
-                    {
-                        IsReinstallingTap = true;
-                        await Task.Run(() =>
-                        {
-                            var instance = Globals.container.GetInstance<ITapManager>();
-                            if (instance.IsAdapterExistant())
-                            {
-                                instance.RemoveTapAdapter();
-                            }
-                            instance.CreateTapAdapter();
-                        });
-                        IsReinstallingTap = false;
-                        MessageBox.Show("OpenVPN TAP adapter has been reinstalled.", "LightVPN", MessageBoxButton.OK, MessageBoxImage.Information);
-                    },
-                    CanExecuteFunc = () => !IsReinstallingTap
-                };
-            }
-
-        }
-
-
-        public ICommand HandleSettingsChangesCommand
-        {
-            get
-            {
-                return new CommandDelegate()
-                {
-                    CommandAction = () =>
-                    {
-                        var settings = Globals.container.GetInstance<ISettingsManager<SettingsModel>>().Load();
-
-                        settings.DarkMode = DarkMode;
-                        settings.AutoConnect = AutoConnect;
-                        settings.DiscordRpc = DiscordRpc;
-
-                        Globals.container.GetInstance<ISettingsManager<SettingsModel>>().Save(settings);
-                    }
-                };
-            }
-        }
-
-        public ICommand LoadCommand
-        {
-            get
-            {
-                return new CommandDelegate()
-                {
-                    CommandAction = () =>
-                    {
-                        var settings = Globals.container.GetInstance<ISettingsManager<SettingsModel>>().Load();
-
-                        DarkMode = settings.DarkMode;
-                        AutoConnect = settings.AutoConnect;
-                        DiscordRpc = settings.DiscordRpc;
-                    }
-                };
-            }
-        }
-
-        protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-        }
-
-        private bool SetProperty<T>(ref T field, T newValue, [CallerMemberName] string propertyName = null)
-        {
-            if (!(object.Equals(field, newValue)))
-            {
-                field = (newValue);
-                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-                return true;
-            }
-
-            return false;
         }
     }
 }

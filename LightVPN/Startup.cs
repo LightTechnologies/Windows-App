@@ -1,14 +1,15 @@
 ﻿/* --------------------------------------------
- * 
+ *
  * Startup class - Main class
  * Copyright (C) Light Technologies LLC
- * 
+ *
  * File: Startup.cs
- * 
+ *
  * Created: 04-03-21 Khrysus
- * 
+ *
  * --------------------------------------------
  */
+
 using DiscordRPC;
 using LightVPN.Discord.Interfaces;
 using LightVPN.Interfaces;
@@ -28,17 +29,13 @@ using LightVPN.Logger.Base;
 using LightVPN.Settings.Interfaces;
 using LightVPN.Settings;
 using LightVPN.Common.Interfaces;
-using System.Diagnostics;
 using System.Reflection;
 using Exceptionless;
 using LightVPN.Auth.Classes;
 using System.Net.Http.Headers;
-using LightVPN.Common;
-using LightVPN.OpenVPN.Classes;
 using LightVPN.Common.Models;
 using System.Security.AccessControl;
 using System.Security.Principal;
-using System.Runtime.InteropServices;
 using LightVPN.Windows;
 
 namespace LightVPN
@@ -56,7 +53,6 @@ namespace LightVPN
             /* https://stackoverflow.com/questions/229565/what-is-a-good-pattern-for-using-a-global-mutex-in-c/229567 */
 
             string mutexId = string.Format("Global\\{{{0}}}", "f35bd589-5219-4668-9f78-b646442b1661");
-
 
             var allowEveryoneRule =
        new MutexAccessRule(new SecurityIdentifier(WellKnownSidType.WorldSid
@@ -83,7 +79,7 @@ namespace LightVPN
                 {
                     hasHandle = true;
                 }
-                
+
                 ExceptionlessClient.Default.Register();
                 var httpClientHandler = new HttpClientHandler
                 {
@@ -121,7 +117,6 @@ namespace LightVPN
                 logger.Write("(Startup/Main) Injected deps");
                 try
                 {
-
                     // Starts a new resource dictionary
                     var res = new ResourceDictionary();
 
@@ -146,10 +141,8 @@ namespace LightVPN
                     res.MergedDictionaries.Add(new ResourceDictionary() { Source = mdUri });
                     res.MergedDictionaries.Add(new ResourceDictionary() { Source = mdUri1 });
 
-                    AppDomain.CurrentDomain.UnhandledException += CurrentDomain_UnhandledException;
-                    App.Current.DispatcherUnhandledException += Current_DispatcherUnhandledException;
-
                     logger.Write("(Startup/Main) Resources injected, executing app...");
+
                     // Executes the app
                     a.Run();
 
@@ -159,6 +152,7 @@ namespace LightVPN
                 {
                     //if (MessageBox.Show($"An exception has occurred. Do you want to report the exception to the server? If no it will be written to the log file", "LightVPN", MessageBoxButton.YesNo, MessageBoxImage.Error) == MessageBoxResult.Yes)
                     e.ToExceptionless().Submit();
+
                     //else
                     MessageBox.Show($"An exception has occurred. It has been written to the log file and uploaded to the server, please open an issue on GitHub with the log file attached so the developers can resolve the issue.", "LightVPN", MessageBoxButton.OK, MessageBoxImage.Error);
 
@@ -171,24 +165,6 @@ namespace LightVPN
                 if (hasHandle)
                     mutex.ReleaseMutex();
             }
-        }
-
-        private static void Current_DispatcherUnhandledException(object sender, System.Windows.Threading.DispatcherUnhandledExceptionEventArgs e)
-        {
-            e.Exception.ToExceptionless().Submit();
-            //else
-            MessageBox.Show($"An exception has occurred. It has been written to the log file and uploaded to the server, please open an issue on GitHub with the log file attached so the developers can resolve the issue.", "LightVPN", MessageBoxButton.OK, MessageBoxImage.Error);
-
-            logger.Write(e.ToString());
-            Environment.Exit(0);
-        }
-
-        private static void CurrentDomain_UnhandledException(object sender, UnhandledExceptionEventArgs e)
-        {
-            MessageBox.Show($"An exception has occurred. It has been written to the log file as it couldn't be sent to the server, please open an issue on GitHub with the log file attached so the developers can resolve the issue.", "LightVPN", MessageBoxButton.OK, MessageBoxImage.Error);
-
-            logger.Write(e.ExceptionObject.ToString());
-            Environment.Exit(0);
         }
     }
 }

@@ -1,14 +1,15 @@
 ﻿/* --------------------------------------------
- * 
+ *
  * AES-256 Encryption / decryption - Main class
  * Copyright (C) Light Technologies LLC
- * 
+ *
  * File: Encryption.cs
- * 
+ *
  * Created: 04-03-21 Khrysus
- * 
+ *
  * --------------------------------------------
  */
+
 using LightVPN.Settings.Exceptions;
 using LightVPN.Settings.Interfaces;
 using System;
@@ -18,12 +19,13 @@ using System.Text;
 
 namespace LightVPN.Settings
 {
-    public class Encryption : IEncryption
+    public class Encryption : IDisposable, IEncryption
     {
         /// <summary>
-        /// Internal encryption key used for this class
+        /// Private encryption key used for this class
         /// </summary>
-        internal readonly string EncryptionKey = "h46V2usZ5y2sMMDQRjcFQHXFGrLMrQSkEGGzeLBevCJ2MeGQRUE2k3pMUP4jTQrhcgEe5VgpwsThdHmJM3XbnLdvrk";
+        private string EncryptionKey = "h46V2usZ5y2sMMDQRjcFQHXFGrLMrQSkEGGzeLBevCJ2MeGQRUE2k3pMUP4jTQrhcgEe5VgpwsThdHmJM3XbnLdvrk";
+
         /// <summary>
         /// Decrypts the specified base64 encoded string
         /// </summary>
@@ -54,6 +56,13 @@ namespace LightVPN.Settings
                 throw new CorruptedAuthSettingsException("Authentication file decryption has failed, it seems to have been corrupted. It has been reset to it's original values.");
             }
         }
+
+        public void Dispose()
+        {
+            EncryptionKey = null;
+            GC.SuppressFinalize(this);
+        }
+
         /// <summary>
         /// Encrypts the input plaintext with the AES encryption standard, on the CBC cipher
         /// </summary>
@@ -63,19 +72,18 @@ namespace LightVPN.Settings
         {
             byte[] clearBytes = Encoding.Unicode.GetBytes(clearText);
             using var encryptor = Aes.Create();
-                encryptor.Mode = CipherMode.CBC;
-                Rfc2898DeriveBytes pdb = new(EncryptionKey, new byte[] { 0x49, 0x76, 0x61, 0x6e, 0x20, 0x4d, 0x65, 0x64, 0x76, 0x65, 0x64, 0x65, 0x76 });
-                encryptor.Key = pdb.GetBytes(32);
-                encryptor.IV = pdb.GetBytes(16);
-                using MemoryStream ms = new();
-                using (CryptoStream cs = new(ms, encryptor.CreateEncryptor(), CryptoStreamMode.Write))
-                {
-                    cs.Write(clearBytes, 0, clearBytes.Length);
-                    cs.Close();
-                }
-                clearText = Convert.ToBase64String(ms.ToArray());
+            encryptor.Mode = CipherMode.CBC;
+            Rfc2898DeriveBytes pdb = new(EncryptionKey, new byte[] { 0x49, 0x76, 0x61, 0x6e, 0x20, 0x4d, 0x65, 0x64, 0x76, 0x65, 0x64, 0x65, 0x76 });
+            encryptor.Key = pdb.GetBytes(32);
+            encryptor.IV = pdb.GetBytes(16);
+            using MemoryStream ms = new();
+            using (CryptoStream cs = new(ms, encryptor.CreateEncryptor(), CryptoStreamMode.Write))
+            {
+                cs.Write(clearBytes, 0, clearBytes.Length);
+                cs.Close();
+            }
+            clearText = Convert.ToBase64String(ms.ToArray());
             return clearText;
         }
-
     }
 }

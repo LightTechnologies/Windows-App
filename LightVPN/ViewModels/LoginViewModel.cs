@@ -1,40 +1,49 @@
 ﻿using Exceptionless;
+using LightVPN.Auth.Exceptions;
 using LightVPN.Auth.Interfaces;
 using LightVPN.Auth.Models;
 using LightVPN.Common.Models;
+using LightVPN.Delegates;
 using LightVPN.Discord.Interfaces;
 using LightVPN.Logger;
 using LightVPN.Logger.Base;
 using LightVPN.OpenVPN.Interfaces;
 using LightVPN.Settings.Exceptions;
 using LightVPN.Settings.Interfaces;
+using LightVPN.ViewModels.Base;
 using LightVPN.Windows;
 using Newtonsoft.Json;
 using System;
-using System.Collections;
-using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
 using System.Net.Http;
-using System.Runtime.CompilerServices;
-using System.Security;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
-using static LightVPN.Auth.ApiException;
 
 namespace LightVPN.ViewModels
 {
-    public class LoginViewModel : INotifyPropertyChanged
+    public class LoginViewModel : BaseViewModel, INotifyPropertyChanged, IDisposable
     {
-
-        private readonly FileLogger logger = new ErrorLogger();
-
         private bool isAuthenticating;
+
+        private bool isIndeterminate = true;
+
+        private FileLogger logger = new ErrorLogger();
+
+        private string password;
+
+        private int progressInt = -1;
+
+        private string statusText = "SIGN IN";
+
+        private string userName;
+
         public bool IsAuthenticating
         {
             get { return isAuthenticating; }
+
             set
             {
                 isAuthenticating = value;
@@ -42,86 +51,15 @@ namespace LightVPN.ViewModels
             }
         }
 
-        private string userName;
-        public string UserName
-        {
-            get { return userName; }
-            set
-            {
-                userName = value;
-                OnPropertyChanged(nameof(UserName));
-            }
-        }
-        public ICommand PasswordChangedCommand
-        {
-            get
-            {
-                return new RelayCommand((obj) => {
-                    ExecChangePassword(obj);
-                });
-            }
-        }
-
-        private void ExecChangePassword(object obj)
-        {
-            Password = ((System.Windows.Controls.PasswordBox)obj).Password;
-        }
-
-        private string password;
-        public string Password
-        {
-            get { return password; }
-            set
-            {
-                password = value;
-                OnPropertyChanged(nameof(Password));
-            }
-        }
-
-        private string statusText = "SIGN IN";
-        public string StatusText
-        {
-            get { return statusText; }
-            set
-            {
-                statusText = value.ToUpper();
-                OnPropertyChanged(nameof(StatusText));
-            }
-        }
-
-        private bool isIndeterminate = true;
         public bool IsIndeterminate
         {
             get { return isIndeterminate; }
+
             set
             {
                 isIndeterminate = value;
                 OnPropertyChanged(nameof(IsIndeterminate));
             }
-        }
-
-        private int progressInt = -1;
-        public int ProgressInt
-        {
-            get { return progressInt; }
-            set
-            {
-                progressInt = value;
-                OnPropertyChanged(nameof(ProgressInt));
-            }
-        }
-
-        private void SetProgressIndeterminate()
-        {
-            ProgressInt = -1;
-            IsIndeterminate = true;
-        }
-
-        private void OpenMainWindow()
-        {
-            Application.Current.MainWindow = new MainWindow();
-            Application.Current.MainWindow.Show();
-            Startup.LoginWindow.Close();
         }
 
         public ICommand LoadCommand
@@ -130,7 +68,7 @@ namespace LightVPN.ViewModels
             {
                 return new CommandDelegate()
                 {
-                    CommandAction = async () =>
+                    CommandAction = async (args) =>
                     {
                         if (File.Exists(Globals.AuthPath))
                         {
@@ -155,6 +93,103 @@ namespace LightVPN.ViewModels
                     }
                 };
             }
+        }
+
+        public ICommand LoginCommand
+        {
+            get
+            {
+                return new CommandDelegate()
+                {
+                    CanExecuteFunc = () => !IsAuthenticating,
+                    CommandAction = async (args) =>
+                    {
+                        await ProcessLoginAsync(false, default);
+                    }
+                };
+            }
+        }
+
+        public string Password
+        {
+            get { return password; }
+
+            set
+            {
+                password = value;
+                OnPropertyChanged(nameof(Password));
+            }
+        }
+
+        public ICommand PasswordChangedCommand
+        {
+            get
+            {
+                return new CommandDelegate()
+                {
+                    CommandAction = (args) =>
+                    {
+                        ExecChangePassword(args);
+                    }
+                };
+            }
+        }
+
+        public int ProgressInt
+        {
+            get { return progressInt; }
+
+            set
+            {
+                progressInt = value;
+                OnPropertyChanged(nameof(ProgressInt));
+            }
+        }
+
+        public string StatusText
+        {
+            get { return statusText; }
+
+            set
+            {
+                statusText = value.ToUpper();
+                OnPropertyChanged(nameof(StatusText));
+            }
+        }
+
+        public string UserName
+        {
+            get { return userName; }
+
+            set
+            {
+                userName = value;
+                OnPropertyChanged(nameof(UserName));
+            }
+        }
+
+        public void Dispose()
+        {
+            logger = null;
+            Password = null;
+            UserName = null;
+            ProgressInt = default;
+            StatusText = null;
+            IsIndeterminate = default;
+            Startup.LoginWindow = null;
+            GC.SuppressFinalize(this);
+        }
+
+        private void ExecChangePassword(object obj)
+        {
+            Password = ((PasswordBox)obj).Password;
+        }
+
+        private void OpenMainWindow()
+        {
+            Application.Current.MainWindow = new MainWindow();
+            Application.Current.MainWindow.Show();
+            Startup.LoginWindow.Close();
         }
 
         private async Task ProcessLoginAsync(bool isSessionAuth = false, Guid sessionId = default)
@@ -199,7 +234,7 @@ namespace LightVPN.ViewModels
                 if (!isSessionAuth)
                 {
                     var encryption = Globals.container.GetInstance<IEncryption>();
-                    await File.WriteAllTextAsync(Globals.AuthPath, encryption.Encrypt(JsonConvert.SerializeObject(new AuthFile { Username = UserName, Password = Password, SessionId = authResponse.Session })));
+                    await File.WriteAllTextAsync(Globals.AuthPath, encryption.Encrypt(JsonConvert.SerializeObject(new AuthFile { Username = UserName, Password = Password, SessionId = authResponse.SessionId })));
                 }
 
                 if (!await Globals.container.GetInstance<IHttp>().IsConfigsCachedAsync())
@@ -260,6 +295,7 @@ namespace LightVPN.ViewModels
                     case "The SSL connection could not be established, see inner exception.":
                         MessageBox.Show("API certificate check failed.", "LightVPN", MessageBoxButton.OK, MessageBoxImage.Warning);
                         break;
+
                     default:
                         await logger.WriteAsync(e.ToString() + "\n" + StatusText); e.ToExceptionless().SetUserIdentity(UserName).AddObject(StatusText, "SignInText").Submit();
                         MessageBox.Show("Failed to send HTTP request to the LightVPN API.", "LightVPN", MessageBoxButton.OK, MessageBoxImage.Warning);
@@ -279,39 +315,10 @@ namespace LightVPN.ViewModels
             }
         }
 
-        public ICommand LoginCommand
+        private void SetProgressIndeterminate()
         {
-            get
-            {
-                return new CommandDelegate()
-                {
-                    CanExecuteFunc = () => !IsAuthenticating,
-                    CommandAction = async () =>
-                    {
-                        await ProcessLoginAsync(false, default);
-                    }
-                };
-            }
-        }
-
-
-
-        protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-        }
-
-        public event PropertyChangedEventHandler PropertyChanged;
-        private bool SetProperty<T>(ref T field, T newValue, [CallerMemberName] string propertyName = null)
-        {
-            if (!(object.Equals(field, newValue)))
-            {
-                field = (newValue);
-                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-                return true;
-            }
-
-            return false;
+            ProgressInt = -1;
+            IsIndeterminate = true;
         }
     }
 }

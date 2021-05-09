@@ -2,22 +2,47 @@
 using LightVPN.Auth.Classes;
 using LightVPN.Updater.Views;
 using LightVPN.Updater.Windows;
-using System;
 using System.ComponentModel;
 using System.Net.Http;
 using System.Runtime.CompilerServices;
 using System.Timers;
 using System.Windows;
 using System.Windows.Input;
-using System.Windows.Threading;
 
 namespace LightVPN.Updater.ViewModels
 {
     public class ChangelogViewModel : INotifyPropertyChanged
     {
+        private readonly Timer _timer = new();
+
+        private string changelog;
+
+        private int elapsedSw = 30;
+
         public event PropertyChangedEventHandler PropertyChanged;
 
-        private readonly Timer _timer = new();
+        public string Changelog
+        {
+            get { return changelog; }
+
+            set
+            {
+                changelog = value;
+                OnPropertyChanged(nameof(Changelog));
+            }
+        }
+
+        public int ElapsedSw
+        {
+            get { return elapsedSw; }
+
+            set
+            {
+                elapsedSw = value;
+                OnPropertyChanged(nameof(ElapsedSw));
+            }
+        }
+
         public ICommand LoadCommand
         {
             get
@@ -52,48 +77,6 @@ namespace LightVPN.Updater.ViewModels
             }
         }
 
-        private void Elapsed(object sender, ElapsedEventArgs e)
-        {
-            if (ElapsedSw > 0)
-            {
-                ElapsedSw -= 1;
-            }
-            else
-            {
-                _timer.Stop();
-
-                MainWindow mainWindow = null;
-
-                Application.Current.Dispatcher.Invoke(() =>
-                {
-                    mainWindow = (MainWindow)Application.Current.MainWindow;
-                    mainWindow.NavigatePage(new Installer());
-                });
-            }
-        }
-
-        private string changelog;
-        public string Changelog
-        {
-            get { return changelog; }
-            set
-            {
-                changelog = value;
-                OnPropertyChanged(nameof(Changelog));
-            }
-        }
-
-        private int elapsedSw = 30;
-        public int ElapsedSw
-        {
-            get { return elapsedSw; }
-            set
-            {
-                elapsedSw = value;
-                OnPropertyChanged(nameof(ElapsedSw));
-            }
-        }
-
         public ICommand NextPageCommand
         {
             get
@@ -113,6 +96,26 @@ namespace LightVPN.Updater.ViewModels
         protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        }
+
+        private void Elapsed(object sender, ElapsedEventArgs e)
+        {
+            if (ElapsedSw > 0)
+            {
+                ElapsedSw -= 1;
+            }
+            else
+            {
+                _timer.Stop();
+
+                MainWindow mainWindow = null;
+
+                Application.Current.Dispatcher.Invoke(() =>
+                {
+                    mainWindow = (MainWindow)Application.Current.MainWindow;
+                    mainWindow.NavigatePage(new Installer());
+                });
+            }
         }
 
         private bool SetProperty<T>(ref T field, T newValue, [CallerMemberName] string propertyName = null)

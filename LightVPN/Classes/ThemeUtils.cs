@@ -1,14 +1,15 @@
 ﻿/* --------------------------------------------
- * 
+ *
  * Theme utilities - Main class
  * Copyright (C) Light Technologies LLC
- * 
+ *
  * File: ThemeUtils.cs
- * 
+ *
  * Created: 04-03-21 Khrysus
- * 
+ *
  * --------------------------------------------
  */
+
 using LightVPN.Interfaces;
 using LightVPN.Logger;
 using LightVPN.Logger.Base;
@@ -21,7 +22,8 @@ namespace LightVPN
 {
     public class ThemeUtils : IThemeUtils
     {
-        private readonly FileLogger logger = new ErrorLogger();
+        private FileLogger logger = new ErrorLogger();
+
         /// <summary>
         /// Switches the theme to the data provided in the color object
         /// </summary>
@@ -45,7 +47,7 @@ namespace LightVPN
             catch (Exception e)
             {
                 logger.Write(e.ToString());
-                MessageBox.Show("Something went wrong when processing your theme settings, please report this exception, and the log file to LightVPN support.", "LightVPN", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show("Something went wrong when processing theme settings, please report this exception, and the log file to LightVPN support.", "LightVPN", MessageBoxButton.OK, MessageBoxImage.Error);
                 Environment.Exit(0);
                 return;
             }

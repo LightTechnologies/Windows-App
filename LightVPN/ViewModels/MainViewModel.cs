@@ -1,36 +1,35 @@
 ﻿using LightVPN.Auth.Interfaces;
-using LightVPN.Auth.Models;
 using LightVPN.Common.Models;
+using LightVPN.Delegates;
 using LightVPN.Discord.Interfaces;
 using LightVPN.Models;
-using LightVPN.OpenVPN;
 using LightVPN.OpenVPN.Interfaces;
 using LightVPN.Settings.Interfaces;
+using LightVPN.ViewModels.Base;
 using System;
 using System.ComponentModel;
 using System.IO;
 using System.Linq;
 using System.Net;
-using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
 
 namespace LightVPN.ViewModels
 {
-    public class MainViewModel : INotifyPropertyChanged, IDisposable
+    public class MainViewModel : BaseViewModel, INotifyPropertyChanged, IDisposable
     {
-        public event PropertyChangedEventHandler PropertyChanged;
+        private readonly IManager _manager;
 
-        private IManager _manager;
+        private ConnectionState connectionState = ConnectionState.Disconnected;
 
-        public void Dispose()
-        {
-            LastServer = null;
-            IsConnecting = default;
-            Servers = null;
-            GC.SuppressFinalize(this);
-        }
+        private bool isConnecting;
+
+        private string lastServer;
+
+        private ServersModel selectedServer;
+
+        private BindingList<ServersModel> servers = new();
 
         public MainViewModel()
         {
@@ -42,35 +41,72 @@ namespace LightVPN.ViewModels
             LastServer = settings.PreviousServer is null ? "N/A" : $"{settings.PreviousServer?.ServerName} ({settings.PreviousServer?.Type})";
         }
 
-        private void LoginFailed(object sender)
+        public ICommand ConnectCommand
         {
-            MessageBox.Show($"A problem has occurred whilst authenticating with the server, please try again.\n\nIf the problem persists, please contact LightVPN support.", "LightVPN", MessageBoxButton.OK, MessageBoxImage.Error);
-            IsConnecting = false;
-            ConnectionState = ConnectionState.Disconnected;
-        }
-
-        private void Error(object sender, string message)
-        {
-            MessageBox.Show($"A problem has occurred whilst connecting to the server;\n\n{message}", "LightVPN", MessageBoxButton.OK, MessageBoxImage.Error);
-            IsConnecting = false;
-            ConnectionState = ConnectionState.Disconnected;
-        }
-
-        private void Connected(object sender)
-        {
-            IsConnecting = false;
-            ConnectionState = ConnectionState.Connected;
-            if (Globals.container.GetInstance<ISettingsManager<SettingsModel>>().Load().DiscordRpc)
+            get
             {
-                Globals.container.GetInstance<IDiscordRpc>().UpdateState($"Connected!");
-                Globals.container.GetInstance<IDiscordRpc>().ResetTimestamps();
+                return new CommandDelegate
+                {
+                    CommandAction = async (args) =>
+                    {
+                        if (ConnectionState == ConnectionState.Connected)
+                        {
+                            await DisconnectAsync();
+                            return;
+                        }
+
+                        var settings = Globals.container.GetInstance<ISettingsManager<SettingsModel>>().Load();
+
+                        await ConnectAsync(settings.PreviousServer?.Id);
+                    },
+                    CanExecuteFunc = () => !IsConnecting && LastServer != "N/A"
+                };
             }
         }
 
-        private bool isConnecting;
+        public ICommand ConnectCommandArgs
+        {
+            get
+            {
+                return new CommandDelegate()
+                {
+                    CommandAction = async (args) =>
+                    {
+                        if (ConnectionState == ConnectionState.Connecting) return;
+                        if (ConnectionState == ConnectionState.Connected)
+                        {
+                            await DisconnectAsync();
+                        }
+
+                        if (args is not ServersModel serversModel)
+                        {
+                            return;
+                        }
+
+                        SaveServer(serversModel.Server, serversModel.ServerName, serversModel.Type);
+
+                        await ConnectAsync(serversModel.Server);
+                    },
+                    CanExecuteFunc = () => ConnectionState != ConnectionState.Connecting
+                };
+            }
+        }
+
+        public ConnectionState ConnectionState
+        {
+            get { return connectionState; }
+
+            set
+            {
+                connectionState = value;
+                OnPropertyChanged(nameof(ConnectionState));
+            }
+        }
+
         public bool IsConnecting
         {
             get { return isConnecting; }
+
             set
             {
                 isConnecting = value;
@@ -78,15 +114,83 @@ namespace LightVPN.ViewModels
             }
         }
 
-        private BindingList<ServersModel> servers = new();
+        public string LastServer
+        {
+            get { return lastServer; }
+
+            set
+            {
+                lastServer = value;
+                OnPropertyChanged(nameof(LastServer));
+            }
+        }
+
+        public ICommand LoadCommand
+        {
+            get
+            {
+                return new CommandDelegate
+                {
+                    CommandAction = async (args) =>
+                    {
+                        Servers.Clear();
+
+                        var settings = Globals.container.GetInstance<ISettingsManager<SettingsModel>>().Load();
+
+                        var servers = await Globals.container.GetInstance<IHttp>().GetServersAsync();
+
+                        foreach (var server in servers.OrderByDescending(x => x.CountryName).ThenBy(x => x.ServerName).ThenBy(x => x.Type))
+                        {
+                            Servers.Add(new ServersModel
+                            {
+                                ServerName = server.ServerName,
+                                Country = server.Location,
+                                Server = server.FileName,
+                                Id = server.Id,
+                                Type = server.Type,
+                                UsersConnected = server.DevicesOnline,
+                                Status = server.Status ? "Check" : "Close",
+                                Flag = $"pack://application:,,,/LightVPN;Component/Resources/Flags/{server.CountryName.Replace(' ', '-')}.png"
+                            });
+
+                            if (settings.AutoConnect && settings.PreviousServer?.Id is not null)
+                            {
+                                await ConnectAsync(settings.PreviousServer?.Id);
+                            }
+                        }
+                    }
+                };
+            }
+        }
+
+        public ServersModel SelectedServer
+        {
+            get { return selectedServer; }
+
+            set
+            {
+                selectedServer = value;
+                OnPropertyChanged(nameof(SelectedServer));
+            }
+        }
+
         public BindingList<ServersModel> Servers
         {
             get { return servers; }
+
             set
             {
                 servers = value;
                 OnPropertyChanged(nameof(Servers));
             }
+        }
+
+        public void Dispose()
+        {
+            LastServer = null;
+            IsConnecting = default;
+            Servers = null;
+            GC.SuppressFinalize(this);
         }
 
         internal async Task ConnectAsync(string serverName)
@@ -99,10 +203,11 @@ namespace LightVPN.ViewModels
             // This processes and finds the config on the filesystem
             string ovpnFn = string.Empty;
             var files = Directory.GetFiles(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "LightVPN", "cache"));
-            
+
             if (!files.Any(x => x.Contains(serverName)))
             {
-                // Config wasn't found, so instead we re-cache the configs to hope that the server has the new config
+                // Config wasn't found, so instead we re-cache the configs to hope that the server
+                // has the new config
                 await Globals.container.GetInstance<IHttp>().CacheConfigsAsync(true);
                 files = Directory.GetFiles(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "LightVPN", "cache"));
             }
@@ -121,6 +226,22 @@ namespace LightVPN.ViewModels
             }
 
             _manager.Connect(ovpnFn);
+        }
+
+        internal async Task DisconnectAsync()
+        {
+            IsConnecting = true;
+            if (Globals.container.GetInstance<ISettingsManager<SettingsModel>>().Load().DiscordRpc)
+            {
+                Globals.container.GetInstance<IDiscordRpc>().ResetTimestamps();
+                Globals.container.GetInstance<IDiscordRpc>().ClearPresence();
+            }
+            await Task.Run(() =>
+            {
+                _manager.Disconnect();
+            });
+            IsConnecting = false;
+            ConnectionState = ConnectionState.Disconnected;
         }
 
         internal void SaveServer(string pritunlName, string friendlyName, ServerType serverType)
@@ -145,97 +266,104 @@ namespace LightVPN.ViewModels
             LastServer = $"{friendlyName} ({serverType})";
         }
 
-        internal async Task DisconnectAsync()
+        private void Connected(object sender)
         {
-            IsConnecting = true;
+            IsConnecting = false;
+            ConnectionState = ConnectionState.Connected;
             if (Globals.container.GetInstance<ISettingsManager<SettingsModel>>().Load().DiscordRpc)
             {
+                Globals.container.GetInstance<IDiscordRpc>().UpdateState($"Connected!");
                 Globals.container.GetInstance<IDiscordRpc>().ResetTimestamps();
-                Globals.container.GetInstance<IDiscordRpc>().ClearPresence();
             }
-            await Task.Run(() =>
-            {
-                _manager.Disconnect();
-            });
+        }
+
+        private void Error(object sender, string message)
+        {
+            MessageBox.Show($"A problem has occurred whilst connecting to the server;\n\n{message}", "LightVPN", MessageBoxButton.OK, MessageBoxImage.Error);
             IsConnecting = false;
             ConnectionState = ConnectionState.Disconnected;
         }
 
-        public ICommand ConnectCommandArgs
+        private void LoginFailed(object sender)
         {
-            get
-            {
-                return new ConnectCommandArgs()
-                {
-                    CommandAction = async (args) =>
-                    {
-                        if (ConnectionState == ConnectionState.Connected)
-                        {
-                            await DisconnectAsync();
-                        }
-
-                        SaveServer(args.Server, args.ServerName, args.Type);
-
-                        await ConnectAsync(args.Server);
-                    }
-                };
-            }
-        }
-
-        private ConnectionState connectionState = ConnectionState.Disconnected;
-        public ConnectionState ConnectionState
-        {
-            get { return connectionState; }
-            set
-            {
-                connectionState = value;
-                OnPropertyChanged(nameof(ConnectionState));
-            }
-        }
-
-        private string lastServer;
-        public string LastServer
-        {
-            get { return lastServer; }
-            set
-            {
-                lastServer = value;
-                OnPropertyChanged(nameof(LastServer));
-            }
-        
-        }
-
-        private ServersModel selectedServer;
-        public ServersModel SelectedServer
-        {
-            get { return selectedServer; }
-            set
-            {
-                selectedServer = value;
-                OnPropertyChanged(nameof(SelectedServer));
-            }
+            MessageBox.Show($"A problem has occurred whilst authenticating with the server, please try again.\n\nIf the problem persists, please contact LightVPN support.", "LightVPN", MessageBoxButton.OK, MessageBoxImage.Error);
+            IsConnecting = false;
+            ConnectionState = ConnectionState.Disconnected;
         }
 
         public class ServersModel : INotifyPropertyChanged
         {
             public event PropertyChangedEventHandler PropertyChanged;
 
-            private string displayName { set; get; }
-            private string country { set; get; }
+            public string Country
+            {
+                get
+                {
+                    return country;
+                }
 
-            private string flag { set; get; }
+                set
+                {
+                    country = value;
+                    OnPropertyChanged(nameof(Country));
+                }
+            }
 
-            private string id { set; get; }
+            public string Flag
+            {
+                get
+                {
+                    return flag;
+                }
 
-            private IPAddress ipAddress { set; get; }
+                set
+                {
+                    flag = value;
+                    OnPropertyChanged(nameof(Flag));
+                }
+            }
 
-            private string server { set; get; }
+            public string Id
+            {
+                get
+                {
+                    return id;
+                }
 
-            private ServerType type { set; get; }
+                set
+                {
+                    id = value;
+                    OnPropertyChanged(nameof(Id));
+                }
+            }
 
-            private string status { set; get; }
+            public IPAddress IpAddress
+            {
+                get
+                {
+                    return ipAddress;
+                }
 
-            private long usersConnected { set; get; }
+                set
+                {
+                    ipAddress = value;
+                    OnPropertyChanged(nameof(IpAddress));
+                }
+            }
+
+            public string Server
+            {
+                get
+                {
+                    return server;
+                }
+
+                set
+                {
+                    server = value;
+                    OnPropertyChanged(nameof(Server));
+                }
+            }
 
             public string ServerName
             {
@@ -265,57 +393,17 @@ namespace LightVPN.ViewModels
                 }
             }
 
-            public string Country
+            public ServerType Type
             {
                 get
                 {
-                    return country;
+                    return type;
                 }
 
                 set
                 {
-                    country = value;
-                    OnPropertyChanged(nameof(Country));
-                }
-            }
-
-            public string Flag
-            {
-                get
-                {
-                    return flag;
-                }
-
-                set
-                {
-                    flag = value;
-                    OnPropertyChanged(nameof(Flag));
-                }
-            }
-            public string Id
-            {
-                get
-                {
-                    return id;
-                }
-
-                set
-                {
-                    id = value;
-                    OnPropertyChanged(nameof(Id));
-                }
-            }
-            public IPAddress IpAddress
-            {
-                get
-                {
-                    return ipAddress;
-                }
-
-                set
-                {
-                    ipAddress = value;
-                    OnPropertyChanged(nameof(IpAddress));
+                    type = value;
+                    OnPropertyChanged(nameof(Type));
                 }
             }
 
@@ -333,33 +421,23 @@ namespace LightVPN.ViewModels
                 }
             }
 
-            public string Server
-            {
-                get
-                {
-                    return server;
-                }
+            private string country { set; get; }
 
-                set
-                {
-                    server = value;
-                    OnPropertyChanged(nameof(Server));
-                }
-            }
+            private string displayName { set; get; }
 
-            public ServerType Type
-            {
-                get
-                {
-                    return type;
-                }
+            private string flag { set; get; }
 
-                set
-                {
-                    type = value;
-                    OnPropertyChanged(nameof(Type));
-                }
-            }
+            private string id { set; get; }
+
+            private IPAddress ipAddress { set; get; }
+
+            private string server { set; get; }
+
+            private string status { set; get; }
+
+            private ServerType type { set; get; }
+
+            private long usersConnected { set; get; }
 
             private void OnPropertyChanged(string propertyName)
             {
@@ -370,84 +448,6 @@ namespace LightVPN.ViewModels
                     saved(this, e);
                 }
             }
-        }
-
-        public ICommand LoadCommand
-        {
-            get
-            {
-                return new CommandDelegate
-                {
-                    CommandAction = async () =>
-                    {
-                        Servers.Clear();
-
-                        var settings = Globals.container.GetInstance<ISettingsManager<SettingsModel>>().Load();
-
-                        var servers = await Globals.container.GetInstance<IHttp>().GetServersAsync();
-
-                        foreach (var server in servers.OrderByDescending(x => x.Country).ThenBy(x => x.ServerName).ThenBy(x => x.Type))
-                        {
-                            Servers.Add(new ServersModel
-                            {
-                                ServerName = server.ServerName,
-                                Country = server.Location,
-                                Server = server.FileName,
-                                Id = server.Id,
-                                Type = server.Type,
-                                UsersConnected = server.DevicesOnline,
-                                Status = server.Status ? "Check" : "Close",
-                                Flag = $"pack://application:,,,/LightVPN;Component/Resources/Flags/{server.Country.Replace(' ', '-')}.png"
-                            });
-
-                            if (settings.AutoConnect && settings.PreviousServer?.Id is not null)
-                            {
-                                await ConnectAsync(settings.PreviousServer?.Id);
-                            }
-                        }
-                    }
-                };
-            }
-        }
-
-        public ICommand ConnectCommand
-        {
-            get
-            {
-                return new CommandDelegate
-                {
-                    CommandAction = async () =>
-                    {
-                        if (ConnectionState == ConnectionState.Connected)
-                        {
-                            await DisconnectAsync();
-                            return;
-                        }
-
-                        var settings = Globals.container.GetInstance<ISettingsManager<SettingsModel>>().Load();
-
-                        await ConnectAsync(settings.PreviousServer?.Id);
-                    },
-                    CanExecuteFunc = () => !IsConnecting && LastServer != "N/A"
-                };
-            }
-        }
-
-        protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-        }
-
-        private bool SetProperty<T>(ref T field, T newValue, [CallerMemberName] string propertyName = null)
-        {
-            if (!(object.Equals(field, newValue)))
-            {
-                field = (newValue);
-                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-                return true;
-            }
-
-            return false;
         }
     }
 }

@@ -1,83 +1,102 @@
 ﻿using Hardcodet.Wpf.TaskbarNotification;
 using LightVPN.Common.Models;
-using LightVPN.OpenVPN;
 using LightVPN.OpenVPN.Interfaces;
 using LightVPN.Settings.Interfaces;
 using LightVPN.Views;
 using MaterialDesignThemes.Wpf;
 using System;
-using System.Collections.Generic;
 using System.ComponentModel;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
 using System.Windows.Media.Animation;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
 
 namespace LightVPN.Windows
 {
     /// <summary>
     /// Interaction logic for MainWindow.xaml
     /// </summary>
-    public partial class MainWindow : Window
+    public partial class MainWindow : Window, IDisposable
     {
-        private readonly BeginStoryboard _viewLoaded;
-        private readonly BeginStoryboard _viewUnloaded;
-        private readonly TaskbarIcon _notifyIcon;
-        private Page _currentView;
-        private readonly Main _mainView;
-        private readonly IManager _manager;
+        private Main _mainView;
+
+        private IManager _manager;
+
+        private TaskbarIcon _nofifyIcon;
+
+        private BeginStoryboard _viewLoaded;
+
+        private BeginStoryboard _viewUnloaded;
+
         public MainWindow()
         {
             InitializeComponent();
+
+            // Fixes WPF's horrific maximize logic
             MaxHeight = SystemParameters.MaximizedPrimaryScreenHeight;
             MaxWidth = SystemParameters.MaximizedPrimaryScreenWidth;
+
+            var settings = Globals.container.GetInstance<ISettingsManager<SettingsModel>>().Load();
+
+            if (settings.SizeSaving is not null && settings.SizeSaving.IsSavingSize)
+            {
+                this.Height = settings.SizeSaving.Height;
+                this.Width = settings.SizeSaving.Width;
+            }
+
             _viewLoaded = FindResource("LoadView") as BeginStoryboard;
             _viewUnloaded = FindResource("UnloadView") as BeginStoryboard;
             _mainView = new Main(this);
             _manager = Globals.container.GetInstance<IManager>();
             NavigatePage(_mainView);
-            _notifyIcon = (TaskbarIcon)FindResource("NotifyIcon");
+
+            // Just to initialize it
+            _nofifyIcon = (TaskbarIcon)FindResource("NotifyIcon");
+
+            // Size saving handlers (can't do this in VM)
+            this.SizeChanged += SizeChangedEvent;
         }
 
-        private void MainWindowStateChanged(object sender, EventArgs e)
+        public void Dispose()
         {
-            //Handles Windows Aero maximize changes
-            MaxIcon.Kind = WindowState == WindowState.Maximized ? PackIconKind.WindowRestore : PackIconKind.WindowMaximize;
+            _nofifyIcon.Dispose();
+            _viewLoaded = null;
+            _viewUnloaded = null;
+            _manager = null;
+            _nofifyIcon = null;
+            GC.SuppressFinalize(this);
         }
 
         public async void NavigatePage(Page page)
         {
-            if (_currentView?.Name != page.Name)
+            if (page is Main)
             {
-                if (page is Main)
-                {
-                    page = _mainView;
-                }
+                page = _mainView;
+            }
 
-                _currentView = page;
-                _viewUnloaded.Storyboard.Begin();
-                await Task.Delay(400);
-                MainFrame.Navigate(page);
+            _viewUnloaded.Storyboard.Begin();
+            await Task.Delay(400);
+            MainFrame.Navigate(page);
+        }
+
+        private void MainWindowStateChanged(object sender, EventArgs e) => MaxIcon.Kind = WindowState == WindowState.Maximized ? PackIconKind.WindowRestore : PackIconKind.WindowMaximize;
+
+        private void SettingsMenuItem(object sender, RoutedEventArgs e) => NavigatePage(new Views.Settings(this));
+
+        private new async void SizeChangedEvent(object sender, SizeChangedEventArgs e)
+        {
+            var settings = await Globals.container.GetInstance<ISettingsManager<SettingsModel>>().LoadAsync();
+
+            if (settings.SizeSaving is not null && settings.SizeSaving.IsSavingSize)
+            {
+                settings.SizeSaving.Height = (uint)Math.Round(this.Height);
+                settings.SizeSaving.Width = (uint)Math.Round(this.Width);
+
+                await Globals.container.GetInstance<ISettingsManager<SettingsModel>>().SaveAsync(settings);
             }
         }
 
-        private void SettingsMenuItem(object sender, RoutedEventArgs e)
-        {
-            NavigatePage(new Views.Settings(this));
-        }
-
-        private void UnloadCompleted(object sender, EventArgs e)
-        {
-            _viewLoaded.Storyboard.Begin();
-        }
+        private void UnloadCompleted(object sender, EventArgs e) => _viewLoaded.Storyboard.Begin();
 
         private void Window_Closing(object sender, CancelEventArgs e)
         {

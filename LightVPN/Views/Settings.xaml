@@ -120,6 +120,22 @@
                                     IsChecked="{Binding DarkMode}"
                                     Style="{DynamicResource MaterialDesignSwitchToggleButton}" />
                             </Grid>
+                            <Separator Opacity="0.2" />
+                            <Grid HorizontalAlignment="Stretch" VerticalAlignment="Top">
+                                <TextBlock
+                                    Margin="20"
+                                    HorizontalAlignment="Left"
+                                    VerticalAlignment="Center"
+                                    Text="Save window size" />
+                                <ToggleButton
+                                    Name="saveWindowSizeSwitch"
+                                    Margin="20"
+                                    HorizontalAlignment="Right"
+                                    VerticalAlignment="Top"
+                                    Command="{Binding HandleSettingsChangesCommand}"
+                                    IsChecked="{Binding SaveWindowSize}"
+                                    Style="{DynamicResource MaterialDesignSwitchToggleButton}" />
+                            </Grid>
                         </StackPanel>
                     </materialDesign:Card>
                     <TextBlock

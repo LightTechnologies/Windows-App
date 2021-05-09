@@ -1,27 +1,26 @@
 ﻿using LightVPN.OpenVPN.Interfaces;
 using System;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Net.NetworkInformation;
-using System.Text;
-using System.Threading.Tasks;
 using WindowsFirewallHelper;
 using WindowsFirewallHelper.FirewallRules;
 
-namespace LightVPN.OpenVPN.Classes
+namespace LightVPN.OpenVPN
 {
     public class Killswitch : IKillswitch
     {
         private readonly string _interfaceFriendlyName;
+
         /// <summary>
-        /// Makes a new instance of the Killswitch 
+        /// Makes a new instance of the Killswitch
         /// </summary>
         /// <param name="interfaceFriendlyName">The friendly name of the interface to monitor</param>
         public Killswitch(string interfaceFriendlyName)
         {
             _interfaceFriendlyName = interfaceFriendlyName;
         }
+
         /// <summary>
         /// Starts killswitch
         /// </summary>
@@ -30,6 +29,7 @@ namespace LightVPN.OpenVPN.Classes
             NetworkChange.NetworkAddressChanged += NetworkChange_NetworkAddressChanged;
             Execute(true);
         }
+
         /// <summary>
         /// stops killswitch
         /// </summary>
@@ -38,27 +38,7 @@ namespace LightVPN.OpenVPN.Classes
             NetworkChange.NetworkAddressChanged -= NetworkChange_NetworkAddressChanged;
             Execute(false);
         }
-        /// <summary>
-        /// monitors the network 
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void NetworkChange_NetworkAddressChanged(object sender, EventArgs e)
-        {
-            var interfaces = NetworkInterface.GetAllNetworkInterfaces().Where(x => x.Name == _interfaceFriendlyName);
-            foreach (var nic in interfaces)
-            {
-                if (nic.OperationalStatus == OperationalStatus.Up)
-                {
-                    Execute(false);
-                    return;
-                }
-                else
-                {
-                    Execute(true);
-                }
-            }
-        }
+
         /// <summary>
         /// executes the command to enable the rule and disable the rule
         /// </summary>
@@ -100,7 +80,28 @@ namespace LightVPN.OpenVPN.Classes
                 FirewallWAS.Instance.Rules.Add(rule);
                 FirewallWAS.Instance.Rules.Add(appRule);
             }
+        }
 
+        /// <summary>
+        /// monitors the network
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void NetworkChange_NetworkAddressChanged(object sender, EventArgs e)
+        {
+            var interfaces = NetworkInterface.GetAllNetworkInterfaces().Where(x => x.Name == _interfaceFriendlyName);
+            foreach (var nic in interfaces)
+            {
+                if (nic.OperationalStatus == OperationalStatus.Up)
+                {
+                    Execute(false);
+                    return;
+                }
+                else
+                {
+                    Execute(true);
+                }
+            }
         }
     }
 }

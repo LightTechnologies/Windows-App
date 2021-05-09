@@ -1,12 +1,12 @@
 ﻿/* --------------------------------------------
- * 
+ *
  * UI (WPF) converters - Main class
  * Copyright (C) Light Technologies LLC
- * 
+ *
  * File: Converters.cs
- * 
+ *
  * Created: 04-03-21 Khrysus
- * 
+ *
  * --------------------------------------------
  */
 
@@ -35,28 +35,32 @@ namespace LightVPN.Converters
         /// <returns>PackIconKind</returns>
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            if (value is not ConnectionState connState) return null;
+            if (value is not ConnectionState connState) throw new ArgumentException("The value must be a ConnectionState");
             return connState switch
             {
                 ConnectionState.Connected => PackIconKind.Close,
                 _ => PackIconKind.Connection,
             };
         }
+
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
         {
             throw new NotImplementedException();
         }
     }
 
-    //Source: https://brianlagunas.com/a-better-way-to-data-bind-enums-in-wpf/
+    /* Source: https://brianlagunas.com/a-better-way-to-data-bind-enums-in-wpf/ */
+
     public class EnumDescriptionTypeConverter : EnumConverter
     {
         public EnumDescriptionTypeConverter(Type type)
             : base(type)
         {
         }
+
         /// <summary>
-        /// This is for WPF bindings, since we are only using MVVM to display data. This method should only be called by WPF therefore it's params are not documented
+        /// This is for WPF bindings, since we are only using MVVM to display data. This method
+        /// should only be called by WPF therefore it's params are not documented
         /// </summary>
         /// <param name="context"></param>
         /// <param name="culture"></param>
@@ -103,9 +107,11 @@ namespace LightVPN.Converters
 
             return !(bool)value;
         }
+
         /// <summary>
-        /// Converts the input boolean back to it's original value, although not a good idea because you might break something and by might I mean you WILL cause an exception, just
-        /// look at the method body :)))
+        /// Converts the input boolean back to it's original value, although not a good idea because
+        /// you might break something and by might I mean you WILL cause an exception, just look at
+        /// the method body :)))
         /// </summary>
         /// <param name="value"></param>
         /// <param name="targetType"></param>

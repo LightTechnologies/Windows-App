@@ -5,16 +5,16 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Input;
 
-namespace LightVPN
+namespace LightVPN.Delegates
 {
     class CommandDelegate : ICommand
     {
-        public Action CommandAction { get; set; }
+        public Action<object> CommandAction { get; set; }
         public Func<bool> CanExecuteFunc { get; set; }
 
         public void Execute(object parameter)
         {
-            CommandAction();
+            CommandAction(parameter);
         }
 
         public bool CanExecute(object parameter)

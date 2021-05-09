@@ -1,14 +1,15 @@
 ﻿/* --------------------------------------------
- * 
+ *
  * Extension methods - Main class
  * Copyright (C) Light Technologies LLC
- * 
+ *
  * File: Extensions.cs
- * 
+ *
  * Created: 04-03-21 Khrysus
- * 
+ *
  * --------------------------------------------
  */
+
 using Newtonsoft.Json.Linq;
 using System;
 using System.Diagnostics;
@@ -19,6 +20,16 @@ namespace LightVPN.Common
 {
     public static class Extensions
     {
+        /// <summary>
+        /// Gets the assembly and returns the version
+        /// </summary>
+        /// <param name="assembly">The assembly, should be the executing assembly</param>
+        /// <returns>The version of the executing assembly</returns>
+        public static Version GetVersion(this Assembly assembly)
+        {
+            return Version.Parse(FileVersionInfo.GetVersionInfo(Path.GetFullPath(assembly.Location)).FileVersion);
+        }
+
         /// <summary>
         /// Checks if the input string is valid Json data using JToken
         /// </summary>
@@ -36,15 +47,6 @@ namespace LightVPN.Common
             {
                 return false;
             }
-        }
-        /// <summary>
-        /// Gets the assembly and returns the version
-        /// </summary>
-        /// <param name="assembly">The assembly, should be the executing assembly</param>
-        /// <returns>The version of the executing assembly</returns>
-        public static Version GetVersion(this Assembly assembly)
-        {
-            return Version.Parse(FileVersionInfo.GetVersionInfo(Path.GetFullPath(assembly.Location)).FileVersion);
         }
 
         /// <summary>
