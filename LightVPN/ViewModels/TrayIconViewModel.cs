@@ -10,7 +10,7 @@ namespace LightVPN.ViewModels
         /// <summary>
         /// Shuts down the application.
         /// </summary>
-        public ICommand ExitApplicationCommand
+        public static ICommand ExitApplicationCommand
         {
             get
             {
@@ -21,7 +21,7 @@ namespace LightVPN.ViewModels
         /// <summary>
         /// Hides the main window. This command is only enabled if a window is open.
         /// </summary>
-        public ICommand HideWindowCommand
+        public static ICommand HideWindowCommand
         {
             get
             {
@@ -40,7 +40,7 @@ namespace LightVPN.ViewModels
         /// <summary>
         /// Shows a window, if none is already open.
         /// </summary>
-        public ICommand ShowWindowCommand
+        public static ICommand ShowWindowCommand
         {
             get
             {

@@ -11,28 +11,29 @@
  */
 
 using DiscordRPC;
-using LightVPN.Discord.Interfaces;
-using LightVPN.OpenVPN;
+using Exceptionless;
+using LightVPN.Auth;
+using LightVPN.Auth.Interfaces;
+using LightVPN.Common.Models;
 using LightVPN.Discord;
+using LightVPN.Discord.Interfaces;
+using LightVPN.FileLogger;
+using LightVPN.FileLogger.Base;
+using LightVPN.OpenVPN;
 using LightVPN.OpenVPN.Interfaces;
+using LightVPN.Settings;
+using LightVPN.Settings.Interfaces;
+using LightVPN.Windows;
 using SimpleInjector;
 using System;
 using System.IO;
-using System.Threading;
-using System.Windows;
-using LightVPN.Auth.Interfaces;
-using LightVPN.Auth;
 using System.Net.Http;
-using LightVPN.FileLogger;
-using LightVPN.FileLogger.Base;
-using LightVPN.Settings.Interfaces;
-using LightVPN.Settings;
-using Exceptionless;
 using System.Net.Http.Headers;
-using LightVPN.Common.Models;
+using System.Reflection;
 using System.Security.AccessControl;
 using System.Security.Principal;
-using LightVPN.Windows;
+using System.Threading;
+using System.Windows;
 
 namespace LightVPN
 {
@@ -45,7 +46,7 @@ namespace LightVPN
         [STAThread]
         public static void Main()
         {
-            // logger.Write($"LightVPN Windows Client [version {Assembly.GetEntryAssembly().GetName().Version}]");
+            logger.Write($"LightVPN Windows Client [version {Assembly.GetEntryAssembly().GetName().Version}]");
             /* https://stackoverflow.com/questions/229565/what-is-a-good-pattern-for-using-a-global-mutex-in-c/229567 */
 
             string mutexId = string.Format("Global\\{{{0}}}", "f35bd589-5219-4668-9f78-b646442b1661");
@@ -62,18 +63,11 @@ namespace LightVPN
             var hasHandle = false;
             try
             {
-                try
+                hasHandle = mutex.WaitOne(5000, false);
+                if (hasHandle == false)
                 {
-                    hasHandle = mutex.WaitOne(5000, false);
-                    if (hasHandle == false)
-                    {
-                        logger.Write("(Startup/Main) Timeout waiting for exclusive access");
-                        throw new TimeoutException("Timeout waiting for exclusive access");
-                    }
-                }
-                catch (AbandonedMutexException)
-                {
-                    hasHandle = true;
+                    logger.Write("(Startup/Main) Timeout waiting for exclusive access");
+                    throw new TimeoutException("Timeout waiting for exclusive access");
                 }
 
                 ExceptionlessClient.Default.Register();
@@ -107,50 +101,52 @@ namespace LightVPN
 
                 Globals.container.Verify();
                 logger.Write("(Startup/Main) Injected deps");
-                try
+
+                // Starts a new resource dictionary
+                var res = new ResourceDictionary();
+
+                // Starts the WPF application and defines the params
+                Startup a = new()
                 {
-                    // Starts a new resource dictionary
-                    var res = new ResourceDictionary();
+                    StartupUri = new Uri("/Windows/LoginWindow.xaml", UriKind.RelativeOrAbsolute),
+                    Resources = res
+                };
 
-                    // Starts the WPF application and defines the params
-                    Startup a = new()
-                    {
-                        StartupUri = new Uri("/Windows/LoginWindow.xaml", UriKind.RelativeOrAbsolute),
-                        Resources = res
-                    };
+                // Clears merged dictionaries
+                res.MergedDictionaries.Clear();
 
-                    // Clears merged dictionaries
-                    res.MergedDictionaries.Clear();
+                // Adds all the required resource dictionaries
+                Uri uri = new("pack://application:,,,/LightVPN;component/Resources/Style.xaml", UriKind.RelativeOrAbsolute);
+                Uri uri1 = new("pack://application:,,,/LightVPN;component/Resources/TrayStyle.xaml", UriKind.RelativeOrAbsolute);
+                Uri mdUri = new("pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesignTheme.Defaults.xaml", UriKind.RelativeOrAbsolute);
+                Uri mdUri1 = new("pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesignTheme.PopupBox.xaml", UriKind.RelativeOrAbsolute);
 
-                    // Adds all the required resource dictionaries
-                    Uri uri = new("pack://application:,,,/LightVPN;component/Resources/Style.xaml", UriKind.RelativeOrAbsolute);
-                    Uri uri1 = new("pack://application:,,,/LightVPN;component/Resources/TrayStyle.xaml", UriKind.RelativeOrAbsolute);
-                    Uri mdUri = new("pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesignTheme.Defaults.xaml", UriKind.RelativeOrAbsolute);
-                    Uri mdUri1 = new("pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesignTheme.PopupBox.xaml", UriKind.RelativeOrAbsolute);
+                res.MergedDictionaries.Add(new ResourceDictionary() { Source = uri });
+                res.MergedDictionaries.Add(new ResourceDictionary() { Source = uri1 });
+                res.MergedDictionaries.Add(new ResourceDictionary() { Source = mdUri });
+                res.MergedDictionaries.Add(new ResourceDictionary() { Source = mdUri1 });
 
-                    res.MergedDictionaries.Add(new ResourceDictionary() { Source = uri });
-                    res.MergedDictionaries.Add(new ResourceDictionary() { Source = uri1 });
-                    res.MergedDictionaries.Add(new ResourceDictionary() { Source = mdUri });
-                    res.MergedDictionaries.Add(new ResourceDictionary() { Source = mdUri1 });
+                logger.Write("(Startup/Main) Resources injected, executing app...");
 
-                    logger.Write("(Startup/Main) Resources injected, executing app...");
+                // Executes the app
+                a.Run();
 
-                    // Executes the app
-                    a.Run();
+                return;
+            }
+            catch (AbandonedMutexException)
+            {
+                hasHandle = true;
+            }
+            catch (Exception e)
+            {
+                //if (MessageBox.Show($"An exception has occurred. Do you want to report the exception to the server? If no it will be written to the log file", "LightVPN", MessageBoxButton.YesNo, MessageBoxImage.Error) == MessageBoxResult.Yes)
+                e.ToExceptionless().Submit();
 
-                    return;
-                }
-                catch (Exception e)
-                {
-                    //if (MessageBox.Show($"An exception has occurred. Do you want to report the exception to the server? If no it will be written to the log file", "LightVPN", MessageBoxButton.YesNo, MessageBoxImage.Error) == MessageBoxResult.Yes)
-                    e.ToExceptionless().Submit();
+                //else
+                MessageBox.Show($"An exception has occurred. It has been written to the log file and uploaded to the server, please open an issue on GitHub with the log file attached so the developers can resolve the issue.", "LightVPN", MessageBoxButton.OK, MessageBoxImage.Error);
 
-                    //else
-                    MessageBox.Show($"An exception has occurred. It has been written to the log file and uploaded to the server, please open an issue on GitHub with the log file attached so the developers can resolve the issue.", "LightVPN", MessageBoxButton.OK, MessageBoxImage.Error);
-
-                    logger.Write(e.ToString());
-                    Environment.Exit(0);
-                }
+                logger.Write(e.ToString());
+                Environment.Exit(0);
             }
             finally
             {

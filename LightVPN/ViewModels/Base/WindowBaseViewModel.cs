@@ -15,7 +15,7 @@ namespace LightVPN.ViewModels.Base
             _isLoginWindow = isLoginWindow;
         }
 
-        public ICommand ExitWindowCommand
+        public static ICommand ExitWindowCommand
         {
             get
             {
@@ -29,7 +29,7 @@ namespace LightVPN.ViewModels.Base
             }
         }
 
-        public ICommand HideWindowCommand
+        public static ICommand HideWindowCommand
         {
             get
             {
