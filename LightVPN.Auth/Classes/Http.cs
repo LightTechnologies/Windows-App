@@ -10,7 +10,6 @@
  * --------------------------------------------
  */
 
-using LightVPN.Auth.Classes;
 using LightVPN.Auth.Exceptions;
 using LightVPN.Auth.Interfaces;
 using LightVPN.Auth.Models;

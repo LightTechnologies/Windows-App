@@ -16,7 +16,6 @@
     MinWidth="550"
     MinHeight="420"
     d:DataContext="{d:DesignInstance Type=viewModels:MainWindowViewModel}"
-    Closing="Window_Closing"
     StateChanged="MainWindowStateChanged"
     Style="{StaticResource LightUIWindow}"
     WindowStartupLocation="CenterScreen"

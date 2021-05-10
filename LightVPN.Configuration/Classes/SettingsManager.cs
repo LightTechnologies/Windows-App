@@ -22,9 +22,9 @@ namespace LightVPN.Settings
     /// Class used for saving an object to a file
     /// </summary>
     /// <typeparam name="T">The class to save to disk</typeparam>
-    public class SettingsManager<T> : IDisposable, ISettingsManager<T>
+    public class SettingsManager<T> : ISettingsManager<T>
     {
-        private string _path;
+        private readonly string _path;
 
         /// <summary>
         /// Initalizes a new instance of the SettingsManager
@@ -37,12 +37,6 @@ namespace LightVPN.Settings
                 Directory.CreateDirectory(Path.GetDirectoryName(path));
             }
             _path = path;
-        }
-
-        public void Dispose()
-        {
-            _path = null;
-            GC.SuppressFinalize(this);
         }
 
         /// <summary>

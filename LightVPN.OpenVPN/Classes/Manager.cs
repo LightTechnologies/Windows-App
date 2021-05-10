@@ -10,6 +10,8 @@
  * --------------------------------------------
  */
 
+using LightVPN.Auth.Interfaces;
+using LightVPN.Common.Models;
 using LightVPN.FileLogger;
 using LightVPN.FileLogger.Base;
 using LightVPN.OpenVPN.Interfaces;
@@ -41,12 +43,14 @@ namespace LightVPN.OpenVPN
 
         private Socket _managementSocket;
 
+        private ushort _retryCount;
+
         /// <summary>
         /// Constructs the OpenVPN manager class
         /// </summary>
         /// <param name="openVpnExeFileName">Path to the OpenVPN binary</param>
         /// <param name="tap">Friendly name of the OpenVPN TAP adapter</param>
-        public Manager(string openVpnExeFileName = @"C:\Program Files\OpenVPN\bin\openvpn.exe", string tap = "LightVPN-TAP")
+        public Manager(string openVpnExeFileName = @"C:\Program Files\OpenVPN\bin\openvpn.exe")
         {
             try
             {
@@ -78,8 +82,6 @@ namespace LightVPN.OpenVPN
 
         public delegate void ErrorEvent(object sender, string message);
 
-        public delegate void LoginFailedEvent(object sender);
-
         public delegate void OutputEvent(object sender, OutputType e, string message);
 
         public delegate void OutputReceived(object sender, DataReceivedEventArgs e);
@@ -87,8 +89,6 @@ namespace LightVPN.OpenVPN
         public event ConnectedEvent Connected;
 
         public event ErrorEvent Error;
-
-        public event LoginFailedEvent LoginFailed;
 
         public event OutputReceived OnOutput;
 
@@ -263,6 +263,7 @@ namespace LightVPN.OpenVPN
         {
             if (!IsDisposed)
             {
+                _retryCount = 0;
                 if (disposing)
                 {
                     _ovpnProcess.Kill();
@@ -274,6 +275,21 @@ namespace LightVPN.OpenVPN
                 }
                 IsDisposed = true;
             }
+        }
+
+        private static async Task RefetchConfigsAsync()
+        {
+            await Globals.container.GetInstance<IHttp>().CacheConfigsAsync(true);
+        }
+
+        private static void ReinstallTap()
+        {
+            var instance = Globals.container.GetInstance<ITapManager>();
+            if (instance.IsAdapterExistant())
+            {
+                instance.RemoveTapAdapter();
+            }
+            instance.CreateTapAdapter();
         }
 
         /// <summary>
@@ -319,34 +335,38 @@ namespace LightVPN.OpenVPN
             if (e.Data.Contains("Received control message: AUTH_FAILED"))
             {
                 _errorLogger.Write("(Manager/OpenVpnOutputHandler) Recieved control message: AUTH_FAILED");
-                if (LoginFailed == null) return;
-                LoginFailed.Invoke(this);
-                Disconnect();
+                await PerformAutoTroubleshootAsync(true, $"Authentication to the VPN server has failed, your plan could've expired. Check https://lightvpn.org/dashboard");
+                return;
             }
             else if (e.Data.Contains("Error opening configuration file"))
             {
                 _errorLogger.Write("(Manager/OpenVpnOutputHandler) Failed to open config");
-                InvokeError("Error opening configuration file, you should clear your VPN server cache");
+                await PerformAutoTroubleshootAsync(true, "Error opening configuration file, your antivirus could be blocking LightVPN as we couldn't re-fetch them.");
+                return;
             }
             else if (e.Data.Contains("Exiting due to fatal error"))
             {
-                _errorLogger.Write("(Manager/OpenVpnOutputHandler) OpenVPN CLI has exited due to fatal error!");
-                InvokeError("A fatal error occured connecting to the VPN server please connect again");
+                _errorLogger.Write("(Manager/OpenVpnOutputHandler) OpenVPN CLI has exited due to fatal error");
+                await PerformAutoTroubleshootAsync(false, "OpenVPN has exited unexpectedly, this could be due to a TAP adapter issue.");
+                return;
             }
             else if (e.Data.Contains("Server poll timeout"))
             {
                 _errorLogger.Write("(Manager/OpenVpnOutputHandler) Server conn timeout");
-                InvokeError("Timed out connecting to server"); // yes i know i can use Output?.Invoke i just dont want to as its not as clean
+                await PerformAutoTroubleshootAsync(true, "Timed out connecting to server, the server could currently be down. Check https://lightvpn.org/locations to see server status.");
+                return;
             }
             else if (e.Data.Contains("Unknown error"))
             {
                 _errorLogger.Write("(Manager/OpenVpnOutputHandler) Unknown error (this is not good)");
-                InvokeError("Unknown error connecting to server, reinstall your TAP adapter and try again");
+                await PerformAutoTroubleshootAsync(false, "Unknown error connecting to server, reinstall your TAP adapter and try again");
+                return;
             }
             else if (e.Data.Contains("Adapter 'LightVPN-TAP' not found"))
             {
                 _errorLogger.Write("(Manager/OpenVpnOutputHandler) No OVPN-TAP");
-                InvokeError("Couldn't find TAP adapter, reinstall your TAP adapter and try again");
+                await PerformAutoTroubleshootAsync(false, "Couldn't find TAP adapter, reinstall your TAP adapter and try again");
+                return;
             }
             else if (e.Data.Contains("Initialization Sequence Completed"))
             {
@@ -360,6 +380,38 @@ namespace LightVPN.OpenVPN
             {
                 if (Output == null) return;
                 Output.Invoke(this, OutputType.Error, e.Data);
+            }
+        }
+
+        private async Task PerformAutoTroubleshootAsync(bool isServerRelated, string invokationMessage)
+        {
+            if (_retryCount >= 1)
+            {
+                _retryCount = 0;
+                InvokeError($"Automated troubleshooting has failed!\n\n{invokationMessage}");
+                return;
+            }
+            if (!isServerRelated)
+            {
+                _retryCount++;
+
+                Disconnect();
+
+                ReinstallTap();
+
+                Connect(_config);
+                return;
+            }
+            else
+            {
+                _retryCount++;
+
+                Disconnect();
+
+                await RefetchConfigsAsync();
+
+                Connect(_config);
+                return;
             }
         }
 

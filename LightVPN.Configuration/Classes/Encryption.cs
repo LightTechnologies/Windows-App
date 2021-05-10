@@ -11,7 +11,6 @@
  */
 
 using LightVPN.Settings.Exceptions;
-using LightVPN.Settings.Interfaces;
 using System;
 using System.IO;
 using System.Security.Cryptography;
@@ -19,19 +18,19 @@ using System.Text;
 
 namespace LightVPN.Settings
 {
-    public class Encryption : IDisposable, IEncryption
+    public static class Encryption
     {
         /// <summary>
         /// Private encryption key used for this class
         /// </summary>
-        private string EncryptionKey = "h46V2usZ5y2sMMDQRjcFQHXFGrLMrQSkEGGzeLBevCJ2MeGQRUE2k3pMUP4jTQrhcgEe5VgpwsThdHmJM3XbnLdvrk";
+        private static readonly string EncryptionKey = "h46V2usZ5y2sMMDQRjcFQHXFGrLMrQSkEGGzeLBevCJ2MeGQRUE2k3pMUP4jTQrhcgEe5VgpwsThdHmJM3XbnLdvrk";
 
         /// <summary>
         /// Decrypts the specified base64 encoded string
         /// </summary>
         /// <param name="cipherText">Input string, encoded with base64</param>
         /// <returns>Input string decrypted into plaintext, if decryption was successful</returns>
-        public string Decrypt(string cipherText)
+        public static string Decrypt(string cipherText)
         {
             try
             {
@@ -57,18 +56,12 @@ namespace LightVPN.Settings
             }
         }
 
-        public void Dispose()
-        {
-            EncryptionKey = null;
-            GC.SuppressFinalize(this);
-        }
-
         /// <summary>
         /// Encrypts the input plaintext with the AES encryption standard, on the CBC cipher
         /// </summary>
         /// <param name="clearText">Input string in plaintext to be encrypted</param>
         /// <returns>Encrypted text encoded in base64</returns>
-        public string Encrypt(string clearText)
+        public static string Encrypt(string clearText)
         {
             byte[] clearBytes = Encoding.Unicode.GetBytes(clearText);
             using var encryptor = Aes.Create();

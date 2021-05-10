@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Net.Http;
 
-namespace LightVPN.Auth.Classes
+namespace LightVPN.Auth
 {
     public class SSLCheckingHttpClient : HttpClient
     {

@@ -15,7 +15,7 @@ using System.ComponentModel;
 
 namespace LightVPN.ViewModels
 {
-    public class MainWindowViewModel : WindowBaseViewModel, INotifyPropertyChanged
+    public class MainWindowViewModel : WindowBaseViewModel
     {
         public MainWindowViewModel() : base(false)
         {

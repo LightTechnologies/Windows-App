@@ -2,7 +2,6 @@
 using LightVPN.Common.Models;
 using LightVPN.Delegates;
 using LightVPN.Discord.Interfaces;
-using LightVPN.Interfaces;
 using LightVPN.OpenVPN.Interfaces;
 using LightVPN.Settings.Interfaces;
 using LightVPN.ViewModels.Base;
@@ -15,7 +14,7 @@ using System.Windows.Input;
 
 namespace LightVPN.ViewModels
 {
-    public class SettingsViewModel : BaseViewModel, INotifyPropertyChanged
+    public class SettingsViewModel : BaseViewModel
     {
         private bool autoConnect;
 
@@ -28,6 +27,34 @@ namespace LightVPN.ViewModels
         private bool isReinstallingTap;
 
         private bool saveWindowSize;
+
+        public static ICommand ViewErrorLogCommand
+        {
+            get
+            {
+                return new CommandDelegate
+                {
+                    CommandAction = (args) =>
+                    {
+                        StartNotepadProcess(Globals.ErrorLogPath);
+                    }
+                };
+            }
+        }
+
+        public static ICommand ViewOpenVpnLogCommand
+        {
+            get
+            {
+                return new CommandDelegate
+                {
+                    CommandAction = (args) =>
+                    {
+                        StartNotepadProcess(Globals.OpenVpnLogPath);
+                    }
+                };
+            }
+        }
 
         public bool AutoConnect
         {
@@ -48,12 +75,7 @@ namespace LightVPN.ViewModels
             {
                 darkMode = value;
 
-                Globals.container.GetInstance<IThemeUtils>().SwitchTheme(new Auth.Models.Theme
-                {
-                    DarkMode = value,
-                    SecondaryColor = "Default",
-                    PrimaryColor = "Default"
-                });
+                ThemeUtils.SwitchTheme("Default", "Default", value);
 
                 OnPropertyChanged(nameof(DarkMode));
             }
@@ -209,34 +231,6 @@ namespace LightVPN.ViewModels
             {
                 saveWindowSize = value;
                 OnPropertyChanged(nameof(SaveWindowSize));
-            }
-        }
-
-        public ICommand ViewErrorLogCommand
-        {
-            get
-            {
-                return new CommandDelegate
-                {
-                    CommandAction = (args) =>
-                    {
-                        StartNotepadProcess(Globals.ErrorLogPath);
-                    }
-                };
-            }
-        }
-
-        public ICommand ViewOpenVpnLogCommand
-        {
-            get
-            {
-                return new CommandDelegate
-                {
-                    CommandAction = (args) =>
-                    {
-                        StartNotepadProcess(Globals.OpenVpnLogPath);
-                    }
-                };
             }
         }
 

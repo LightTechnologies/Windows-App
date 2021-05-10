@@ -8,8 +8,13 @@ namespace LightVPN.Models
     {
         [Description("Connected!")]
         Connected,
+
         [Description("Connecting...")]
         Connecting,
+
+        [Description("Disconnecting...")]
+        Disconnecting,
+
         [Description("Disconnected!")]
         Disconnected
     }

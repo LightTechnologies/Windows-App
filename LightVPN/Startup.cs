@@ -12,7 +12,6 @@
 
 using DiscordRPC;
 using LightVPN.Discord.Interfaces;
-using LightVPN.Interfaces;
 using LightVPN.OpenVPN;
 using LightVPN.Discord;
 using LightVPN.OpenVPN.Interfaces;
@@ -28,10 +27,7 @@ using LightVPN.FileLogger;
 using LightVPN.FileLogger.Base;
 using LightVPN.Settings.Interfaces;
 using LightVPN.Settings;
-using LightVPN.Common.Interfaces;
-using System.Reflection;
 using Exceptionless;
-using LightVPN.Auth.Classes;
 using System.Net.Http.Headers;
 using LightVPN.Common.Models;
 using System.Security.AccessControl;
@@ -49,7 +45,7 @@ namespace LightVPN
         [STAThread]
         public static void Main()
         {
-            logger.Write($"LightVPN Windows Client [version {Assembly.GetEntryAssembly().GetName().Version}]");
+            // logger.Write($"LightVPN Windows Client [version {Assembly.GetEntryAssembly().GetName().Version}]");
             /* https://stackoverflow.com/questions/229565/what-is-a-good-pattern-for-using-a-global-mutex-in-c/229567 */
 
             string mutexId = string.Format("Global\\{{{0}}}", "f35bd589-5219-4668-9f78-b646442b1661");
@@ -99,12 +95,8 @@ namespace LightVPN
                 {
                     NoCache = true
                 };
-                Globals.container.Register<IEncryption, Encryption>(Lifestyle.Singleton);
                 Globals.container.Register(() => httpClientHandler, Lifestyle.Singleton);
-                Globals.container.Register<IThemeUtils, ThemeUtils>(Lifestyle.Singleton);
-                Globals.container.Register<IKillswitch>(() => new Killswitch("LightVPN-TAP"), Lifestyle.Singleton);
                 Globals.container.Register<IDiscordRpc, DiscordRpc>(Lifestyle.Singleton);
-                Globals.container.Register<INative, Common.Native>(Lifestyle.Singleton);
                 Globals.container.Register(() => httpClient, Lifestyle.Singleton);
                 Globals.container.Register<SSLCheckingHttpClient>(Lifestyle.Singleton);
                 Globals.container.Register<IHttp, Http>(Lifestyle.Singleton);

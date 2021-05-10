@@ -5,7 +5,6 @@ using LightVPN.Settings.Interfaces;
 using LightVPN.Views;
 using MaterialDesignThemes.Wpf;
 using System;
-using System.ComponentModel;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
@@ -18,15 +17,15 @@ namespace LightVPN.Windows
     /// </summary>
     public partial class MainWindow : Window, IDisposable
     {
-        private Main _mainView;
+        private readonly Main _mainView;
 
-        private IManager _manager;
+        private readonly IManager _manager;
 
-        private TaskbarIcon _nofifyIcon;
+        private readonly TaskbarIcon _nofifyIcon;
 
-        private BeginStoryboard _viewLoaded;
+        private readonly BeginStoryboard _viewLoaded;
 
-        private BeginStoryboard _viewUnloaded;
+        private readonly BeginStoryboard _viewUnloaded;
 
         public MainWindow()
         {
@@ -46,7 +45,7 @@ namespace LightVPN.Windows
 
             _viewLoaded = FindResource("LoadView") as BeginStoryboard;
             _viewUnloaded = FindResource("UnloadView") as BeginStoryboard;
-            _mainView = new Main(this);
+            _mainView = new Main();
             _manager = Globals.container.GetInstance<IManager>();
             NavigatePage(_mainView);
 
@@ -60,10 +59,11 @@ namespace LightVPN.Windows
         public void Dispose()
         {
             _nofifyIcon.Dispose();
-            _viewLoaded = null;
-            _viewUnloaded = null;
-            _manager = null;
-            _nofifyIcon = null;
+            if (_manager.IsConnected)
+            {
+                _manager.Disconnect();
+                _manager.Dispose();
+            }
             GC.SuppressFinalize(this);
         }
 
@@ -97,13 +97,5 @@ namespace LightVPN.Windows
         }
 
         private void UnloadCompleted(object sender, EventArgs e) => _viewLoaded.Storyboard.Begin();
-
-        private void Window_Closing(object sender, CancelEventArgs e)
-        {
-            if (_manager.IsConnected)
-            {
-                _manager.Disconnect();
-            }
-        }
     }
 }

@@ -13,10 +13,8 @@
  */
 
 using LightVPN.Common.Models;
-using LightVPN.Interfaces;
 using LightVPN.Settings.Interfaces;
 using MaterialDesignThemes.Wpf;
-using System;
 using System.Windows;
 using System.Windows.Controls;
 
@@ -33,7 +31,7 @@ namespace LightVPN.Windows
             NavigatePage(new Views.Login());
             Startup.LoginWindow = this;
             var settings = Globals.container.GetInstance<ISettingsManager<SettingsModel>>().Load();
-            Globals.container.GetInstance<IThemeUtils>().SwitchTheme(new Auth.Models.Theme { DarkMode = settings.DarkMode, PrimaryColor = "Default", SecondaryColor = "Default" });
+            ThemeUtils.SwitchTheme("Default", "Default", settings.DarkMode);
         }
 
         private void CaptionButtons_Click(object sender, RoutedEventArgs e)

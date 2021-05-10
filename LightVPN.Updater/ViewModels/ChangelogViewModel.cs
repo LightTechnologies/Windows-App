@@ -1,5 +1,4 @@
 ﻿using LightVPN.Auth;
-using LightVPN.Auth.Classes;
 using LightVPN.Updater.Views;
 using LightVPN.Updater.Windows;
 using System.ComponentModel;

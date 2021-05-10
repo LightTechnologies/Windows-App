@@ -8,6 +8,7 @@ using LightVPN.Discord.Interfaces;
 using LightVPN.FileLogger;
 using LightVPN.FileLogger.Base;
 using LightVPN.OpenVPN.Interfaces;
+using LightVPN.Settings;
 using LightVPN.Settings.Exceptions;
 using LightVPN.Settings.Interfaces;
 using LightVPN.ViewModels.Base;
@@ -24,7 +25,7 @@ using System.Windows.Input;
 
 namespace LightVPN.ViewModels
 {
-    public class LoginViewModel : BaseViewModel, INotifyPropertyChanged, IDisposable
+    public class LoginViewModel : BaseViewModel, IDisposable
     {
         private bool isAuthenticating;
 
@@ -74,8 +75,7 @@ namespace LightVPN.ViewModels
                         {
                             try
                             {
-                                var encryption = Globals.container.GetInstance<IEncryption>();
-                                var auth = JsonConvert.DeserializeObject<AuthFile>(encryption.Decrypt(File.ReadAllText(Globals.AuthPath)));
+                                var auth = JsonConvert.DeserializeObject<AuthFile>(Encryption.Decrypt(File.ReadAllText(Globals.AuthPath)));
                                 UserName = auth.Username;
                                 Password = auth.Password;
                                 if (auth.SessionId != default)
@@ -180,16 +180,16 @@ namespace LightVPN.ViewModels
             GC.SuppressFinalize(this);
         }
 
-        private void ExecChangePassword(object obj)
-        {
-            Password = ((PasswordBox)obj).Password;
-        }
-
-        private void OpenMainWindow()
+        private static void OpenMainWindow()
         {
             Application.Current.MainWindow = new MainWindow();
             Application.Current.MainWindow.Show();
             Startup.LoginWindow.Close();
+        }
+
+        private void ExecChangePassword(object obj)
+        {
+            Password = ((PasswordBox)obj).Password;
         }
 
         private async Task ProcessLoginAsync(bool isSessionAuth = false, Guid sessionId = default)
@@ -233,8 +233,7 @@ namespace LightVPN.ViewModels
 
                 if (!isSessionAuth)
                 {
-                    var encryption = Globals.container.GetInstance<IEncryption>();
-                    await File.WriteAllTextAsync(Globals.AuthPath, encryption.Encrypt(JsonConvert.SerializeObject(new AuthFile { Username = UserName, Password = Password, SessionId = authResponse.SessionId })));
+                    await File.WriteAllTextAsync(Globals.AuthPath, Encryption.Encrypt(JsonConvert.SerializeObject(new AuthFile { Username = UserName, Password = Password, SessionId = authResponse.SessionId })));
                 }
 
                 if (!await Globals.container.GetInstance<IHttp>().IsConfigsCachedAsync())

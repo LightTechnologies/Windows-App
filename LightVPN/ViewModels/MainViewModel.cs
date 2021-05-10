@@ -17,7 +17,7 @@ using System.Windows.Input;
 
 namespace LightVPN.ViewModels
 {
-    public class MainViewModel : BaseViewModel, INotifyPropertyChanged, IDisposable
+    public class MainViewModel : BaseViewModel, IDisposable
     {
         private readonly IManager _manager;
 
@@ -36,7 +36,6 @@ namespace LightVPN.ViewModels
             _manager = Globals.container.GetInstance<IManager>();
             _manager.Connected += Connected;
             _manager.Error += Error;
-            _manager.LoginFailed += LoginFailed;
             var settings = Globals.container.GetInstance<ISettingsManager<SettingsModel>>().Load();
             LastServer = settings.PreviousServer is null ? "N/A" : $"{settings.PreviousServer?.ServerName} ({settings.PreviousServer?.Type})";
         }
@@ -83,9 +82,9 @@ namespace LightVPN.ViewModels
                             return;
                         }
 
-                        SaveServer(serversModel.Server, serversModel.ServerName, serversModel.Type);
+                        SaveServer(serversModel.Id, serversModel.ServerName, serversModel.Type);
 
-                        await ConnectAsync(serversModel.Server);
+                        await ConnectAsync(serversModel.Id);
                     },
                     CanExecuteFunc = () => ConnectionState != ConnectionState.Connecting
                 };
@@ -145,10 +144,8 @@ namespace LightVPN.ViewModels
                             {
                                 ServerName = server.ServerName,
                                 Country = server.Location,
-                                Server = server.FileName,
-                                Id = server.Id,
+                                Id = server.FileName,
                                 Type = server.Type,
-                                UsersConnected = server.DevicesOnline,
                                 Status = server.Status ? "Check" : "Close",
                                 Flag = $"pack://application:,,,/LightVPN;Component/Resources/Flags/{server.CountryName.Replace(' ', '-')}.png"
                             });
@@ -231,6 +228,7 @@ namespace LightVPN.ViewModels
         internal async Task DisconnectAsync()
         {
             IsConnecting = true;
+            ConnectionState = ConnectionState.Disconnecting;
             if (Globals.container.GetInstance<ISettingsManager<SettingsModel>>().Load().DiscordRpc)
             {
                 Globals.container.GetInstance<IDiscordRpc>().ResetTimestamps();
@@ -284,13 +282,6 @@ namespace LightVPN.ViewModels
             ConnectionState = ConnectionState.Disconnected;
         }
 
-        private void LoginFailed(object sender)
-        {
-            MessageBox.Show($"A problem has occurred whilst authenticating with the server, please try again.\n\nIf the problem persists, please contact LightVPN support.", "LightVPN", MessageBoxButton.OK, MessageBoxImage.Error);
-            IsConnecting = false;
-            ConnectionState = ConnectionState.Disconnected;
-        }
-
         public class ServersModel : INotifyPropertyChanged
         {
             public event PropertyChangedEventHandler PropertyChanged;
@@ -299,12 +290,12 @@ namespace LightVPN.ViewModels
             {
                 get
                 {
-                    return country;
+                    return _country;
                 }
 
                 set
                 {
-                    country = value;
+                    _country = value;
                     OnPropertyChanged(nameof(Country));
                 }
             }
@@ -313,12 +304,12 @@ namespace LightVPN.ViewModels
             {
                 get
                 {
-                    return flag;
+                    return _flag;
                 }
 
                 set
                 {
-                    flag = value;
+                    _flag = value;
                     OnPropertyChanged(nameof(Flag));
                 }
             }
@@ -327,41 +318,13 @@ namespace LightVPN.ViewModels
             {
                 get
                 {
-                    return id;
+                    return _id;
                 }
 
                 set
                 {
-                    id = value;
+                    _id = value;
                     OnPropertyChanged(nameof(Id));
-                }
-            }
-
-            public IPAddress IpAddress
-            {
-                get
-                {
-                    return ipAddress;
-                }
-
-                set
-                {
-                    ipAddress = value;
-                    OnPropertyChanged(nameof(IpAddress));
-                }
-            }
-
-            public string Server
-            {
-                get
-                {
-                    return server;
-                }
-
-                set
-                {
-                    server = value;
-                    OnPropertyChanged(nameof(Server));
                 }
             }
 
@@ -369,12 +332,12 @@ namespace LightVPN.ViewModels
             {
                 get
                 {
-                    return displayName;
+                    return _displayName;
                 }
 
                 set
                 {
-                    displayName = value;
+                    _displayName = value;
                     OnPropertyChanged(nameof(ServerName));
                 }
             }
@@ -383,12 +346,12 @@ namespace LightVPN.ViewModels
             {
                 get
                 {
-                    return status;
+                    return _status;
                 }
 
                 set
                 {
-                    status = value;
+                    _status = value;
                     OnPropertyChanged(nameof(Status));
                 }
             }
@@ -397,47 +360,27 @@ namespace LightVPN.ViewModels
             {
                 get
                 {
-                    return type;
+                    return _type;
                 }
 
                 set
                 {
-                    type = value;
+                    _type = value;
                     OnPropertyChanged(nameof(Type));
                 }
             }
 
-            public long UsersConnected
-            {
-                get
-                {
-                    return usersConnected;
-                }
+            private string _country { set; get; }
 
-                set
-                {
-                    usersConnected = value;
-                    OnPropertyChanged(nameof(UsersConnected));
-                }
-            }
+            private string _displayName { set; get; }
 
-            private string country { set; get; }
+            private string _flag { set; get; }
 
-            private string displayName { set; get; }
+            private string _id { set; get; }
 
-            private string flag { set; get; }
+            private string _status { set; get; }
 
-            private string id { set; get; }
-
-            private IPAddress ipAddress { set; get; }
-
-            private string server { set; get; }
-
-            private string status { set; get; }
-
-            private ServerType type { set; get; }
-
-            private long usersConnected { set; get; }
+            private ServerType _type { set; get; }
 
             private void OnPropertyChanged(string propertyName)
             {

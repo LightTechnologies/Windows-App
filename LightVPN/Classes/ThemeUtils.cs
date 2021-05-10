@@ -10,7 +10,6 @@
  * --------------------------------------------
  */
 
-using LightVPN.Interfaces;
 using LightVPN.FileLogger;
 using LightVPN.FileLogger.Base;
 using MaterialDesignThemes.Wpf;
@@ -20,27 +19,29 @@ using System.Windows.Media;
 
 namespace LightVPN
 {
-    public class ThemeUtils : IThemeUtils
+    public static class ThemeUtils
     {
-        private FileLoggerBase logger = new ErrorLogger();
+        private static readonly FileLoggerBase logger = new ErrorLogger();
 
         /// <summary>
-        /// Switches the theme to the data provided in the color object
+        /// Switches the theme via some resource dictionary hackery
         /// </summary>
-        /// <param name="colorObject">Color object which provides the data this method should use</param>
-        public void SwitchTheme(Auth.Models.Theme colorObject)
+        /// <param name="primaryColor">Primary color brush</param>
+        /// <param name="secondaryColor">Secondary color brush</param>
+        /// <param name="darkMode">Application theme</param>
+        public static void SwitchTheme(string primaryColor, string secondaryColor, bool darkMode)
         {
             try
             {
-                IBaseTheme baseTheme = colorObject.DarkMode == true ? Theme.Dark : Theme.Light;
-                if (colorObject.PrimaryColor == "Default")
+                IBaseTheme baseTheme = darkMode == true ? Theme.Dark : Theme.Light;
+                if (primaryColor == "Default")
                 {
                     ITheme defaultTheme = Theme.Create(baseTheme, Color.FromRgb(147, 91, 249), Color.FromRgb(114, 124, 245));
                     ResourceDictionaryExtensions.SetTheme(Application.Current.Resources, defaultTheme);
                     return;
                 }
-                Color pColor = (Color)ColorConverter.ConvertFromString(colorObject.PrimaryColor);
-                Color sColor = (Color)ColorConverter.ConvertFromString(colorObject.SecondaryColor);
+                Color pColor = (Color)ColorConverter.ConvertFromString(primaryColor);
+                Color sColor = (Color)ColorConverter.ConvertFromString(secondaryColor);
                 ITheme theme = Theme.Create(baseTheme, pColor, sColor);
                 ResourceDictionaryExtensions.SetTheme(Application.Current.Resources, theme);
             }
