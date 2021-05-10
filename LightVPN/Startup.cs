@@ -133,6 +133,11 @@ namespace LightVPN
 
                 return;
             }
+            catch (TimeoutException)
+            {
+                MessageBox.Show("LightVPN is already running, check your system tray in the bottom right corner to find LightVPN's process", "LightVPN", MessageBoxButton.OK, MessageBoxImage.Warning);
+                return;
+            }
             catch (AbandonedMutexException)
             {
                 hasHandle = true;

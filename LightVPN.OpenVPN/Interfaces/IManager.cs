@@ -11,6 +11,7 @@
  */
 
 using System;
+using System.Threading.Tasks;
 
 namespace LightVPN.OpenVPN.Interfaces
 {
@@ -31,5 +32,7 @@ namespace LightVPN.OpenVPN.Interfaces
         void Connect(string configpath);
 
         void Disconnect();
+
+        Task PerformAutoTroubleshootAsync(bool isServerRelated, string invokationMessage);
     }
 }

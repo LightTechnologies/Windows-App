@@ -165,6 +165,38 @@ namespace LightVPN.OpenVPN
             GC.SuppressFinalize(this);
         }
 
+        public async Task PerformAutoTroubleshootAsync(bool isServerRelated, string invokationMessage)
+        {
+            if (_retryCount >= 1)
+            {
+                _retryCount = 0;
+                InvokeError($"Automated troubleshooting has failed!\n\n{invokationMessage}");
+                return;
+            }
+            if (!isServerRelated)
+            {
+                _retryCount++;
+
+                Disconnect();
+
+                ReinstallTap();
+
+                Connect(_config);
+                return;
+            }
+            else
+            {
+                _retryCount++;
+
+                Disconnect();
+
+                await RefetchConfigsAsync();
+
+                Connect(_config);
+                return;
+            }
+        }
+
         /// <summary>
         /// Disposes the manager
         /// </summary>
@@ -340,38 +372,6 @@ namespace LightVPN.OpenVPN
             {
                 if (Output == null) return;
                 Output.Invoke(this, OutputType.Error, e.Data);
-            }
-        }
-
-        private async Task PerformAutoTroubleshootAsync(bool isServerRelated, string invokationMessage)
-        {
-            if (_retryCount >= 1)
-            {
-                _retryCount = 0;
-                InvokeError($"Automated troubleshooting has failed!\n\n{invokationMessage}");
-                return;
-            }
-            if (!isServerRelated)
-            {
-                _retryCount++;
-
-                Disconnect();
-
-                ReinstallTap();
-
-                Connect(_config);
-                return;
-            }
-            else
-            {
-                _retryCount++;
-
-                Disconnect();
-
-                await RefetchConfigsAsync();
-
-                Connect(_config);
-                return;
             }
         }
 

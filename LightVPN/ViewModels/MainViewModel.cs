@@ -2,6 +2,8 @@
 using LightVPN.Common.Models;
 using LightVPN.Delegates;
 using LightVPN.Discord.Interfaces;
+using LightVPN.FileLogger;
+using LightVPN.FileLogger.Base;
 using LightVPN.Models;
 using LightVPN.OpenVPN.Interfaces;
 using LightVPN.Settings.Interfaces;
@@ -19,6 +21,8 @@ namespace LightVPN.ViewModels
 {
     public class MainViewModel : BaseViewModel, IDisposable
     {
+        private readonly FileLoggerBase _logger = new ErrorLogger();
+
         private readonly IManager _manager;
 
         private ConnectionState connectionState = ConnectionState.Disconnected;
@@ -197,32 +201,42 @@ namespace LightVPN.ViewModels
             ConnectionState = ConnectionState.Connecting;
             IsConnecting = true;
 
-            // This processes and finds the config on the filesystem
-            string ovpnFn = string.Empty;
-            var files = Directory.GetFiles(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "LightVPN", "cache"));
-
-            if (!files.Any(x => x.Contains(serverName)))
+            try
             {
-                // Config wasn't found, so instead we re-cache the configs to hope that the server
-                // has the new config
-                await Globals.container.GetInstance<IHttp>().CacheConfigsAsync(true);
-                files = Directory.GetFiles(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "LightVPN", "cache"));
+                // This processes and finds the config on the filesystem
+                string ovpnFn = string.Empty;
+                var files = Directory.GetFiles(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "LightVPN", "cache"));
+
+                if (!files.Any(x => x.Contains(serverName)))
+                {
+                    // Config wasn't found, so instead we re-cache the configs to hope that the
+                    // server has the new config
+                    await Globals.container.GetInstance<IHttp>().CacheConfigsAsync(true);
+                    files = Directory.GetFiles(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "LightVPN", "cache"));
+                }
+
+                ovpnFn = files.First(x => x.Contains(serverName));
+
+                if (string.IsNullOrWhiteSpace(ovpnFn))
+                {
+                    MessageBox.Show("Failed to locate the server configuration file, therefore connection to the server was aborted.", "LightVPN", MessageBoxButton.OK, MessageBoxImage.Error);
+                    return;
+                }
+
+                if (Globals.container.GetInstance<ISettingsManager<SettingsModel>>().Load().DiscordRpc)
+                {
+                    Globals.container.GetInstance<IDiscordRpc>().UpdateState("Connecting...");
+                }
+
+                _manager.Connect(ovpnFn);
             }
-
-            ovpnFn = files.First(x => x.Contains(serverName));
-
-            if (string.IsNullOrWhiteSpace(ovpnFn))
+            catch (InvalidOperationException e)
             {
-                MessageBox.Show("Failed to locate the server configuration file, therefore connection to the server was aborted.", "LightVPN", MessageBoxButton.OK, MessageBoxImage.Error);
-                return;
-            }
+                // This for if the config wasn't found, we recache and reinitiate the connection.
+                await _logger.WriteAsync($"Couldn't find config, ignored exception and auto-troubleshooting...\n\n{e}");
 
-            if (Globals.container.GetInstance<ISettingsManager<SettingsModel>>().Load().DiscordRpc)
-            {
-                Globals.container.GetInstance<IDiscordRpc>().UpdateState("Connecting...");
+                await _manager.PerformAutoTroubleshootAsync(true, "Failed to find configuration file for that server. The server could no longer be active on LightVPN");
             }
-
-            _manager.Connect(ovpnFn);
         }
 
         internal async Task DisconnectAsync()
