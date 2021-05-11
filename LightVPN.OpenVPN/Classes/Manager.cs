@@ -318,59 +318,63 @@ namespace LightVPN.OpenVPN
 
             await _logger.WriteAsync(e.Data);
 
-            if (e.Data.Contains("Received control message: AUTH_FAILED"))
+            switch (e.Data)
             {
-                _errorLogger.Write("(Manager/OpenVpnOutputHandler) Recieved control message: AUTH_FAILED");
-                await PerformAutoTroubleshootAsync(true, $"Authentication to the VPN server has failed, your plan could've expired. Check https://lightvpn.org/dashboard");
-                return;
-            }
-            else if (e.Data.Contains("MANAGEMENT: Socket bind failed on local address"))
-            {
-                InvokeError($"Failed to bind socket on local address. To fix this issue, restart LightVPN or try again.");
-                return;
-            }
-            else if (e.Data.Contains("Error opening configuration file"))
-            {
-                _errorLogger.Write("(Manager/OpenVpnOutputHandler) Failed to open config");
-                await PerformAutoTroubleshootAsync(true, "Error opening configuration file, your antivirus could be blocking LightVPN as we couldn't re-fetch them.");
-                return;
-            }
-            else if (e.Data.Contains("Exiting due to fatal error"))
-            {
-                _errorLogger.Write("(Manager/OpenVpnOutputHandler) OpenVPN CLI has exited due to fatal error");
-                await PerformAutoTroubleshootAsync(false, "OpenVPN has exited unexpectedly, this could be due to a TAP adapter issue.");
-                return;
-            }
-            else if (e.Data.Contains("Server poll timeout"))
-            {
-                _errorLogger.Write("(Manager/OpenVpnOutputHandler) Server conn timeout");
-                await PerformAutoTroubleshootAsync(true, "Timed out connecting to server, the server could currently be down. Check https://lightvpn.org/locations to see server status.");
-                return;
-            }
-            else if (e.Data.Contains("Unknown error"))
-            {
-                _errorLogger.Write("(Manager/OpenVpnOutputHandler) Unknown error (this is not good)");
-                await PerformAutoTroubleshootAsync(false, "Unknown error connecting to server, reinstall your TAP adapter and try again");
-                return;
-            }
-            else if (e.Data.Contains("Adapter 'LightVPN-TAP' not found"))
-            {
-                _errorLogger.Write("(Manager/OpenVpnOutputHandler) No OVPN-TAP");
-                await PerformAutoTroubleshootAsync(false, "Couldn't find TAP adapter, reinstall your TAP adapter and try again");
-                return;
-            }
-            else if (e.Data.Contains("Initialization Sequence Completed"))
-            {
-                _errorLogger.Write("(Manager/OpenVpnOutputHandler) We connected sir!");
-                if (Connected == null) return;
-                Connected.Invoke(this);
+                case string str when str.Contains("Received control message: AUTH_FAILED"):
+                    _errorLogger.Write("(Manager/OpenVpnOutputHandler) Recieved control message: AUTH_FAILED");
+                    await PerformAutoTroubleshootAsync(true, $"Authentication to the VPN server has failed, your plan could've expired. Check https://lightvpn.org/dashboard");
 
-                await ConnectToManagementServerAsync();
-            }
-            else
-            {
-                if (Output == null) return;
-                Output.Invoke(this, OutputType.Error, e.Data);
+                    return;
+
+                case string str when str.Contains("MANAGEMENT: Socket bind failed on local address"):
+                    InvokeError($"Failed to bind socket on local address. To fix this issue, restart LightVPN or try again.");
+
+                    return;
+
+                case string str when str.Contains("Error opening configuration file"):
+                    _errorLogger.Write("(Manager/OpenVpnOutputHandler) Failed to open config");
+                    await PerformAutoTroubleshootAsync(true, "Error opening configuration file, your antivirus could be blocking LightVPN as we couldn't re-fetch them.");
+
+                    return;
+
+                case string str when str.Contains("Exiting due to fatal error"):
+                    _errorLogger.Write("(Manager/OpenVpnOutputHandler) OpenVPN CLI has exited due to fatal error");
+                    await PerformAutoTroubleshootAsync(false, "OpenVPN has exited unexpectedly, this could be due to a TAP adapter issue.");
+
+                    return;
+
+                case string str when str.Contains("Server poll timeout"):
+                    _errorLogger.Write("(Manager/OpenVpnOutputHandler) Server conn timeout");
+                    await PerformAutoTroubleshootAsync(true, "Timed out connecting to server, the server could currently be down. Check https://lightvpn.org/locations to see server status.");
+
+                    return;
+
+                case string str when str.Contains("Unknown error"):
+                    _errorLogger.Write("(Manager/OpenVpnOutputHandler) Unknown error (this is not good)");
+                    await PerformAutoTroubleshootAsync(false, "Unknown error connecting to server, reinstall your TAP adapter and try again");
+
+                    return;
+
+                case string str when str.Contains("Adapter 'LightVPN-TAP' not found"):
+                    _errorLogger.Write("(Manager/OpenVpnOutputHandler) No OVPN-TAP");
+                    await PerformAutoTroubleshootAsync(false, "Couldn't find TAP adapter, reinstall your TAP adapter and try again");
+
+                    return;
+
+                case string str when str.Contains("Initialization Sequence Completed"):
+                    _errorLogger.Write("(Manager/OpenVpnOutputHandler) We connected sir!");
+                    if (Connected == null) return;
+                    Connected.Invoke(this);
+
+                    await ConnectToManagementServerAsync();
+
+                    break;
+
+                default:
+                    if (Output == null) return;
+                    Output.Invoke(this, OutputType.Error, e.Data);
+
+                    break;
             }
         }
 
@@ -383,16 +387,20 @@ namespace LightVPN.OpenVPN
             ManagementPort = SocketUtils.GetAvailablePort(30000);
             _errorLogger.Write($"(Manager/RunOpenVpnProcess) Got available port; {ManagementPort}");
             _errorLogger.Write("(Manager/RunOpenVpnProcess) Configuring and booting OpenVPN CLI...");
-            _ovpnProcess.StartInfo.CreateNoWindow = true;
-            _ovpnProcess.StartInfo.Arguments = $"--config \"{_config}\" --register-dns --dev-node LightVPN-TAP --management 127.0.0.1 {ManagementPort}";
-            _ovpnProcess.StartInfo.FileName = _ovpnPath;
-            _ovpnProcess.StartInfo.WindowStyle = ProcessWindowStyle.Hidden;
-            _ovpnProcess.StartInfo.WorkingDirectory = Path.GetDirectoryName(ovpn);
-            _ovpnProcess.StartInfo.RedirectStandardInput = true;
-            _ovpnProcess.StartInfo.RedirectStandardOutput = true;
-            _ovpnProcess.StartInfo.RedirectStandardError = true;
-            _ovpnProcess.StartInfo.UseShellExecute = false;
-            _ovpnProcess.StartInfo.Verb = "runas";
+
+            _ovpnProcess.StartInfo = new()
+            {
+                CreateNoWindow = true,
+                Arguments = $"--config \"{_config}\" --register-dns --dev-node LightVPN-TAP --management 127.0.0.1 {ManagementPort}",
+                FileName = _ovpnPath,
+                WindowStyle = ProcessWindowStyle.Hidden,
+                WorkingDirectory = Path.GetDirectoryName(ovpn),
+                RedirectStandardError = true,
+                RedirectStandardOutput = true,
+                UseShellExecute = false,
+                Verb = "runas",
+            };
+
             _ovpnProcess.OutputDataReceived += OutputDataReceived;
             _ovpnProcess.ErrorDataReceived += ErrorDataReceived;
             _ovpnProcess.Start();

@@ -239,8 +239,14 @@ namespace LightVPN.Auth
             _logger.Write("(Http/Login) Authenticating user");
             var model = new { username, password };
             var response = await _apiclient.PostAsync<AuthResponse>("https://lightvpn.org/api/auth", model, cancellationToken);
-            _apiclient.DefaultRequestHeaders.TryAddWithoutValidation("Authorization", $"{username} {response.SessionId}");
+            AssignAuthHeader(username, response.SessionId);
             return response;
+        }
+
+        private void AssignAuthHeader(string username, Guid sessionId)
+        {
+            _apiclient.DefaultRequestHeaders.Remove("Authorization");
+            _apiclient.DefaultRequestHeaders.TryAddWithoutValidation("Authorization", $"{username} {sessionId}");
         }
 
         /// <summary>
