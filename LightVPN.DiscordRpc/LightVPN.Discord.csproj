@@ -1,32 +1,30 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
-  <PropertyGroup>
-    <TargetFramework>net5.0-windows7.0</TargetFramework>
-	  <PackageId>LightVPN.Discord</PackageId>
-	  <Product>LightVPN Windows Client</Product>
-	  <Company>Light Technologies LLC</Company>
-	  <Authors>Light Technologies LLC</Authors>
-	  <Description>Official compiled binaries of the LightVPN Windows client.</Description>
-	  <Copyright>Copyright 2021 (C) Light Technologies LLC</Copyright>
-	  <PackageProjectUrl>https://github.com/LightTechnologies/LightVPN-Windows</PackageProjectUrl>
-	  <SignAssembly>true</SignAssembly>
-	  <AssemblyOriginatorKeyFile>LightTechnologiesSnk.pfx</AssemblyOriginatorKeyFile>
-  </PropertyGroup>
+	<PropertyGroup>
+		<TargetFramework>net5.0-windows7.0</TargetFramework>
+		<PackageId>LightVPN.Discord</PackageId>
+		<Authors>Light Technologies, LLC</Authors>
+		<Product>LightVPN Windows Client</Product>
+		<Description>Official compiled binaries of the LightVPN Windows client.</Description>
+		<Copyright>Copyright 2021 (C) Light Technologies, LLC</Copyright>
+		<PackageProjectUrl>https://github.com/LightTechnologies/Windows-App</PackageProjectUrl>
+		<SignAssembly>true</SignAssembly>
+		<AssemblyOriginatorKeyFile>LightTechnologiesSnk.pfx</AssemblyOriginatorKeyFile>
+	</PropertyGroup>
 
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
-    <PlatformTarget>x64</PlatformTarget>
-  </PropertyGroup>
+	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+		<PlatformTarget>x64</PlatformTarget>
+	</PropertyGroup>
 
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
-    <PlatformTarget>x64</PlatformTarget>
-  </PropertyGroup>
+	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+		<PlatformTarget>x64</PlatformTarget>
+	</PropertyGroup>
 
-  <ItemGroup>
-    <PackageReference Include="DiscordRichPresence" Version="1.0.175" />
-  </ItemGroup>
+	<ItemGroup>
+		<PackageReference Include="DiscordRichPresence" Version="1.0.175" />
+	</ItemGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\LightVPN.Settings\LightVPN.Settings.csproj" />
-  </ItemGroup>
-
+	<ItemGroup>
+		<ProjectReference Include="..\LightVPN.Settings\LightVPN.Settings.csproj" />
+	</ItemGroup>
 </Project>

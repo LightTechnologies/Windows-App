@@ -3,12 +3,11 @@
 	<PropertyGroup>
 		<TargetFramework>net5.0-windows7.0</TargetFramework>
 		<PackageId>LightVPN.Logger</PackageId>
+		<Authors>Light Technologies, LLC</Authors>
 		<Product>LightVPN Windows Client</Product>
-		<Company>Light Technologies LLC</Company>
-		<Authors>Light Technologies LLC</Authors>
 		<Description>Official compiled binaries of the LightVPN Windows client.</Description>
-		<Copyright>Copyright 2021 (C) Light Technologies LLC</Copyright>
-		<PackageProjectUrl>https://github.com/LightTechnologies/LightVPN-Windows</PackageProjectUrl>
+		<Copyright>Copyright 2021 (C) Light Technologies, LLC</Copyright>
+		<PackageProjectUrl>https://github.com/LightTechnologies/Windows-App</PackageProjectUrl>
 		<SignAssembly>true</SignAssembly>
 		<AssemblyOriginatorKeyFile>LightTechnologiesSnk.pfx</AssemblyOriginatorKeyFile>
 	</PropertyGroup>
