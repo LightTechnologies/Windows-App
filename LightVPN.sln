@@ -11,7 +11,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LightVPN.Auth", "LightVPN.A
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LightVPN.FileLogger", "LightVPN.FileLogger\LightVPN.FileLogger.csproj", "{41CBBD7C-471B-459C-9F7E-EA5686570F68}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LightVPN.Settings", "LightVPN.Configuration\LightVPN.Settings.csproj", "{1490FAD4-1D43-4021-8888-AF6EC63C097F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LightVPN.Settings", "LightVPN.Settings\LightVPN.Settings.csproj", "{1490FAD4-1D43-4021-8888-AF6EC63C097F}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LightVPN.Updater", "LightVPN.Updater\LightVPN.Updater.csproj", "{4EC3B660-E74F-4856-95F5-C3E12C07F3E4}"
 EndProject
