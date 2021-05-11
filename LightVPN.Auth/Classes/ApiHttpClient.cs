@@ -64,20 +64,33 @@ namespace LightVPN.Auth
 
         public async Task<T> GetAsync<T>(string url, CancellationToken cancellationToken = default)
         {
-            _logger.Write("(Http/Get) Getting data");
-            var resp = await this.GetAsync(url, cancellationToken);
-            await CheckResponseAsync(resp, cancellationToken);
-            var sdfgdfg = await resp.Content.ReadAsStringAsync(cancellationToken);
-            return await JsonSerializer.DeserializeAsync<T>(await resp.Content.ReadAsStreamAsync(cancellationToken), cancellationToken: cancellationToken);
+            try
+            {
+                _logger.Write("(Http/Get) Getting data");
+                var resp = await this.GetAsync(url, cancellationToken);
+                await CheckResponseAsync(resp, cancellationToken);
+                return await JsonSerializer.DeserializeAsync<T>(await resp.Content.ReadAsStreamAsync(cancellationToken), cancellationToken: cancellationToken);
+            }
+            catch (HttpRequestException)
+            {
+                throw new ApiOfflineException("Failed to connect to the internet, please check your internet connection");
+            }
         }
 
         public async Task<T> PostAsync<T>(string url, object body, CancellationToken cancellationToken = default)
         {
-            _logger.Write("(Http/Post) Posting JSON data");
-            var content = new StringContent(JsonSerializer.Serialize(body), Encoding.UTF8, "application/json");
-            var resp = await this.PostAsync(url, content, cancellationToken);
-            await CheckResponseAsync(resp, cancellationToken);
-            return await JsonSerializer.DeserializeAsync<T>(await resp.Content.ReadAsStreamAsync(cancellationToken), cancellationToken: cancellationToken);
+            try
+            {
+                _logger.Write("(Http/Post) Posting JSON data");
+                var content = new StringContent(JsonSerializer.Serialize(body), Encoding.UTF8, "application/json");
+                var resp = await this.PostAsync(url, content, cancellationToken);
+                await CheckResponseAsync(resp, cancellationToken);
+                return await JsonSerializer.DeserializeAsync<T>(await resp.Content.ReadAsStreamAsync(cancellationToken), cancellationToken: cancellationToken);
+            }
+            catch (HttpRequestException)
+            {
+                throw new ApiOfflineException("Failed to connect to the internet, please check your internet connection");
+            }
         }
     }
 }

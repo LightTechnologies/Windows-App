@@ -165,7 +165,7 @@ namespace LightVPN.OpenVPN
             GC.SuppressFinalize(this);
         }
 
-        public async Task PerformAutoTroubleshootAsync(bool isServerRelated, string invokationMessage)
+        public async Task PerformAutoTroubleshootAsync(bool isServerRelated, string invokationMessage, CancellationToken cancellationToken = default)
         {
             if (_retryCount >= 1)
             {
@@ -190,7 +190,7 @@ namespace LightVPN.OpenVPN
 
                 Disconnect();
 
-                await RefetchConfigsAsync();
+                await RefetchConfigsAsync(cancellationToken);
 
                 Connect(_config);
                 return;
@@ -219,9 +219,9 @@ namespace LightVPN.OpenVPN
             }
         }
 
-        private static async Task RefetchConfigsAsync()
+        private static async Task RefetchConfigsAsync(CancellationToken cancellationToken = default)
         {
-            await Globals.container.GetInstance<IHttp>().CacheConfigsAsync(true);
+            await Globals.container.GetInstance<IHttp>().CacheConfigsAsync(true, cancellationToken);
         }
 
         private static void ReinstallTap()
@@ -249,8 +249,7 @@ namespace LightVPN.OpenVPN
 
                     _errorLogger.Write($"(Manager/ConnectToManagementServer) Establishing (sock type: {_managementSocket.SocketType}, proto: {_managementSocket.ProtocolType}) connection to endpoint: {_managementEp}");
 
-                    //await _managementSocket.ConnectAsync(_managementEp, cancellationToken);
-                    _managementSocket.Connect(IPAddress.Parse("127.0.0.1"), ManagementPort);
+                    await _managementSocket.ConnectAsync(_managementEp, cancellationToken);
 
                     _errorLogger.Write($"(Manager/ConnectToManagementServer) Established! ({_managementSocket.Connected})");
                 }
@@ -457,11 +456,11 @@ namespace LightVPN.OpenVPN
         /// Shuts down the OpenVPN management server asynchronously
         /// </summary>
         /// <returns>Completed task</returns>
-        private async Task ShutdownManagementServerAsync()
+        private async Task ShutdownManagementServerAsync(CancellationToken cancellationToken = default)
         {
             if (_managementSocket is not null && _managementSocket.Connected)
             {
-                await SendBufferToManagementServer("signal SIGTERM", false);
+                await SendBufferToManagementServer("signal SIGTERM", false, cancellationToken);
 
                 _managementSocket.Shutdown(SocketShutdown.Both);
                 _managementSocket.Close();

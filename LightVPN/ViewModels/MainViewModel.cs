@@ -12,7 +12,7 @@ using System;
 using System.ComponentModel;
 using System.IO;
 using System.Linq;
-using System.Net;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
@@ -21,6 +21,8 @@ namespace LightVPN.ViewModels
 {
     public class MainViewModel : BaseViewModel, IDisposable
     {
+        private readonly CancellationTokenSource _cancellationToken = new();
+
         private readonly FileLoggerBase _logger = new ErrorLogger();
 
         private readonly IManager _manager;
@@ -140,7 +142,7 @@ namespace LightVPN.ViewModels
 
                         var settings = Globals.container.GetInstance<ISettingsManager<SettingsModel>>().Load();
 
-                        var servers = await Globals.container.GetInstance<IHttp>().GetServersAsync();
+                        var servers = await Globals.container.GetInstance<IHttp>().GetServersAsync(_cancellationToken.Token);
 
                         foreach (var server in servers.OrderByDescending(x => x.CountryName).ThenBy(x => x.ServerName).ThenBy(x => x.Type))
                         {
@@ -191,6 +193,8 @@ namespace LightVPN.ViewModels
             LastServer = null;
             IsConnecting = default;
             Servers = null;
+            _manager.Dispose();
+            _cancellationToken.Cancel();
             GC.SuppressFinalize(this);
         }
 
@@ -211,7 +215,7 @@ namespace LightVPN.ViewModels
                 {
                     // Config wasn't found, so instead we re-cache the configs to hope that the
                     // server has the new config
-                    await Globals.container.GetInstance<IHttp>().CacheConfigsAsync(true);
+                    await Globals.container.GetInstance<IHttp>().CacheConfigsAsync(true, _cancellationToken.Token);
                     files = Directory.GetFiles(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "LightVPN", "cache"));
                 }
 
@@ -235,7 +239,7 @@ namespace LightVPN.ViewModels
                 // This for if the config wasn't found, we recache and reinitiate the connection.
                 await _logger.WriteAsync($"Couldn't find config, ignored exception and auto-troubleshooting...\n\n{e}");
 
-                await _manager.PerformAutoTroubleshootAsync(true, "Failed to find configuration file for that server. The server could no longer be active on LightVPN");
+                await _manager.PerformAutoTroubleshootAsync(true, "Failed to find configuration file for that server. The server could no longer be active on LightVPN", _cancellationToken.Token);
             }
         }
 
