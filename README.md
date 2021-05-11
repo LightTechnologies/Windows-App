@@ -28,4 +28,4 @@ Thank you for all these people below for your amazing open-source libraries that
 ## Contributors
 Thank you for all these people for contributing to the LightVPN Windows client source code, and helping make it better for everyone
 
-:( no one yet...
+[FuckBlanket](https://github.com/FuckBlanket)
