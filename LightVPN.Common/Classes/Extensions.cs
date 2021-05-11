@@ -10,11 +10,11 @@
  * --------------------------------------------
  */
 
-using Newtonsoft.Json.Linq;
 using System;
 using System.Diagnostics;
 using System.IO;
 using System.Reflection;
+using System.Text.Json;
 
 namespace LightVPN.Common
 {
@@ -35,15 +35,15 @@ namespace LightVPN.Common
         /// </summary>
         /// <param name="strInput">The input string</param>
         /// <returns>True or false value whether the string was valid Json or not</returns>
-        public static bool IsValidJson(this string strInput)
+        public static bool IsValidJson<T>(this string strInput)
         {
             strInput = strInput.Trim();
             try
             {
-                var obj = JToken.Parse(strInput);
+                var obj = JsonSerializer.Deserialize<T>(strInput);
                 return true;
             }
-            catch (Exception)
+            catch (JsonException)
             {
                 return false;
             }

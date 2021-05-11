@@ -10,11 +10,10 @@
  * --------------------------------------------
  */
 
-using System;
 using System.IO;
+using System.Text.Json;
 using System.Threading.Tasks;
 using LightVPN.Settings.Interfaces;
-using Newtonsoft.Json;
 
 namespace LightVPN.Settings
 {
@@ -50,7 +49,7 @@ namespace LightVPN.Settings
                 File.WriteAllText(_path, "{}");
             }
             var text = File.ReadAllText(_path);
-            var obj = JsonConvert.DeserializeObject<T>(text);
+            var obj = JsonSerializer.Deserialize<T>(text);
             return obj;
         }
 
@@ -65,7 +64,7 @@ namespace LightVPN.Settings
                 await File.WriteAllTextAsync(_path, "");
             }
             var text = await File.ReadAllTextAsync(_path);
-            var obj = JsonConvert.DeserializeObject<T>(text);
+            var obj = JsonSerializer.Deserialize<T>(text);
             return obj;
         }
 
@@ -75,7 +74,7 @@ namespace LightVPN.Settings
         /// <param name="type">The class to save to the disk</param>
         public void Save(T type)
         {
-            var json = JsonConvert.SerializeObject(type, Formatting.Indented);
+            var json = JsonSerializer.Serialize(type);
             File.WriteAllText(_path, json);
         }
 
@@ -85,7 +84,7 @@ namespace LightVPN.Settings
         /// <param name="type">The class to save to the disk</param>
         public async Task SaveAsync(T type)
         {
-            var json = JsonConvert.SerializeObject(type, Formatting.Indented);
+            var json = JsonSerializer.Serialize(type);
             await File.WriteAllTextAsync(_path, json);
         }
     }

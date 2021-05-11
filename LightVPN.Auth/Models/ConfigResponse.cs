@@ -1,10 +1,10 @@
-﻿using Newtonsoft.Json;
+﻿using System.Text.Json.Serialization;
 
 namespace LightVPN.Auth.Models
 {
     public class ConfigResponse : GenericResponse
     {
-        [JsonProperty("bytes")]
+        [JsonPropertyName("bytes")]
         public string ConfigArchiveBase64 { get; set; }
     }
 }

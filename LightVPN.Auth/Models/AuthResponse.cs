@@ -10,15 +10,17 @@
  * --------------------------------------------
  */
 
-using Newtonsoft.Json;
 using System;
+using System.Text.Json.Serialization;
 
 namespace LightVPN.Auth.Models
 {
-    public struct AuthResponse
+    public class AuthResponse
     {
+        [JsonPropertyName("code")]
         public int Code { get; set; }
 
+        [JsonPropertyName("sessionId")]
         public Guid SessionId { get; set; }
     }
 }

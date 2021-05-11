@@ -1,4 +1,5 @@
 ﻿using Exceptionless;
+using LightVPN.Auth;
 using LightVPN.Auth.Exceptions;
 using LightVPN.Auth.Interfaces;
 using LightVPN.Auth.Models;
@@ -236,13 +237,13 @@ namespace LightVPN.ViewModels
                     await File.WriteAllTextAsync(Globals.AuthPath, Encryption.Encrypt(JsonConvert.SerializeObject(new AuthFile { Username = UserName, Password = Password, SessionId = authResponse.SessionId })));
                 }
 
-                if (!await Globals.container.GetInstance<IHttp>().IsConfigsCachedAsync())
+                if (!Http.IsConfigsCached())
                 {
                     StatusText = "Fetching cache...";
 
                     await Globals.container.GetInstance<IHttp>().CacheConfigsAsync();
                 }
-                if (!await Globals.container.GetInstance<IHttp>().HasOpenVpnAsync())
+                if (!Http.HasOpenVpn())
                 {
                     StatusText = "Fetching OpenVPN...";
 

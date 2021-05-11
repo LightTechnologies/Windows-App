@@ -92,7 +92,7 @@ namespace LightVPN
                 Globals.container.Register(() => httpClientHandler, Lifestyle.Singleton);
                 Globals.container.Register<IDiscordRpc, DiscordRpc>(Lifestyle.Singleton);
                 Globals.container.Register(() => httpClient, Lifestyle.Singleton);
-                Globals.container.Register<SSLCheckingHttpClient>(Lifestyle.Singleton);
+                Globals.container.Register<ApiHttpClient>(Lifestyle.Singleton);
                 Globals.container.Register<IHttp, Http>(Lifestyle.Singleton);
                 Globals.container.Register<ITapManager>(() => new TapManager(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "LightVPN", "ovpn", "tapctl.exe")), Lifestyle.Singleton);
                 Globals.container.Register<IManager>(() => new Manager(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "LightVPN", "ovpn", "openvpn.exe")), Lifestyle.Singleton);

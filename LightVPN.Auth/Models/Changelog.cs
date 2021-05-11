@@ -1,12 +1,13 @@
-﻿using Newtonsoft.Json;
+﻿using System.Text.Json.Serialization;
 
 namespace LightVPN.Auth.Models
 {
-    public struct Changelog
+    public class Changelog
     {
+        [JsonPropertyName("code")]
         public int Code { get; set; }
 
-        [JsonProperty("changelog")]
+        [JsonPropertyName("changelog")]
         public string Content { get; set; }
     }
 }

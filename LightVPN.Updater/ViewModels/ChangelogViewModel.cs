@@ -68,7 +68,7 @@ namespace LightVPN.Updater.ViewModels
                             },
                         };
 
-                        var auth = new Http(new SSLCheckingHttpClient(httpClientHandler));
+                        var auth = new Http(new ApiHttpClient(httpClientHandler));
 
                         Changelog = await auth.GetChangelogAsync();
                     }
