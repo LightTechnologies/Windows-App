@@ -7,7 +7,7 @@
 		<StartupObject>LightVPN.Startup</StartupObject>
 		<SignAssembly>true</SignAssembly>
 		<DelaySign>false</DelaySign>
-		<AssemblyOriginatorKeyFile>LightVPN.snk</AssemblyOriginatorKeyFile>
+		<AssemblyOriginatorKeyFile>LightTechnologiesSnk.pfx</AssemblyOriginatorKeyFile>
 		<EnforceCodeStyleInBuild>true</EnforceCodeStyleInBuild>
 		<EnableNETAnalyzers>true</EnableNETAnalyzers>
 		<PackageId>LightVPN</PackageId>

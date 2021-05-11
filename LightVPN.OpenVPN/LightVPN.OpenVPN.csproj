@@ -1,9 +1,9 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
-		<TargetFramework>net5.0-windows</TargetFramework>
+		<TargetFramework>net5.0-windows7.0</TargetFramework>
 		<SignAssembly>true</SignAssembly>
-		<AssemblyOriginatorKeyFile>LightVPN.snk</AssemblyOriginatorKeyFile>
+		<AssemblyOriginatorKeyFile>LightTechnologiesSnk.pfx</AssemblyOriginatorKeyFile>
 		<PackageId>LightVPN.VPN</PackageId>
 		<Product>LightVPN Windows Client</Product>
 		<Company>Light Technologies LLC</Company>

@@ -15,6 +15,8 @@
     <Copyright>Copyright 2021 (C) Light Technologies, LLC</Copyright>
     <PackageProjectUrl>https://github.com/LightTechnologies/LightVPN-Win</PackageProjectUrl>
     <NeutralLanguage>en-US</NeutralLanguage>
+    <SignAssembly>true</SignAssembly>
+    <AssemblyOriginatorKeyFile>LightTechnologiesSnk.pfx</AssemblyOriginatorKeyFile>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
@@ -87,5 +89,4 @@
       <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
     </Page>
   </ItemGroup>
-
 </Project>

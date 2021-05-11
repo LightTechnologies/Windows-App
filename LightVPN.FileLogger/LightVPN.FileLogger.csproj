@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
-		<TargetFramework>net5.0-windows</TargetFramework>
+		<TargetFramework>net5.0-windows7.0</TargetFramework>
 		<PackageId>LightVPN.Logger</PackageId>
 		<Product>LightVPN Windows Client</Product>
 		<Company>Light Technologies LLC</Company>
@@ -10,7 +10,7 @@
 		<Copyright>Copyright 2021 (C) Light Technologies LLC</Copyright>
 		<PackageProjectUrl>https://github.com/LightTechnologies/LightVPN-Windows</PackageProjectUrl>
 		<SignAssembly>true</SignAssembly>
-		<AssemblyOriginatorKeyFile>LightVPN.snk</AssemblyOriginatorKeyFile>
+		<AssemblyOriginatorKeyFile>LightTechnologiesSnk.pfx</AssemblyOriginatorKeyFile>
 	</PropertyGroup>
 
 	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
