@@ -91,11 +91,11 @@ namespace LightVPN.ViewModels
                 {
                     if (value && discordRpc != value)
                     {
-                        Globals.container.GetInstance<IDiscordRpc>().Initialize();
+                        Globals.Container.GetInstance<IDiscordRpc>().Initialize();
                     }
                     else if (discordRpc != value)
                     {
-                        Globals.container.GetInstance<IDiscordRpc>().Deinitialize();
+                        Globals.Container.GetInstance<IDiscordRpc>().Deinitialize();
                     }
                 }
                 catch (Exception)
@@ -117,7 +117,7 @@ namespace LightVPN.ViewModels
                 {
                     CommandAction = (args) =>
                     {
-                        var settings = Globals.container.GetInstance<ISettingsManager<SettingsModel>>().Load();
+                        var settings = Globals.Container.GetInstance<ISettingsManager<SettingsModel>>().Load();
 
                         settings.DarkMode = DarkMode;
                         settings.AutoConnect = AutoConnect;
@@ -127,7 +127,7 @@ namespace LightVPN.ViewModels
                         settings.SizeSaving.Height = 420;
                         settings.SizeSaving.Width = 550;
 
-                        Globals.container.GetInstance<ISettingsManager<SettingsModel>>().Save(settings);
+                        Globals.Container.GetInstance<ISettingsManager<SettingsModel>>().Save(settings);
                     }
                 };
             }
@@ -163,7 +163,7 @@ namespace LightVPN.ViewModels
                 {
                     CommandAction = (args) =>
                     {
-                        var settings = Globals.container.GetInstance<ISettingsManager<SettingsModel>>().Load();
+                        var settings = Globals.Container.GetInstance<ISettingsManager<SettingsModel>>().Load();
 
                         DarkMode = settings.DarkMode;
                         AutoConnect = settings.AutoConnect;
@@ -171,7 +171,7 @@ namespace LightVPN.ViewModels
 
                         // Prevent crashes on older config versions
                         settings.SizeSaving ??= new();
-                        Globals.container.GetInstance<ISettingsManager<SettingsModel>>().Save(settings);
+                        Globals.Container.GetInstance<ISettingsManager<SettingsModel>>().Save(settings);
 
                         SaveWindowSize = settings.SizeSaving.IsSavingSize;
                     }
@@ -188,7 +188,7 @@ namespace LightVPN.ViewModels
                     CommandAction = async (args) =>
                     {
                         IsRefreshingServerCache = true;
-                        await Globals.container.GetInstance<IHttp>().CacheConfigsAsync(true);
+                        await Globals.Container.GetInstance<IHttp>().CacheConfigsAsync(true);
                         IsRefreshingServerCache = false;
                         MessageBox.Show("The server cache has been refreshed.", "LightVPN", MessageBoxButton.OK, MessageBoxImage.Information);
                     },
@@ -208,7 +208,7 @@ namespace LightVPN.ViewModels
                         IsReinstallingTap = true;
                         await Task.Run(() =>
                         {
-                            var instance = Globals.container.GetInstance<ITapManager>();
+                            var instance = Globals.Container.GetInstance<ITapManager>();
                             if (instance.IsAdapterExistant())
                             {
                                 instance.RemoveTapAdapter();

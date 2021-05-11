@@ -35,7 +35,7 @@ namespace LightVPN.Windows
             MaxHeight = SystemParameters.MaximizedPrimaryScreenHeight;
             MaxWidth = SystemParameters.MaximizedPrimaryScreenWidth;
 
-            var settings = Globals.container.GetInstance<ISettingsManager<SettingsModel>>().Load();
+            var settings = Globals.Container.GetInstance<ISettingsManager<SettingsModel>>().Load();
 
             if (settings.SizeSaving is not null && settings.SizeSaving.IsSavingSize)
             {
@@ -46,7 +46,7 @@ namespace LightVPN.Windows
             _viewLoaded = FindResource("LoadView") as BeginStoryboard;
             _viewUnloaded = FindResource("UnloadView") as BeginStoryboard;
             _mainView = new Main();
-            _manager = Globals.container.GetInstance<IManager>();
+            _manager = Globals.Container.GetInstance<IManager>();
             NavigatePage(_mainView);
 
             // Just to initialize it
@@ -85,14 +85,14 @@ namespace LightVPN.Windows
 
         private new async void SizeChangedEvent(object sender, SizeChangedEventArgs e)
         {
-            var settings = await Globals.container.GetInstance<ISettingsManager<SettingsModel>>().LoadAsync();
+            var settings = await Globals.Container.GetInstance<ISettingsManager<SettingsModel>>().LoadAsync();
 
             if (settings.SizeSaving is not null && settings.SizeSaving.IsSavingSize)
             {
                 settings.SizeSaving.Height = (uint)Math.Round(this.Height);
                 settings.SizeSaving.Width = (uint)Math.Round(this.Width);
 
-                await Globals.container.GetInstance<ISettingsManager<SettingsModel>>().SaveAsync(settings);
+                await Globals.Container.GetInstance<ISettingsManager<SettingsModel>>().SaveAsync(settings);
             }
         }
 

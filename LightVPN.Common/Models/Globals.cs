@@ -24,7 +24,7 @@ namespace LightVPN.Common.Models
 
         public static readonly string ConfigPath = Path.Combine(SettingsPath, "cache");
 
-        public static readonly Container container = new();
+        public static readonly Container Container = new();
 
         public static readonly string ErrorLogPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "LightVPN", "error.log");
 

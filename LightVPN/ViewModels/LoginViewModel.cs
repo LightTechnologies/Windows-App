@@ -208,7 +208,7 @@ namespace LightVPN.ViewModels
                 AuthResponse authResponse = new();
                 if (isSessionAuth)
                 {
-                    var sessionResponse = await Globals.container.GetInstance<IHttp>().ValidateSessionAsync(UserName, sessionId);
+                    var sessionResponse = await Globals.Container.GetInstance<IHttp>().ValidateSessionAsync(UserName, sessionId);
                     if (!sessionResponse)
                     {
                         MessageBox.Show("Your session has been closed or is invalid, please sign back in.", "LightVPN", MessageBoxButton.OK, MessageBoxImage.Warning);
@@ -217,18 +217,18 @@ namespace LightVPN.ViewModels
                 }
                 else
                 {
-                    authResponse = await Globals.container.GetInstance<IHttp>().LoginAsync(UserName, Password);
+                    authResponse = await Globals.Container.GetInstance<IHttp>().LoginAsync(UserName, Password);
                 }
 
-                var settings = Globals.container.GetInstance<ISettingsManager<SettingsModel>>().Load();
+                var settings = Globals.Container.GetInstance<ISettingsManager<SettingsModel>>().Load();
 
-                if (!Globals.container.GetInstance<ITapManager>().CheckDriverExists())
+                if (!Globals.Container.GetInstance<ITapManager>().CheckDriverExists())
                 {
                     StatusText = "Fetching drivers...";
                     IsIndeterminate = false;
-                    await Globals.container.GetInstance<IHttp>().FetchOpenVpnDriversAsync();
+                    await Globals.Container.GetInstance<IHttp>().FetchOpenVpnDriversAsync();
                     ProgressInt = 50;
-                    await Globals.container.GetInstance<ITapManager>().InstallDriverAsync();
+                    await Globals.Container.GetInstance<ITapManager>().InstallDriverAsync();
                     SetProgressIndeterminate();
                 }
 
@@ -241,27 +241,27 @@ namespace LightVPN.ViewModels
                 {
                     StatusText = "Fetching cache...";
 
-                    await Globals.container.GetInstance<IHttp>().CacheConfigsAsync();
+                    await Globals.Container.GetInstance<IHttp>().CacheConfigsAsync();
                 }
                 if (!Http.HasOpenVpn())
                 {
                     StatusText = "Fetching OpenVPN...";
 
-                    await Globals.container.GetInstance<IHttp>().GetOpenVpnBinariesAsync();
+                    await Globals.Container.GetInstance<IHttp>().GetOpenVpnBinariesAsync();
                 }
 
-                if (!Globals.container.GetInstance<ITapManager>().IsAdapterExistant())
+                if (!Globals.Container.GetInstance<ITapManager>().IsAdapterExistant())
                 {
                     StatusText = "Installing VPN adapter...";
 
-                    Globals.container.GetInstance<ITapManager>().CreateTapAdapter();
+                    Globals.Container.GetInstance<ITapManager>().CreateTapAdapter();
                 }
 
                 StatusText = "Loading...";
 
                 if (settings.DiscordRpc)
                 {
-                    Globals.container.GetInstance<IDiscordRpc>().Initialize();
+                    Globals.Container.GetInstance<IDiscordRpc>().Initialize();
                 }
 
                 // After login is successful
@@ -270,7 +270,7 @@ namespace LightVPN.ViewModels
             catch (ClientUpdateRequired)
             {
                 StatusText = "Fetching updates...";
-                await Globals.container.GetInstance<IHttp>().GetUpdatesAsync();
+                await Globals.Container.GetInstance<IHttp>().GetUpdatesAsync();
             }
             catch (InvalidResponseException e)
             {

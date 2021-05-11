@@ -30,7 +30,7 @@ namespace LightVPN.Windows
             InitializeComponent();
             NavigatePage(new Views.Login());
             Startup.LoginWindow = this;
-            var settings = Globals.container.GetInstance<ISettingsManager<SettingsModel>>().Load();
+            var settings = Globals.Container.GetInstance<ISettingsManager<SettingsModel>>().Load();
             ThemeUtils.SwitchTheme("Default", "Default", settings.DarkMode);
         }
 

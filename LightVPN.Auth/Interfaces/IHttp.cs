@@ -27,7 +27,7 @@ namespace LightVPN.Auth.Interfaces
 
         Task<bool> GetOpenVpnBinariesAsync(CancellationToken cancellationToken = default);
 
-        Task<List<Server>> GetServersAsync(CancellationToken cancellationToken = default);
+        Task<IEnumerable<Server>> GetServersAsync(CancellationToken cancellationToken = default);
 
         Task GetUpdatesAsync(CancellationToken cancellationToken = default);
 

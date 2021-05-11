@@ -39,10 +39,10 @@ namespace LightVPN.ViewModels
 
         public MainViewModel()
         {
-            _manager = Globals.container.GetInstance<IManager>();
+            _manager = Globals.Container.GetInstance<IManager>();
             _manager.Connected += Connected;
             _manager.Error += Error;
-            var settings = Globals.container.GetInstance<ISettingsManager<SettingsModel>>().Load();
+            var settings = Globals.Container.GetInstance<ISettingsManager<SettingsModel>>().Load();
             LastServer = settings.PreviousServer is null ? "N/A" : $"{settings.PreviousServer?.ServerName} ({settings.PreviousServer?.Type})";
         }
 
@@ -60,7 +60,7 @@ namespace LightVPN.ViewModels
                             return;
                         }
 
-                        var settings = Globals.container.GetInstance<ISettingsManager<SettingsModel>>().Load();
+                        var settings = Globals.Container.GetInstance<ISettingsManager<SettingsModel>>().Load();
 
                         await ConnectAsync(settings.PreviousServer?.Id);
                     },
@@ -140,9 +140,9 @@ namespace LightVPN.ViewModels
                     {
                         Servers.Clear();
 
-                        var settings = Globals.container.GetInstance<ISettingsManager<SettingsModel>>().Load();
+                        var settings = Globals.Container.GetInstance<ISettingsManager<SettingsModel>>().Load();
 
-                        var servers = await Globals.container.GetInstance<IHttp>().GetServersAsync(_cancellationToken.Token);
+                        var servers = await Globals.Container.GetInstance<IHttp>().GetServersAsync(_cancellationToken.Token);
 
                         foreach (var server in servers.OrderByDescending(x => x.CountryName).ThenBy(x => x.ServerName).ThenBy(x => x.Type))
                         {
@@ -215,7 +215,7 @@ namespace LightVPN.ViewModels
                 {
                     // Config wasn't found, so instead we re-cache the configs to hope that the
                     // server has the new config
-                    await Globals.container.GetInstance<IHttp>().CacheConfigsAsync(true, _cancellationToken.Token);
+                    await Globals.Container.GetInstance<IHttp>().CacheConfigsAsync(true, _cancellationToken.Token);
                     files = Directory.GetFiles(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "LightVPN", "cache"));
                 }
 
@@ -227,9 +227,9 @@ namespace LightVPN.ViewModels
                     return;
                 }
 
-                if (Globals.container.GetInstance<ISettingsManager<SettingsModel>>().Load().DiscordRpc)
+                if (Globals.Container.GetInstance<ISettingsManager<SettingsModel>>().Load().DiscordRpc)
                 {
-                    Globals.container.GetInstance<IDiscordRpc>().UpdateState("Connecting...");
+                    Globals.Container.GetInstance<IDiscordRpc>().UpdateState("Connecting...");
                 }
 
                 _manager.Connect(ovpnFn);
@@ -247,10 +247,10 @@ namespace LightVPN.ViewModels
         {
             IsConnecting = true;
             ConnectionState = ConnectionState.Disconnecting;
-            if (Globals.container.GetInstance<ISettingsManager<SettingsModel>>().Load().DiscordRpc)
+            if (Globals.Container.GetInstance<ISettingsManager<SettingsModel>>().Load().DiscordRpc)
             {
-                Globals.container.GetInstance<IDiscordRpc>().ResetTimestamps();
-                Globals.container.GetInstance<IDiscordRpc>().ClearPresence();
+                Globals.Container.GetInstance<IDiscordRpc>().ResetTimestamps();
+                Globals.Container.GetInstance<IDiscordRpc>().ClearPresence();
             }
             await Task.Run(() =>
             {
@@ -262,7 +262,7 @@ namespace LightVPN.ViewModels
 
         internal void SaveServer(string pritunlName, string friendlyName, ServerType serverType)
         {
-            var settings = Globals.container.GetInstance<ISettingsManager<SettingsModel>>().Load();
+            var settings = Globals.Container.GetInstance<ISettingsManager<SettingsModel>>().Load();
 
             settings.PreviousServer = new()
             {
@@ -271,12 +271,12 @@ namespace LightVPN.ViewModels
                 Type = serverType
             };
 
-            Globals.container.GetInstance<ISettingsManager<SettingsModel>>().Save(settings);
+            Globals.Container.GetInstance<ISettingsManager<SettingsModel>>().Save(settings);
 
-            if (Globals.container.GetInstance<ISettingsManager<SettingsModel>>().Load().DiscordRpc)
+            if (Globals.Container.GetInstance<ISettingsManager<SettingsModel>>().Load().DiscordRpc)
             {
-                Globals.container.GetInstance<IDiscordRpc>().UpdateTimestamps();
-                Globals.container.GetInstance<IDiscordRpc>().UpdateState($"Connected to {friendlyName} ({serverType})");
+                Globals.Container.GetInstance<IDiscordRpc>().UpdateTimestamps();
+                Globals.Container.GetInstance<IDiscordRpc>().UpdateState($"Connected to {friendlyName} ({serverType})");
             }
 
             LastServer = $"{friendlyName} ({serverType})";
@@ -286,10 +286,10 @@ namespace LightVPN.ViewModels
         {
             IsConnecting = false;
             ConnectionState = ConnectionState.Connected;
-            if (Globals.container.GetInstance<ISettingsManager<SettingsModel>>().Load().DiscordRpc)
+            if (Globals.Container.GetInstance<ISettingsManager<SettingsModel>>().Load().DiscordRpc)
             {
-                Globals.container.GetInstance<IDiscordRpc>().UpdateState($"Connected!");
-                Globals.container.GetInstance<IDiscordRpc>().ResetTimestamps();
+                Globals.Container.GetInstance<IDiscordRpc>().UpdateState($"Connected!");
+                Globals.Container.GetInstance<IDiscordRpc>().ResetTimestamps();
             }
         }
 

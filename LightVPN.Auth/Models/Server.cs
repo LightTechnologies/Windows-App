@@ -21,7 +21,7 @@ namespace LightVPN.Auth.Models
         public string CountryName { get; set; }
 
         [JsonPropertyName("devicesOnline")]
-        public long DevicesOnline { get; set; }
+        public uint DevicesOnline { get; set; }
 
         [JsonPropertyName("pritunlName")]
         public string FileName { get; set; }

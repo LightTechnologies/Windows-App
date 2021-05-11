@@ -221,12 +221,12 @@ namespace LightVPN.OpenVPN
 
         private static async Task RefetchConfigsAsync(CancellationToken cancellationToken = default)
         {
-            await Globals.container.GetInstance<IHttp>().CacheConfigsAsync(true, cancellationToken);
+            await Globals.Container.GetInstance<IHttp>().CacheConfigsAsync(true, cancellationToken);
         }
 
         private static void ReinstallTap()
         {
-            var instance = Globals.container.GetInstance<ITapManager>();
+            var instance = Globals.Container.GetInstance<ITapManager>();
             if (instance.IsAdapterExistant())
             {
                 instance.RemoveTapAdapter();

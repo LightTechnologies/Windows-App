@@ -36,7 +36,7 @@ namespace LightVPN.Auth
     {
         private static DateTime _lastRetrieved = default;
 
-        private static List<Server> _servers = new();
+        private static HashSet<Server> _servers = new();
 
         private readonly ApiHttpClient _apiclient;
 
@@ -53,11 +53,19 @@ namespace LightVPN.Auth
             _logger.Write("(Http/ctor) Set request headers");
         }
 
+        /// <summary>
+        /// Checks if the OpenVPN binaries are downloaded on the system
+        /// </summary>
+        /// <returns>True if they are, false otherwise</returns>
         public static bool HasOpenVpn()
         {
             return Directory.Exists(Globals.OpenVpnPath) || File.Exists(Path.Combine(Globals.OpenVpnPath, "openvpn.exe"));
         }
 
+        /// <summary>
+        /// Checks if the configs are cached on the system
+        /// </summary>
+        /// <returns>True if they are, false otherwise</returns>
         public static bool IsConfigsCached()
         {
             return Directory.Exists(Globals.ConfigPath) && Directory.EnumerateFiles(Globals.ConfigPath).Any();
@@ -106,6 +114,11 @@ namespace LightVPN.Auth
             }
         }
 
+        /// <summary>
+        /// Gets and extracts the OpenVPN TAP drivers
+        /// </summary>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
         public async Task FetchOpenVpnDriversAsync(CancellationToken cancellationToken = default)
         {
             _logger.Write("(Http/FetchOpenVpnDrivers) Downloading the TAP drivers");
@@ -124,6 +137,11 @@ namespace LightVPN.Auth
             File.Delete(Path.Combine(Globals.OpenVpnDriversPath, "drivers.zip"));
         }
 
+        /// <summary>
+        /// Gets and returns the changelog for the Windows client
+        /// </summary>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
         public async Task<string> GetChangelogAsync(CancellationToken cancellationToken = default)
         {
             var changelog = await _apiclient.GetAsync<Changelog>("https://lightvpn.org/api/changelog?platform=windows", cancellationToken);
@@ -167,7 +185,7 @@ namespace LightVPN.Auth
         /// Fetches the servers asynchronously from the LightVPN API
         /// </summary>
         /// <returns>List of servers in a enumerable list of server objects</returns>
-        public async Task<List<Server>> GetServersAsync(CancellationToken cancellationToken = default)
+        public async Task<IEnumerable<Server>> GetServersAsync(CancellationToken cancellationToken = default)
         {
             // This is memory based caching... but Toshi kind of didn't set it up correctly, so I
             // fixed it
@@ -177,13 +195,18 @@ namespace LightVPN.Auth
                 return _servers;
             }
 
-            _servers = await _apiclient.GetAsync<List<Server>>("https://lightvpn.org/api/servers", cancellationToken);
+            _servers = await _apiclient.GetAsync<HashSet<Server>>("https://lightvpn.org/api/servers", cancellationToken);
 
             _lastRetrieved = DateTime.Now;
             _logger.Write("(Http/GetServers) Cached servers in memory");
             return _servers;
         }
 
+        /// <summary>
+        /// Downloads the updater and runs it to install the latest version
+        /// </summary>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
         public async Task GetUpdatesAsync(CancellationToken cancellationToken = default)
         {
             _logger.Write("(Http/GetUpdates) Downloading the updater");
@@ -220,6 +243,13 @@ namespace LightVPN.Auth
             return response;
         }
 
+        /// <summary>
+        /// Validates a session ID
+        /// </summary>
+        /// <param name="username">Username the session is tied to</param>
+        /// <param name="sessionId">Session ID</param>
+        /// <param name="cancellationToken"></param>
+        /// <returns>True if the session is valid, false otherwise</returns>
         public async Task<bool> ValidateSessionAsync(string username, Guid sessionId, CancellationToken cancellationToken = default)
         {
             _apiclient.DefaultRequestHeaders.TryAddWithoutValidation("Authorization", $"{username} {sessionId}");
