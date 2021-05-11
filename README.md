@@ -12,7 +12,7 @@ Licensed under the CDDL-1.0 (Common Development and Distribution License 1.0), s
 To compile from source, if you so wish to, just simply clone the source code
 
 ```
-git clone https://github.com/LightTechnologies/LightVPN-Windows.git
+git clone https://github.com/LightTechnologies/Windows-App.git
 ```
 
 Then open the .sln file with Visual Studio 2019 and just rebuild. It should fetch the NuGet packages for you.
