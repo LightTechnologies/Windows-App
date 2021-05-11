@@ -22,7 +22,6 @@ Thank you for all these people below for your amazing open-source libraries that
 
 - [SimpleInjector](https://github.com/simpleinjector/SimpleInjector)
 - [MaterialDesignInXamlToolkit](https://github.com/MaterialDesignInXAML/MaterialDesignInXamlToolkit)
-- [Newtonsoft.Json](https://github.com/JamesNK/Newtonsoft.Json)
 - [DiscordRichPresence](https://github.com/Lachee/discord-rpc-csharp)
 - [Hardcodet.NotifyIcon.Wpf.NetCore](https://github.com/HavenDV/H.NotifyIcon.WPF)
 
