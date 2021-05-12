@@ -317,15 +317,11 @@
 		<None Remove="Resources\Fonts\Inter-SemiBoldItalic.ttf" />
 		<None Remove="Resources\Fonts\Inter-Thin.ttf" />
 		<None Remove="Resources\Fonts\Inter-ThinItalic.ttf" />
-		<None Remove="Resources\lightvpn-black-title.png" />
-		<None Remove="Resources\lightvpn-black.png" />
 		<None Remove="Resources\lightvpn-purple-100.png" />
 		<None Remove="Resources\lightvpn-purple-20.png" />
 		<None Remove="Resources\lightvpn-purple-ico.ico" />
 		<None Remove="Resources\lightvpn-purple-title.png" />
 		<None Remove="Resources\lightvpn-purple.png" />
-		<None Remove="Resources\lightvpn-white-title.png" />
-		<None Remove="Resources\lightvpn-white.png" />
 		<None Remove="Resources\lightvpn.ico" />
 		<None Include="..\..\..\..\Downloads\lightvpn-purple.png">
 			<Pack>True</Pack>
@@ -648,10 +644,6 @@
 		<Resource Include="Resources\lightvpn-purple-title.png" />
 		<Resource Include="Resources\lightvpn-purple.png" />
 		<Resource Include="Resources\lightvpn.ico" />
-		<Resource Include="Resources\lightvpn-black.png" />
-		<Resource Include="Resources\lightvpn-black-title.png" />
-		<Resource Include="Resources\lightvpn-white.png" />
-		<Resource Include="Resources\lightvpn-white-title.png" />
 	</ItemGroup>
 
 	<ItemGroup>
