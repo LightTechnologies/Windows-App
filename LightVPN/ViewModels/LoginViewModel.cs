@@ -195,10 +195,7 @@ namespace LightVPN.ViewModels
 
         private async Task ProcessLoginAsync(bool isSessionAuth = false, Guid sessionId = default)
         {
-            if (!isSessionAuth)
-            {
-                if (string.IsNullOrWhiteSpace(UserName) || string.IsNullOrWhiteSpace(Password)) return;
-            }
+            if (!isSessionAuth && (string.IsNullOrWhiteSpace(UserName) || string.IsNullOrWhiteSpace(Password))) return;
 
             IsAuthenticating = true;
             SetProgressIndeterminate();
@@ -206,19 +203,12 @@ namespace LightVPN.ViewModels
             try
             {
                 AuthResponse authResponse = new();
-                if (isSessionAuth)
+                if (isSessionAuth && !(await Globals.Container.GetInstance<IHttp>().ValidateSessionAsync(UserName, sessionId)))
                 {
-                    var sessionResponse = await Globals.Container.GetInstance<IHttp>().ValidateSessionAsync(UserName, sessionId);
-                    if (!sessionResponse)
-                    {
-                        MessageBox.Show("Your session has been closed or is invalid, please sign back in.", "LightVPN", MessageBoxButton.OK, MessageBoxImage.Warning);
-                        return;
-                    }
+                    MessageBox.Show("Your session has been closed or is invalid, please sign back in.", "LightVPN", MessageBoxButton.OK, MessageBoxImage.Warning);
+                    return;
                 }
-                else
-                {
-                    authResponse = await Globals.Container.GetInstance<IHttp>().LoginAsync(UserName, Password);
-                }
+                authResponse = await Globals.Container.GetInstance<IHttp>().LoginAsync(UserName, Password);
 
                 var settings = Globals.Container.GetInstance<ISettingsManager<SettingsModel>>().Load();
 
@@ -233,36 +223,28 @@ namespace LightVPN.ViewModels
                 }
 
                 if (!isSessionAuth)
-                {
                     await File.WriteAllTextAsync(Globals.AuthPath, Encryption.Encrypt(JsonConvert.SerializeObject(new AuthFile { Username = UserName, Password = Password, SessionId = authResponse.SessionId })));
-                }
 
                 if (!Http.IsConfigsCached())
                 {
                     StatusText = "Fetching cache...";
-
                     await Globals.Container.GetInstance<IHttp>().CacheConfigsAsync();
                 }
                 if (!Http.HasOpenVpn())
                 {
                     StatusText = "Fetching OpenVPN...";
-
                     await Globals.Container.GetInstance<IHttp>().GetOpenVpnBinariesAsync();
                 }
-
                 if (!Globals.Container.GetInstance<ITapManager>().IsAdapterExistant())
                 {
                     StatusText = "Installing VPN adapter...";
-
                     Globals.Container.GetInstance<ITapManager>().CreateTapAdapter();
                 }
 
                 StatusText = "Loading...";
 
                 if (settings.DiscordRpc)
-                {
                     Globals.Container.GetInstance<IDiscordRpc>().Initialize();
-                }
 
                 // After login is successful
                 OpenMainWindow();
@@ -284,28 +266,20 @@ namespace LightVPN.ViewModels
                     e.ToExceptionless().SetUserIdentity(UserName).AddObject(StatusText, "SignInText").Submit();
                 }
             }
-            catch (RatelimitedException e)
-            {
-                MessageBox.Show(e.Message, "LightVPN", MessageBoxButton.OK, MessageBoxImage.Warning);
-            }
+            catch (RatelimitedException e) { MessageBox.Show(e.Message, "LightVPN", MessageBoxButton.OK, MessageBoxImage.Warning); }
             catch (HttpRequestException e)
             {
-                switch (e.Message)
+                if (e.Message.Contains("The SSL connection could not be established, see inner exception."))
+                    MessageBox.Show("API certificate check failed.", "LightVPN", MessageBoxButton.OK, MessageBoxImage.Warning);
+                else
                 {
-                    case "The SSL connection could not be established, see inner exception.":
-                        MessageBox.Show("API certificate check failed.", "LightVPN", MessageBoxButton.OK, MessageBoxImage.Warning);
-                        break;
-
-                    default:
-                        await logger.WriteAsync(e.ToString() + "\n" + StatusText); e.ToExceptionless().SetUserIdentity(UserName).AddObject(StatusText, "SignInText").Submit();
-                        MessageBox.Show("Failed to send HTTP request to the LightVPN API.", "LightVPN", MessageBoxButton.OK, MessageBoxImage.Warning);
-                        break;
+                    await logger.WriteAsync(e.ToString() + "\n" + StatusText); e.ToExceptionless().SetUserIdentity(UserName).AddObject(StatusText, "SignInText").Submit();
+                    MessageBox.Show("Failed to send HTTP request to the LightVPN API.", "LightVPN", MessageBoxButton.OK, MessageBoxImage.Warning);
                 }
             }
             catch (Exception e)
             {
                 await logger.WriteAsync(e.ToString());
-
                 MessageBox.Show("Something went wrong, check the error log for more info.", "LightVPN", MessageBoxButton.OK, MessageBoxImage.Warning);
             }
             finally

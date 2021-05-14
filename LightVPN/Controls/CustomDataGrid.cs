@@ -27,11 +27,7 @@ namespace LightVPN.Controls
                 typeof(CustomDataGrid),
                 new UIPropertyMetadata());
 
-        public CustomDataGrid()
-                    : base()
-        {
-            this.PreviewMouseDoubleClick += new MouseButtonEventHandler(CustomDataGrid_PreviewMouseDoubleClick);
-        }
+        public CustomDataGrid() : base() => this.PreviewMouseDoubleClick += new MouseButtonEventHandler(CustomDataGrid_PreviewMouseDoubleClick);
 
         public object CommandParameter
         {
@@ -47,10 +43,8 @@ namespace LightVPN.Controls
 
         private void CustomDataGrid_PreviewMouseDoubleClick(object sender, MouseButtonEventArgs e)
         {
-            if (DoubleClickCommand != null)
-            {
-                DoubleClickCommand.Execute(CommandParameter);
-            }
+            if (DoubleClickCommand == null) return;
+            DoubleClickCommand.Execute(CommandParameter);
         }
     }
 }

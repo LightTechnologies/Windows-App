@@ -21,45 +21,24 @@ namespace LightVPN.Auth
             base.DefaultRequestVersion = new Version("2.0.0.0");
             base.DefaultRequestHeaders.TryAddWithoutValidation("User-Agent", "LightVPN/1.0");
         }
-
         public async Task CheckResponseAsync(HttpResponseMessage resp, CancellationToken cancellationToken = default)
         {
-            var content = await resp.Content.ReadAsStreamAsync(cancellationToken);
-            if (resp.StatusCode == HttpStatusCode.Forbidden || resp.StatusCode == HttpStatusCode.NotFound || resp.StatusCode == HttpStatusCode.BadRequest || resp.StatusCode == HttpStatusCode.InternalServerError)
+            switch (resp.StatusCode)
             {
-                try
-                {
-                    var errorresp = await JsonSerializer.DeserializeAsync<GenericResponse>(content, cancellationToken: cancellationToken);
-
-                    throw new InvalidResponseException(errorresp.Message);
-                }
-                catch (JsonException)
-                {
-                    switch (resp.StatusCode)
-                    {
-                        case HttpStatusCode.BadRequest:
-                            throw new InvalidResponseException("Bad request, a manual client update may be required. Please visit the LightVPN dashboard and download the latest installer.");
-                        case HttpStatusCode.NotFound:
-                            throw new InvalidResponseException("Not found, a manual client update may be required. Please visit the LightVPN dashboard and download the latest installer.");
-                        case HttpStatusCode.Unauthorized:
-                            throw new InvalidResponseException("You've been blocked by the edge firewall. You could've requested from a blocked location or typed something in that could cause issues.");
-                        case HttpStatusCode.InternalServerError:
-                            throw new InvalidResponseException("A server error has occurred. Please contact support to inform us about this issue.");
-                    }
-                }
+                case HttpStatusCode.BadRequest:
+                    throw new InvalidResponseException("Bad request, a manual client update may be required. Please visit the LightVPN dashboard and download the latest installer.");
+                case HttpStatusCode.NotFound:
+                    throw new InvalidResponseException("Not found, a manual client update may be required. Please visit the LightVPN dashboard and download the latest installer.");
+                case HttpStatusCode.Unauthorized:
+                    throw new InvalidResponseException("You've been blocked by the edge firewall. You could've requested from a blocked location or typed something in that could cause issues.");
+                case HttpStatusCode.InternalServerError:
+                    throw new InvalidResponseException("A server error has occurred. Please contact support to inform us about this issue.");
+                case HttpStatusCode.TooManyRequests:
+                    throw new RatelimitedException("You've been ratelimited due to you sending too many requests, try again in a minute.");
+                case HttpStatusCode.UpgradeRequired:
+                    throw new ClientUpdateRequired("An update is available.");
             }
-            if (resp.StatusCode == HttpStatusCode.TooManyRequests)
-            {
-                throw new RatelimitedException("You've been ratelimited due to you sending too many requests, try again in a minute.");
-            }
-            if (resp.StatusCode == HttpStatusCode.UpgradeRequired)
-            {
-                throw new ClientUpdateRequired("An update is available.");
-            }
-            if (!resp.IsSuccessStatusCode)
-            {
-                throw new InvalidResponseException("The API seems to be down, or sending back invalid responses, please try again later.");
-            }
+            if (!resp.IsSuccessStatusCode) throw new InvalidResponseException("The API seems to be down, or sending back invalid responses, please try again later.");
         }
 
         public async Task<T> GetAsync<T>(string url, CancellationToken cancellationToken = default)

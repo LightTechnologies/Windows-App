@@ -25,10 +25,7 @@ namespace LightVPN.FileLogger.Base
         /// Constructs the FileLogger base class
         /// </summary>
         /// <param name="fileName">The location of the log file that this class will use</param>
-        public FileLoggerBase(string fileName)
-        {
-            _fileName = fileName;
-        }
+        public FileLoggerBase(string fileName) => _fileName = fileName;
 
         /// <summary>
         /// Deletes the log file and re-creates it.

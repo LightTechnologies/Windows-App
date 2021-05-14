@@ -158,15 +158,7 @@ namespace LightVPN.OpenVPN
         /// first, that's fine, too.
         /// </summary>
         /// <param name="process"></param>
-        public static void AddProcess(Process process)
-        {
-            if (s_jobHandle != IntPtr.Zero)
-            {
-                bool success = AssignProcessToJobObject(s_jobHandle, process.Handle);
-                if (!success && !process.HasExited)
-                    throw new Win32Exception();
-            }
-        }
+        public static void AddProcess(Process process) { if (s_jobHandle != IntPtr.Zero && !AssignProcessToJobObject(s_jobHandle, process.Handle) && !process.HasExited) throw new Win32Exception(); }
 
         [DllImport("kernel32.dll", SetLastError = true)]
         private static extern bool AssignProcessToJobObject(IntPtr job, IntPtr process);

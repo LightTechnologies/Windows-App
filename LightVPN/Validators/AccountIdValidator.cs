@@ -22,13 +22,10 @@ namespace LightVPN.Validators
         public override ValidationResult Validate(object value, CultureInfo cultureInfo)
         {
             if (!_regex.IsMatch(value.ToString()))
-            {
                 return new ValidationResult(false, "Please enter a valid account ID");
-            }
             if (value.ToString().Length < 3)
-            {
                 return new ValidationResult(false, "Account ID must be at least 3 characters");
-            }
+
             return new ValidationResult(true, null);
         }
     }

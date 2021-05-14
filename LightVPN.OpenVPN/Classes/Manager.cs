@@ -75,9 +75,7 @@ namespace LightVPN.OpenVPN
             {
                 this.Dispose(false);
             }
-            catch (Exception)
-            {
-            }
+            catch (Exception) { }
         }
 
         public delegate void ConnectedEvent(object sender);
@@ -209,28 +207,18 @@ namespace LightVPN.OpenVPN
                 if (disposing)
                 {
                     _ovpnProcess.Kill();
-
-                    if (_ovpnProcess != null)
-                    {
-                        _ovpnProcess.WaitForExit();
-                    }
+                    if (_ovpnProcess != null) _ovpnProcess.WaitForExit();
                 }
                 IsDisposed = true;
             }
         }
 
-        private static async Task RefetchConfigsAsync(CancellationToken cancellationToken = default)
-        {
-            await Globals.Container.GetInstance<IHttp>().CacheConfigsAsync(true, cancellationToken);
-        }
+        private static async Task RefetchConfigsAsync(CancellationToken cancellationToken = default) => await Globals.Container.GetInstance<IHttp>().CacheConfigsAsync(true, cancellationToken);
 
         private static void ReinstallTap()
         {
             var instance = Globals.Container.GetInstance<ITapManager>();
-            if (instance.IsAdapterExistant())
-            {
-                instance.RemoveTapAdapter();
-            }
+            if (instance.IsAdapterExistant()) instance.RemoveTapAdapter();
             instance.CreateTapAdapter();
         }
 
@@ -286,11 +274,7 @@ namespace LightVPN.OpenVPN
         private void ErrorDataReceived(object sender, DataReceivedEventArgs e)
         {
             OutputReceived onOutput = this.OnOutput;
-            if (Output == null)
-            {
-                return;
-            }
-            Output.Invoke(this, OutputType.Error, e.Data);
+            if (Output != null) Output.Invoke(this, OutputType.Error, e.Data);
         }
 
         /// <summary>
@@ -300,10 +284,7 @@ namespace LightVPN.OpenVPN
         private void InvokeError(string message)
         {
             Disconnect();
-
-            // this really pisses me off with how gay it is but i dont want to violate dry that much
-            if (Error == null) return;
-            Error.Invoke(this, message);
+            if (Error != null) Error.Invoke(this, message);
         }
 
         /// <summary>
@@ -365,7 +346,6 @@ namespace LightVPN.OpenVPN
                     _errorLogger.Write("(Manager/OpenVpnOutputHandler) We connected sir!");
                     if (Connected == null) return;
                     Connected.Invoke(this);
-
                     await ConnectToManagementServerAsync();
 
                     break;

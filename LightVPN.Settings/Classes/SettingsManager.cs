@@ -31,10 +31,7 @@ namespace LightVPN.Settings
         /// <param name="path">The path that the file will be stored in</param>
         public SettingsManager(string path) // this is truly a sexy class. It does not require any knowledge on the shit its saving thus producing loosely coupled model saving it can also save ANY model you can think pass into it
         {
-            if (!Directory.Exists(Path.GetDirectoryName(path)))
-            {
-                Directory.CreateDirectory(Path.GetDirectoryName(path));
-            }
+            if (!Directory.Exists(Path.GetDirectoryName(path))) Directory.CreateDirectory(Path.GetDirectoryName(path));
             _path = path;
         }
 
@@ -44,13 +41,8 @@ namespace LightVPN.Settings
         /// <returns>The class parsed from the json</returns>
         public T Load()
         {
-            if (!File.Exists(_path))
-            {
-                File.WriteAllText(_path, "{}");
-            }
-            var text = File.ReadAllText(_path);
-            var obj = JsonSerializer.Deserialize<T>(text);
-            return obj;
+            if (!File.Exists(_path)) File.WriteAllText(_path, "{}");
+            return JsonSerializer.Deserialize<T>(File.ReadAllText(_path));
         }
 
         /// <summary>
@@ -59,33 +51,20 @@ namespace LightVPN.Settings
         /// <returns>The class returned</returns>
         public async Task<T> LoadAsync()
         {
-            if (!File.Exists(_path))
-            {
-                await File.WriteAllTextAsync(_path, "");
-            }
-            var text = await File.ReadAllTextAsync(_path);
-            var obj = JsonSerializer.Deserialize<T>(text);
-            return obj;
+            if (!File.Exists(_path)) await File.WriteAllTextAsync(_path, "");
+            return JsonSerializer.Deserialize<T>(await File.ReadAllTextAsync(_path));
         }
 
         /// <summary>
         /// Saves the T to disk synchronously
         /// </summary>
         /// <param name="type">The class to save to the disk</param>
-        public void Save(T type)
-        {
-            var json = JsonSerializer.Serialize(type);
-            File.WriteAllText(_path, json);
-        }
+        public void Save(T type) => File.WriteAllText(_path, JsonSerializer.Serialize(type));
 
         /// <summary>
         /// Saves the T to disk asynchronously
         /// </summary>
         /// <param name="type">The class to save to the disk</param>
-        public async Task SaveAsync(T type)
-        {
-            var json = JsonSerializer.Serialize(type);
-            await File.WriteAllTextAsync(_path, json);
-        }
+        public async Task SaveAsync(T type) => await File.WriteAllTextAsync(_path, JsonSerializer.Serialize(type));
     }
 }

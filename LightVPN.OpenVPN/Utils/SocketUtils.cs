@@ -45,16 +45,10 @@ namespace LightVPN.OpenVPN.Utils
         public static string ReceiveBuffer(this Socket socket)
         {
             byte[] bytes = new byte[1024];
-
             socket.Receive(bytes, SocketFlags.None);
-
             return Encoding.UTF8.GetString(bytes);
         }
 
-        public static void SendBuffer(this Socket socket, byte[] buffer)
-        {
-            /* \r\n is required because OpenVPN Management Interface says so (and it likes legacy). */
-            socket.Send(buffer, SocketFlags.None);
-        }
+        public static void SendBuffer(this Socket socket, byte[] buffer) => socket.Send(buffer, SocketFlags.None);
     }
 }

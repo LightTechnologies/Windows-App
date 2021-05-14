@@ -25,10 +25,7 @@ namespace LightVPN.Common
         /// </summary>
         /// <param name="assembly">The assembly, should be the executing assembly</param>
         /// <returns>The version of the executing assembly</returns>
-        public static Version GetVersion(this Assembly assembly)
-        {
-            return Version.Parse(FileVersionInfo.GetVersionInfo(Path.GetFullPath(assembly.Location)).FileVersion);
-        }
+        public static Version GetVersion(this Assembly assembly) => Version.Parse(FileVersionInfo.GetVersionInfo(Path.GetFullPath(assembly.Location)).FileVersion);
 
         /// <summary>
         /// Checks if the input string is valid Json data using JToken
@@ -43,10 +40,7 @@ namespace LightVPN.Common
                 var obj = JsonSerializer.Deserialize<T>(strInput);
                 return true;
             }
-            catch (JsonException)
-            {
-                return false;
-            }
+            catch (JsonException) { return false; }
         }
 
         /// <summary>

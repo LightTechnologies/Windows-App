@@ -125,14 +125,8 @@ namespace LightVPN.Discord
             _client.Invoke();
         }
 
-        private void Rpc_OnError(object sender, ErrorMessage args)
-        {
-            throw new RpcException($"[{args.Type}] {args.Message} ({args.Code})");
-        }
+        private void Rpc_OnError(object sender, ErrorMessage args) => throw new RpcException($"[{args.Type}] {args.Message} ({args.Code})");
 
-        private void Rpc_Ready(object sender, ReadyMessage args)
-        {
-            Debug.WriteLine($"DiscordRpc ready for {args.User.Username}#{args.User.Discriminator}");
-        }
+        private void Rpc_Ready(object sender, ReadyMessage args) => Debug.WriteLine($"DiscordRpc ready for {args.User.Username}#{args.User.Discriminator}");
     }
 }

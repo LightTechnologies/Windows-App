@@ -27,9 +27,7 @@ namespace LightVPN.Common
         public static void DisableRunOnStartup()
         {
             if (IsRunningOnStartup())
-            {
                 _regKey.DeleteValue("LightVPN", true);
-            }
         }
 
         /// <summary>
@@ -39,9 +37,7 @@ namespace LightVPN.Common
         public static void EnableRunOnStartup()
         {
             if (!IsRunningOnStartup())
-            {
                 _regKey.SetValue("LightVPN", Process.GetCurrentProcess().MainModule.FileName, RegistryValueKind.String);
-            }
         }
 
         /// <summary>
@@ -49,11 +45,6 @@ namespace LightVPN.Common
         /// </summary>
         /// <returns>True or false value whether the client is configured or not</returns>
         [SupportedOSPlatform("windows")]
-        public static bool IsRunningOnStartup()
-        {
-            var subKey = _regKey.GetValue("LightVPN");
-            if (subKey is null) return false;
-            return true;
-        }
+        public static bool IsRunningOnStartup() => _regKey.GetValue("LightVPN") != null;
     }
 }

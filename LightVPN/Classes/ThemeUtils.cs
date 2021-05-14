@@ -40,17 +40,14 @@ namespace LightVPN
                     ResourceDictionaryExtensions.SetTheme(Application.Current.Resources, defaultTheme);
                     return;
                 }
-                Color pColor = (Color)ColorConverter.ConvertFromString(primaryColor);
-                Color sColor = (Color)ColorConverter.ConvertFromString(secondaryColor);
-                ITheme theme = Theme.Create(baseTheme, pColor, sColor);
-                ResourceDictionaryExtensions.SetTheme(Application.Current.Resources, theme);
+                Color pColor = (Color)ColorConverter.ConvertFromString(primaryColor), sColor = (Color)ColorConverter.ConvertFromString(secondaryColor);
+                ResourceDictionaryExtensions.SetTheme(Application.Current.Resources, Theme.Create(baseTheme, pColor, sColor));
             }
             catch (Exception e)
             {
                 logger.Write(e.ToString());
                 MessageBox.Show("Something went wrong when processing theme settings, please report this exception, and the log file to LightVPN support.", "LightVPN", MessageBoxButton.OK, MessageBoxImage.Error);
                 Environment.Exit(0);
-                return;
             }
         }
     }

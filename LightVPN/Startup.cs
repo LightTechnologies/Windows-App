@@ -46,8 +46,6 @@ namespace LightVPN
         [STAThread]
         public static void Main()
         {
-        //Test Contribution!!!
-        //TEST
             logger.Write($"LightVPN Windows Client [version {Assembly.GetEntryAssembly().GetName().Version}]");
             /* https://stackoverflow.com/questions/229565/what-is-a-good-pattern-for-using-a-global-mutex-in-c/229567 */
 
@@ -79,11 +77,7 @@ namespace LightVPN
                     UseProxy = false,
                     ServerCertificateCustomValidationCallback = (sender, cert, chain, error) =>
                     {
-                        if (!cert.Issuer.ToLower().Contains("cloudflare") || error != System.Net.Security.SslPolicyErrors.None)
-                        {
-                            return false;
-                        }
-                        return true;
+                        return cert.Issuer.ToLower().Contains("cloudflare") || error != System.Net.Security.SslPolicyErrors.None;
                     },
                 };
                 var httpClient = new HttpClient();

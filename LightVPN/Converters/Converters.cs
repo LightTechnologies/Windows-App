@@ -43,10 +43,7 @@ namespace LightVPN.Converters
             };
         }
 
-        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
-        {
-            throw new NotImplementedException();
-        }
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture) => throw new NotImplementedException();
     }
 
     /* Source: https://brianlagunas.com/a-better-way-to-data-bind-enums-in-wpf/ */
@@ -69,22 +66,17 @@ namespace LightVPN.Converters
         /// <returns></returns>
         public override object ConvertTo(ITypeDescriptorContext context, CultureInfo culture, object value, Type destinationType)
         {
-            if (destinationType == typeof(string))
+            if (destinationType != typeof(string)) return base.ConvertTo(context, culture, value, destinationType);
+            if (value != null)
             {
-                if (value != null)
+                FieldInfo fi = value.GetType().GetField(value.ToString());
+                if (fi != null)
                 {
-                    FieldInfo fi = value.GetType().GetField(value.ToString());
-                    if (fi != null)
-                    {
-                        var attributes = (DescriptionAttribute[])fi.GetCustomAttributes(typeof(DescriptionAttribute), false);
-                        return ((attributes.Length > 0) && (!string.IsNullOrEmpty(attributes[0].Description))) ? attributes[0].Description : value.ToString();
-                    }
+                    var attributes = (DescriptionAttribute[])fi.GetCustomAttributes(typeof(DescriptionAttribute), false);
+                    return ((attributes.Length > 0) && (!string.IsNullOrEmpty(attributes[0].Description))) ? attributes[0].Description : value.ToString();
                 }
-
-                return string.Empty;
             }
-
-            return base.ConvertTo(context, culture, value, destinationType);
+            return string.Empty;
         }
     }
 
@@ -118,10 +110,6 @@ namespace LightVPN.Converters
         /// <param name="parameter"></param>
         /// <param name="culture"></param>
         /// <returns>The boolean with it's original value</returns>
-        public object ConvertBack(object value, Type targetType, object parameter,
-            CultureInfo culture)
-        {
-            throw new NotSupportedException();
-        }
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture) => throw new NotSupportedException();
     }
 }

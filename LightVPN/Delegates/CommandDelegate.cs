@@ -12,10 +12,7 @@ namespace LightVPN.Delegates
         public Action<object> CommandAction { get; set; }
         public Func<bool> CanExecuteFunc { get; set; }
 
-        public void Execute(object parameter)
-        {
-            CommandAction(parameter);
-        }
+        public void Execute(object parameter) => CommandAction(parameter);
 
         public bool CanExecute(object parameter)
         {
