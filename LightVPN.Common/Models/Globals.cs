@@ -13,6 +13,7 @@
 using SimpleInjector;
 using System;
 using System.IO;
+using System.Runtime.Versioning;
 
 namespace LightVPN.Common.Models
 {
@@ -35,6 +36,19 @@ namespace LightVPN.Common.Models
         public static readonly string OpenVpnPath = Path.Combine(SettingsPath, "ovpn");
 
         public static readonly string SettingsFile = Path.Combine(SettingsPath, "config.bin");
+
+        // This is so it saves settings in the users home folder (THESE VARS ARE FOR LINUX CLI USE)
+        public static readonly string LinuxSettingsPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), ".lvpn");
+
+        public static readonly string LinuxAuthPath = Path.Combine(LinuxSettingsPath, "auth.bin");
+
+        public static Guid LinuxSessionId = Guid.Empty;
+
+        public static readonly string LinuxConfigPath = Path.Combine(LinuxSettingsPath, "cache");
+
+        public static readonly string LinuxOpenVpnDriversPath = Path.Combine(LinuxSettingsPath, "drivers");
+
+        public static readonly string LinuxOpenVpnPath = Path.Combine(LinuxSettingsPath, "ovpn");
 
         public static bool IsMinimizedToTray;
     }

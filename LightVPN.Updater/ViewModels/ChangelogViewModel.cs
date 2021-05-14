@@ -42,39 +42,33 @@ namespace LightVPN.Updater.ViewModels
             }
         }
 
-        public ICommand LoadCommand
+        public ICommand LoadCommand => new CommandDelegate()
         {
-            get
+            CommandAction = async () =>
             {
-                return new CommandDelegate()
+                _timer.Elapsed += Elapsed;
+                _timer.Interval = 1000;
+                _timer.Start();
+
+                var httpClientHandler = new HttpClientHandler
                 {
-                    CommandAction = async () =>
+                    Proxy = null,
+                    UseProxy = false,
+                    ServerCertificateCustomValidationCallback = (sender, cert, chain, error) =>
                     {
-                        _timer.Elapsed += Elapsed;
-                        _timer.Interval = 1000;
-                        _timer.Start();
-
-                        var httpClientHandler = new HttpClientHandler
+                        if (!cert.Issuer.ToLower().Contains("cloudflare") || error != System.Net.Security.SslPolicyErrors.None)
                         {
-                            Proxy = null,
-                            UseProxy = false,
-                            ServerCertificateCustomValidationCallback = (sender, cert, chain, error) =>
-                            {
-                                if (!cert.Issuer.ToLower().Contains("cloudflare") || error != System.Net.Security.SslPolicyErrors.None)
-                                {
-                                    return false;
-                                }
-                                return true;
-                            },
-                        };
-
-                        var auth = new Http(new ApiHttpClient(httpClientHandler));
-
-                        Changelog = await auth.GetChangelogAsync();
-                    }
+                            return false;
+                        }
+                        return true;
+                    },
                 };
+
+                var auth = new Http(new ApiHttpClient(httpClientHandler), System.PlatformID.Win32NT);
+
+                Changelog = await auth.GetChangelogAsync();
             }
-        }
+        };
 
         public ICommand NextPageCommand
         {

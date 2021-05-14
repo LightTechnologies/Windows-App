@@ -14,11 +14,11 @@ using LightVPN.Settings.Exceptions;
 using LightVPN.Settings.Interfaces;
 using LightVPN.ViewModels.Base;
 using LightVPN.Windows;
-using Newtonsoft.Json;
 using System;
 using System.ComponentModel;
 using System.IO;
 using System.Net.Http;
+using System.Text.Json;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
@@ -76,7 +76,7 @@ namespace LightVPN.ViewModels
                         {
                             try
                             {
-                                var auth = JsonConvert.DeserializeObject<AuthFile>(Encryption.Decrypt(File.ReadAllText(Globals.AuthPath)));
+                                var auth = JsonSerializer.Deserialize<AuthFile>(Encryption.Decrypt(File.ReadAllText(Globals.AuthPath)));
                                 UserName = auth.Username;
                                 Password = auth.Password;
                                 if (auth.SessionId != default)
@@ -234,7 +234,7 @@ namespace LightVPN.ViewModels
 
                 if (!isSessionAuth)
                 {
-                    await File.WriteAllTextAsync(Globals.AuthPath, Encryption.Encrypt(JsonConvert.SerializeObject(new AuthFile { Username = UserName, Password = Password, SessionId = authResponse.SessionId })));
+                    await File.WriteAllTextAsync(Globals.AuthPath, Encryption.Encrypt(JsonSerializer.Serialize(new AuthFile { Username = UserName, Password = Password, SessionId = authResponse.SessionId })));
                 }
 
                 if (!Http.IsConfigsCached())

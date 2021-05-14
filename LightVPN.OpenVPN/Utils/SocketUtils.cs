@@ -37,8 +37,6 @@ namespace LightVPN.OpenVPN.Utils
             var sock = new Socket(endPoint.AddressFamily,
                         SocketType.Stream, ProtocolType.Tcp);
 
-            sock.SetIPProtectionLevel(IPProtectionLevel.Restricted);
-
             return sock;
         }
 

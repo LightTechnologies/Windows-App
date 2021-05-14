@@ -16,6 +16,7 @@ using Microsoft.Win32;
 
 namespace LightVPN.Common
 {
+    [SupportedOSPlatform("windows")]
     public static class Native
     {
         private static readonly RegistryKey _regKey = Registry.CurrentUser.OpenSubKey(@"SOFTWARE\Microsoft\Windows\CurrentVersion\Run", true);
@@ -23,7 +24,6 @@ namespace LightVPN.Common
         /// <summary>
         /// Disables the LightVPN client to run on startup
         /// </summary>
-        [SupportedOSPlatform("windows")]
         public static void DisableRunOnStartup()
         {
             if (IsRunningOnStartup())
@@ -35,7 +35,6 @@ namespace LightVPN.Common
         /// <summary>
         /// Enables the LightVPN client to run on startup via the registry
         /// </summary>
-        [SupportedOSPlatform("windows")]
         public static void EnableRunOnStartup()
         {
             if (!IsRunningOnStartup())
@@ -48,12 +47,6 @@ namespace LightVPN.Common
         /// Checks whether the LightVPN client is configured to run on startup
         /// </summary>
         /// <returns>True or false value whether the client is configured or not</returns>
-        [SupportedOSPlatform("windows")]
-        public static bool IsRunningOnStartup()
-        {
-            var subKey = _regKey.GetValue("LightVPN");
-            if (subKey is null) return false;
-            return true;
-        }
+        public static bool IsRunningOnStartup() => _regKey.GetValue("LightVPN") is not null;
     }
 }

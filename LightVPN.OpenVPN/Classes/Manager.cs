@@ -22,6 +22,7 @@ using System.IO;
 using System.Linq;
 using System.Net;
 using System.Net.Sockets;
+using System.Runtime.Versioning;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -48,11 +49,13 @@ namespace LightVPN.OpenVPN
 
         private ushort _retryCount;
 
+        private PlatformID _platform;
+
         /// <summary>
         /// Constructs the OpenVPN manager class
         /// </summary>
-        /// <param name="openVpnExeFileName">Path to the OpenVPN binary</param>
-        public Manager(string openVpnExeFileName = @"C:\Program Files\OpenVPN\bin\openvpn.exe")
+        /// <param name="openVpnExeFileName">Path to the OpenVPN binary (if the platform is Linux make sure it's /usr/bin/openvpn or whereever the binary is located at)</param>
+        public Manager(string openVpnExeFileName = @"C:\Program Files\OpenVPN\bin\openvpn.exe", PlatformID platform = PlatformID.Win32NT)
         {
             try
             {
@@ -65,6 +68,7 @@ namespace LightVPN.OpenVPN
             catch
             {
             }
+            _platform = platform;
             _ovpnPath = openVpnExeFileName;
             IsDisposed = false;
         }
@@ -138,6 +142,16 @@ namespace LightVPN.OpenVPN
             _config = configpath;
             RunOpenVpnProcess(_ovpnPath);
             IsConnected = true;
+        }
+
+        /// <summary>
+        /// Gets the connection state via the management socket (this should only be used on Linux)
+        /// </summary>
+        /// <returns>True if the connection is successful (OpenVPN is connected) false otherwise.</returns>
+        public async Task<bool> GetConnectionState()
+        {
+            await ConnectToManagementServerAsync();
+            return _managementSocket.Connected;
         }
 
         /// <summary>
@@ -385,13 +399,11 @@ namespace LightVPN.OpenVPN
         private void RunOpenVpnProcess(string ovpn)
         {
             ManagementPort = SocketUtils.GetAvailablePort(30000);
-            _errorLogger.Write($"(Manager/RunOpenVpnProcess) Got available port; {ManagementPort}");
-            _errorLogger.Write("(Manager/RunOpenVpnProcess) Configuring and booting OpenVPN CLI...");
 
             _ovpnProcess.StartInfo = new()
             {
                 CreateNoWindow = true,
-                Arguments = $"--config \"{_config}\" --register-dns --dev-node LightVPN-TAP --management 127.0.0.1 {ManagementPort}",
+                Arguments = _platform == PlatformID.Win32NT ? $"--config \"{_config}\" --register-dns --dev-node LightVPN-TAP --management 127.0.0.1 {ManagementPort}" : $"--config \"{_config}\" --register-dns --management 127.0.0.1 {ManagementPort}",
                 FileName = _ovpnPath,
                 WindowStyle = ProcessWindowStyle.Hidden,
                 WorkingDirectory = Path.GetDirectoryName(ovpn),
@@ -404,11 +416,12 @@ namespace LightVPN.OpenVPN
             _ovpnProcess.OutputDataReceived += OutputDataReceived;
             _ovpnProcess.ErrorDataReceived += ErrorDataReceived;
             _ovpnProcess.Start();
-            _errorLogger.Write("(Manager/RunOpenVpnProcess) Booted!");
             _ovpnProcess.BeginOutputReadLine();
             _ovpnProcess.BeginErrorReadLine();
-            ChildProcessTracker.AddProcess(_ovpnProcess);
-            _errorLogger.Write("(Manager/RunOpenVpnProcess) Redirected stdout && added to ChildProcessTracker");
+            if (_platform == PlatformID.Win32NT)
+            {
+                ChildProcessTracker.AddProcess(_ovpnProcess);
+            }
         }
 
         /// <summary>

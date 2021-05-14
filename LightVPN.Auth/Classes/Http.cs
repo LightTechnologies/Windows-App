@@ -14,19 +14,13 @@ using LightVPN.Auth.Exceptions;
 using LightVPN.Auth.Interfaces;
 using LightVPN.Auth.Models;
 using LightVPN.Common.Models;
-using LightVPN.FileLogger;
-using LightVPN.FileLogger.Base;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.IO.Compression;
 using System.Linq;
-using System.Net;
-using System.Net.Http;
 using System.Reflection;
-using System.Text;
-using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -40,17 +34,36 @@ namespace LightVPN.Auth
 
         private readonly ApiHttpClient _apiclient;
 
-        private readonly FileLoggerBase _logger = new ErrorLogger();
+        private static PlatformID _platform;
+
+        private readonly string ConfigPath;
+
+        private readonly string OpenVpnPath;
+
+        private readonly string OpenVpnDriversPath;
 
         /// <summary>
         /// Initalizes the class
         /// </summary>
         /// <param name="client">The instance of HttpClient the class will use</param>
-        public Http(ApiHttpClient checkingClient)
+        public Http(ApiHttpClient checkingClient, PlatformID platformID)
         {
             _apiclient = checkingClient;
-            checkingClient.DefaultRequestHeaders.TryAddWithoutValidation("X-Client-Version", $"Windows {Assembly.GetEntryAssembly().GetName().Version}");
-            _logger.Write("(Http/ctor) Set request headers");
+            _platform = platformID;
+            if (platformID == PlatformID.Unix)
+            {
+                checkingClient.DefaultRequestHeaders.TryAddWithoutValidation("X-Client-Version", $"Linux {Assembly.GetEntryAssembly().GetName().Version}");
+                ConfigPath = Globals.LinuxConfigPath;
+                OpenVpnPath = Globals.LinuxOpenVpnPath;
+                OpenVpnDriversPath = Globals.LinuxOpenVpnDriversPath;
+            }
+            else if (platformID == PlatformID.Win32NT)
+            {
+                checkingClient.DefaultRequestHeaders.TryAddWithoutValidation("X-Client-Version", $"Windows {Assembly.GetEntryAssembly().GetName().Version}");
+                ConfigPath = Globals.ConfigPath;
+                OpenVpnDriversPath = Globals.OpenVpnDriversPath;
+                OpenVpnPath = Globals.OpenVpnPath;
+            }
         }
 
         /// <summary>
@@ -59,7 +72,7 @@ namespace LightVPN.Auth
         /// <returns>True if they are, false otherwise</returns>
         public static bool HasOpenVpn()
         {
-            return Directory.Exists(Globals.OpenVpnPath) || File.Exists(Path.Combine(Globals.OpenVpnPath, "openvpn.exe"));
+            return Directory.Exists(_platform == PlatformID.Unix ? Globals.LinuxOpenVpnPath : Globals.OpenVpnPath) || File.Exists(Path.Combine(_platform == PlatformID.Unix ? Globals.LinuxOpenVpnPath : Globals.OpenVpnPath, "openvpn.exe"));
         }
 
         /// <summary>
@@ -68,7 +81,7 @@ namespace LightVPN.Auth
         /// <returns>True if they are, false otherwise</returns>
         public static bool IsConfigsCached()
         {
-            return Directory.Exists(Globals.ConfigPath) && Directory.EnumerateFiles(Globals.ConfigPath).Any();
+            return Directory.Exists(_platform == PlatformID.Unix ? Globals.LinuxConfigPath : Globals.ConfigPath) && Directory.EnumerateFiles(_platform == PlatformID.Unix ? Globals.LinuxConfigPath : Globals.ConfigPath).Any();
         }
 
         /// <summary>
@@ -81,25 +94,23 @@ namespace LightVPN.Auth
         /// <returns></returns>
         public async Task CacheConfigsAsync(bool force = false, CancellationToken cancellationToken = default)
         {
-            if (!Directory.Exists(Globals.ConfigPath) || force)
+            if (!Directory.Exists(ConfigPath) || force)
             {
-                _logger.Write("(Http/CacheConfigs) Caching user server config files");
-                if (Directory.Exists(Globals.ConfigPath))
+                if (Directory.Exists(ConfigPath))
                 {
-                    Directory.Delete(Globals.ConfigPath, true);
-                    Directory.CreateDirectory(Globals.ConfigPath);
+                    Directory.Delete(ConfigPath, true);
+                    Directory.CreateDirectory(ConfigPath);
                 }
                 else
                 {
-                    Directory.CreateDirectory(Globals.ConfigPath);
+                    Directory.CreateDirectory(ConfigPath);
                 }
-                var vpnzip = Path.Combine(Globals.ConfigPath, "configs.zip");
+                var vpnzip = Path.Combine(ConfigPath, "configs.zip");
                 var resp = await _apiclient.GetAsync<ConfigResponse>("https://lightvpn.org/api/configs", cancellationToken);
 
-                _logger.Write("(Http/CacheConfigs) Writing cache");
                 await File.WriteAllBytesAsync(vpnzip, Convert.FromBase64String(resp.ConfigArchiveBase64), cancellationToken);
-                ZipFile.ExtractToDirectory(vpnzip, Globals.ConfigPath);
-                foreach (var file in Directory.GetFiles(Globals.ConfigPath))
+                ZipFile.ExtractToDirectory(vpnzip, ConfigPath);
+                foreach (var file in Directory.GetFiles(ConfigPath))
                 {
                     var newfile = new List<string>();
                     var lines = await File.ReadAllLinesAsync(file, cancellationToken);
@@ -121,20 +132,18 @@ namespace LightVPN.Auth
         /// <returns></returns>
         public async Task FetchOpenVpnDriversAsync(CancellationToken cancellationToken = default)
         {
-            _logger.Write("(Http/FetchOpenVpnDrivers) Downloading the TAP drivers");
-            if (Directory.Exists(Globals.OpenVpnDriversPath))
+            if (Directory.Exists(OpenVpnDriversPath))
             {
-                Directory.Delete(Globals.OpenVpnDriversPath, true);
+                Directory.Delete(OpenVpnDriversPath, true);
             }
-            Directory.CreateDirectory(Globals.OpenVpnDriversPath);
+            Directory.CreateDirectory(OpenVpnDriversPath);
             var resp = await _apiclient.GetAsync($"https://lightvpn.org/api/download/drivers", cancellationToken);
 
             await _apiclient.CheckResponseAsync(resp, cancellationToken);
 
-            _logger.Write("(Http/FetchOpenVpnDrivers) Installing the TAP drivers");
-            await File.WriteAllBytesAsync(Path.Combine(Globals.OpenVpnDriversPath, "drivers.zip"), await resp.Content.ReadAsByteArrayAsync(cancellationToken), cancellationToken);
-            ZipFile.ExtractToDirectory(Path.Combine(Globals.OpenVpnDriversPath, "drivers.zip"), Globals.OpenVpnDriversPath);
-            File.Delete(Path.Combine(Globals.OpenVpnDriversPath, "drivers.zip"));
+            await File.WriteAllBytesAsync(Path.Combine(OpenVpnDriversPath, "drivers.zip"), await resp.Content.ReadAsByteArrayAsync(cancellationToken), cancellationToken);
+            ZipFile.ExtractToDirectory(Path.Combine(OpenVpnDriversPath, "drivers.zip"), OpenVpnDriversPath);
+            File.Delete(Path.Combine(OpenVpnDriversPath, "drivers.zip"));
         }
 
         /// <summary>
@@ -157,21 +166,19 @@ namespace LightVPN.Auth
         {
             try
             {
-                if (!Directory.Exists(Globals.OpenVpnPath) || !File.Exists(Path.Combine(Globals.OpenVpnPath, "openvpn.exe")))
+                if (!Directory.Exists(OpenVpnPath) || !File.Exists(Path.Combine(OpenVpnPath, "openvpn.exe")))
                 {
-                    _logger.Write("(Http/GetOpenVpnBinaries) Downloading OpenVPN binaries");
-                    var vpnzip = Path.Combine(Globals.ConfigPath, "openvpn.zip");
-                    Directory.CreateDirectory(Globals.OpenVpnPath);
+                    var vpnzip = Path.Combine(ConfigPath, "openvpn.zip");
+                    Directory.CreateDirectory(OpenVpnPath);
                     var resp = await _apiclient.GetByteArrayAsync($"https://lightvpn.org/api/download/ovpn", cancellationToken);
 
                     await File.WriteAllBytesAsync(vpnzip, resp, cancellationToken);
-                    ZipFile.ExtractToDirectory(vpnzip, Globals.OpenVpnPath);
+                    ZipFile.ExtractToDirectory(vpnzip, OpenVpnPath);
                     File.Delete(vpnzip);
                     return true;
                 }
                 else
                 {
-                    _logger.Write("(Http/GetOpenVpnBinaries) Binaries are already existant, continue");
                     return true;
                 }
             }
@@ -191,14 +198,12 @@ namespace LightVPN.Auth
             // fixed it
             if (DateTime.Now < _lastRetrieved.AddHours(1))
             {
-                _logger.Write("(Http/GetServers) Cache renew time hasn't passed, returning cached servers");
                 return _servers;
             }
 
             _servers = await _apiclient.GetAsync<HashSet<Server>>("https://lightvpn.org/api/servers", cancellationToken);
 
             _lastRetrieved = DateTime.Now;
-            _logger.Write("(Http/GetServers) Cached servers in memory");
             return _servers;
         }
 
@@ -209,7 +214,8 @@ namespace LightVPN.Auth
         /// <returns></returns>
         public async Task GetUpdatesAsync(CancellationToken cancellationToken = default)
         {
-            _logger.Write("(Http/GetUpdates) Downloading the updater");
+            if (_platform == PlatformID.Unix) throw new InvalidOperationException("This method is only callable on Windows platforms");
+
             var updaterPath = Path.Combine(Path.GetTempPath(), "LightVPNUpdater.exe");
             var fileBytes = await _apiclient.GetByteArrayAsync("https://lightvpn.org/api/download/updater", cancellationToken);
             await File.WriteAllBytesAsync(updaterPath, fileBytes, cancellationToken);
@@ -236,7 +242,6 @@ namespace LightVPN.Auth
         /// <returns>AuthResponse object which can be null</returns>
         public async Task<AuthResponse> LoginAsync(string username, string password, CancellationToken cancellationToken = default)
         {
-            _logger.Write("(Http/Login) Authenticating user");
             var model = new { username, password };
             var response = await _apiclient.PostAsync<AuthResponse>("https://lightvpn.org/api/auth", model, cancellationToken);
             AssignAuthHeader(username, response.SessionId);
@@ -265,12 +270,10 @@ namespace LightVPN.Auth
 
             if (resp.IsSuccessStatusCode)
             {
-                _logger.Write("(Http/ValidateSession) Session seems to be valid");
                 return true;
             }
             else
             {
-                _logger.Write("(Http/ValidateSession) Session was invalid, removing references");
                 _apiclient.DefaultRequestHeaders.Remove("Authorization");
                 return false;
             }

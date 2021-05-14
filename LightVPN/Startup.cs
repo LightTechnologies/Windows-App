@@ -93,7 +93,7 @@ namespace LightVPN
                 Globals.Container.Register<IDiscordRpc, DiscordRpc>(Lifestyle.Singleton);
                 Globals.Container.Register(() => httpClient, Lifestyle.Singleton);
                 Globals.Container.Register<ApiHttpClient>(Lifestyle.Singleton);
-                Globals.Container.Register<IHttp, Http>(Lifestyle.Singleton);
+                Globals.Container.Register<IHttp>(() => new Http(new ApiHttpClient(httpClientHandler), PlatformID.Win32NT), Lifestyle.Singleton);
                 Globals.Container.Register<ITapManager>(() => new TapManager(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "LightVPN", "ovpn", "tapctl.exe")), Lifestyle.Singleton);
                 Globals.Container.Register<IManager>(() => new Manager(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "LightVPN", "ovpn", "openvpn.exe")), Lifestyle.Singleton);
                 Globals.Container.Register(() => new DiscordRpcClient("833767448041226301"), Lifestyle.Singleton);
@@ -148,10 +148,10 @@ namespace LightVPN
                 e.ToExceptionless().Submit();
 
                 //else
-                MessageBox.Show($"An exception has occurred. It has been written to the log file and uploaded to the server, please open an issue on GitHub with the log file attached so the developers can resolve the issue.", "LightVPN", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show($"Something has gone wrong. The issue has been dumped to the error log file. Please open a support ticket via the LightVPN website containing the error log for assistance with this issue.", "LightVPN", MessageBoxButton.OK, MessageBoxImage.Error);
 
                 logger.Write(e.ToString());
-                Environment.Exit(0);
+                return;
             }
             finally
             {
