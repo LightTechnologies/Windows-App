@@ -16,6 +16,7 @@ using LightVPN.FileLogger;
 using LightVPN.FileLogger.Base;
 using LightVPN.OpenVPN.Interfaces;
 using LightVPN.OpenVPN.Utils;
+using LightVPN.OpenVPN.Utils.Linux;
 using System;
 using System.Diagnostics;
 using System.IO;
@@ -400,10 +401,16 @@ namespace LightVPN.OpenVPN
         {
             ManagementPort = SocketUtils.GetAvailablePort(30000);
 
+            // Patch OpenVPN on Linux, we use OperatingSystem instead of pLatform because of debugging.
+            if (OperatingSystem.IsLinux() && !DnsLeakPatcher.IsDnsLeaksPatched())
+            {
+                DnsLeakPatcher.PatchDnsLeaksAsync();
+            }
+
             _ovpnProcess.StartInfo = new()
             {
                 CreateNoWindow = true,
-                Arguments = _platform == PlatformID.Win32NT ? $"--config \"{_config}\" --register-dns --dev-node LightVPN-TAP --management 127.0.0.1 {ManagementPort}" : $"--config \"{_config}\" --register-dns --management 127.0.0.1 {ManagementPort}",
+                Arguments = _platform == PlatformID.Win32NT ? $"--config \"{_config}\" --register-dns {(_platform == PlatformID.Unix ? "" : "--dev-node LightVPN-TAP")} --management 127.0.0.1 {ManagementPort}" : $"--config \"{_config}\" --register-dns --management 127.0.0.1 {ManagementPort}",
                 FileName = _ovpnPath,
                 WindowStyle = ProcessWindowStyle.Hidden,
                 WorkingDirectory = Path.GetDirectoryName(ovpn),

@@ -117,6 +117,7 @@ namespace LightVPN.Auth
                     foreach (var line in lines)
                     {
                         if (line.Contains("udp6")) continue;
+                        if (_platform == PlatformID.Unix && line.Contains("block-outside-dns")) continue;
                         newfile.Add(line);
                     }
                     await File.WriteAllLinesAsync(file, newfile, cancellationToken);
