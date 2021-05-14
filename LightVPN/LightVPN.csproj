@@ -5,7 +5,7 @@
 		<TargetFramework>net5.0-windows</TargetFramework>
 		<UseWPF>true</UseWPF>
 		<StartupObject>LightVPN.Startup</StartupObject>
-		<SignAssembly>true</SignAssembly>
+		<SignAssembly>false</SignAssembly>
 		<DelaySign>false</DelaySign>
 		<AssemblyOriginatorKeyFile>LightTechnologiesSnk.pfx</AssemblyOriginatorKeyFile>
 		<EnforceCodeStyleInBuild>true</EnforceCodeStyleInBuild>

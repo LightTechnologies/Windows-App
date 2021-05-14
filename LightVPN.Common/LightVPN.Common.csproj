@@ -2,7 +2,7 @@
 
 	<PropertyGroup>
 		<TargetFramework>net5.0-windows7.0</TargetFramework>
-		<SignAssembly>true</SignAssembly>
+		<SignAssembly>false</SignAssembly>
 		<AssemblyOriginatorKeyFile>LightTechnologiesSnk.pfx</AssemblyOriginatorKeyFile>
 		<Authors>Light Technologies, LLC</Authors>
 		<Product>LightVPN Windows Client</Product>

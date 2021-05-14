@@ -25,12 +25,9 @@ namespace LightVPN.OpenVPN
         [Obsolete("Use the TAP Manager class instead")]
         public static bool IsTAPInstalled()
         {
-            if (NetworkInterface.GetIsNetworkAvailable())
-            {
-                NetworkInterface[] interfaces = NetworkInterface.GetAllNetworkInterfaces();
-                return interfaces.Any(x => x.Description.Contains("TAP-Windows Adapter"));
-            }
-            return false;
+            if (!NetworkInterface.GetIsNetworkAvailable()) return false;
+            NetworkInterface[] interfaces = NetworkInterface.GetAllNetworkInterfaces();
+            return interfaces.Any(x => x.Description.Contains("TAP-Windows Adapter"));
         }
     }
 }

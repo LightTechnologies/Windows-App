@@ -77,19 +77,9 @@ namespace LightVPN.ViewModels
                 {
                     CommandAction = async (args) =>
                     {
-                        if (ConnectionState == ConnectionState.Connecting) return;
-                        if (ConnectionState == ConnectionState.Connected)
-                        {
-                            await DisconnectAsync();
-                        }
-
-                        if (args is not ServersModel serversModel)
-                        {
-                            return;
-                        }
-
+                        if (ConnectionState == ConnectionState.Connecting || (args is not ServersModel serversModel)) return;
+                        if (ConnectionState == ConnectionState.Connected) await DisconnectAsync();
                         SaveServer(serversModel.Id, serversModel.ServerName, serversModel.Type);
-
                         await ConnectAsync(serversModel.Id);
                     },
                     CanExecuteFunc = () => ConnectionState != ConnectionState.Connecting
@@ -139,7 +129,6 @@ namespace LightVPN.ViewModels
                     CommandAction = async (args) =>
                     {
                         Servers.Clear();
-
                         var settings = Globals.Container.GetInstance<ISettingsManager<SettingsModel>>().Load();
 
                         var servers = await Globals.Container.GetInstance<IHttp>().GetServersAsync(_cancellationToken.Token);
@@ -156,10 +145,7 @@ namespace LightVPN.ViewModels
                                 Flag = $"pack://application:,,,/LightVPN;Component/Resources/Flags/{server.CountryName.Replace(' ', '-')}.png"
                             });
 
-                            if (settings.AutoConnect && settings.PreviousServer?.Id is not null)
-                            {
-                                await ConnectAsync(settings.PreviousServer?.Id);
-                            }
+                            if (settings.AutoConnect && settings.PreviousServer?.Id is not null) await ConnectAsync(settings.PreviousServer?.Id);
                         }
                     }
                 };
@@ -198,6 +184,8 @@ namespace LightVPN.ViewModels
             GC.SuppressFinalize(this);
         }
 
+        //Should probably move this but i just cant be fucked 
+        private string[] ConfigFiles { get { return Directory.GetFiles(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "LightVPN", "cache")); } }
         internal async Task ConnectAsync(string serverName)
         {
             if (_manager.IsConnected || ConnectionState == ConnectionState.Connecting) return;
@@ -209,17 +197,11 @@ namespace LightVPN.ViewModels
             {
                 // This processes and finds the config on the filesystem
                 string ovpnFn = string.Empty;
-                var files = Directory.GetFiles(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "LightVPN", "cache"));
 
-                if (!files.Any(x => x.Contains(serverName)))
-                {
-                    // Config wasn't found, so instead we re-cache the configs to hope that the
-                    // server has the new config
+                if (!ConfigFiles.Any(x => x.Contains(serverName))) 
                     await Globals.Container.GetInstance<IHttp>().CacheConfigsAsync(true, _cancellationToken.Token);
-                    files = Directory.GetFiles(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "LightVPN", "cache"));
-                }
 
-                ovpnFn = files.First(x => x.Contains(serverName));
+                ovpnFn = ConfigFiles.First(x => x.Contains(serverName));
 
                 if (string.IsNullOrWhiteSpace(ovpnFn))
                 {
@@ -227,10 +209,8 @@ namespace LightVPN.ViewModels
                     return;
                 }
 
-                if (Globals.Container.GetInstance<ISettingsManager<SettingsModel>>().Load().DiscordRpc)
-                {
+                if (Globals.Container.GetInstance<ISettingsManager<SettingsModel>>().Load().DiscordRpc) 
                     Globals.Container.GetInstance<IDiscordRpc>().UpdateState("Connecting...");
-                }
 
                 _manager.Connect(ovpnFn);
             }
@@ -403,11 +383,9 @@ namespace LightVPN.ViewModels
             private void OnPropertyChanged(string propertyName)
             {
                 var saved = PropertyChanged;
-                if (saved != null)
-                {
-                    var e = new PropertyChangedEventArgs(propertyName);
-                    saved(this, e);
-                }
+                if (saved == null) return;
+                var e = new PropertyChangedEventArgs(propertyName);
+                saved(this, e);
             }
         }
     }
