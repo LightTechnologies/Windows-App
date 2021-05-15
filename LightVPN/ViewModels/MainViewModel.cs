@@ -235,7 +235,7 @@ namespace LightVPN.ViewModels
                     Globals.Container.GetInstance<IDiscordRpc>().UpdateState("Connecting...");
                 }
 
-                _manager.Connect(ovpnFn);
+                await _manager.ConnectAsync(ovpnFn);
             }
             catch (InvalidOperationException e)
             {

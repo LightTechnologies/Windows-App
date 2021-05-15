@@ -147,11 +147,11 @@ namespace LightVPN.OpenVPN
         /// Connects to the specified OpenVPN config file
         /// </summary>
         /// <param name="configpath">Path to the configuration file</param>
-        public void Connect(string configpath)
+        public async Task ConnectAsync(string configpath)
         {
             if (IsConnected) throw new Exception("Already connected to the VPN");
             _config = configpath;
-            RunOpenVpnProcess(_ovpnPath);
+            await RunOpenVpnProcessAsync(_ovpnPath);
             IsConnected = true;
         }
 
@@ -221,7 +221,7 @@ namespace LightVPN.OpenVPN
 
                 ReinstallTap();
 
-                Connect(_config);
+                await ConnectAsync(_config);
                 return;
             }
             else
@@ -232,7 +232,7 @@ namespace LightVPN.OpenVPN
 
                 await RefetchConfigsAsync(cancellationToken);
 
-                Connect(_config);
+                await ConnectAsync(_config);
                 return;
             }
         }

@@ -30,7 +30,7 @@ namespace LightVPN.OpenVPN.Interfaces
 
         bool IsDisposed { get; }
 
-        void Connect(string configpath);
+        Task ConnectAsync(string configpath);
 
         void Disconnect();
 
