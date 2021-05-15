@@ -9,18 +9,26 @@ using System.Windows.Controls;
 
 namespace LightVPN.Validators
 {
-    public class AccountIdValidator : ValidationRule, IDisposable
+    /// <summary>
+    /// Validates an account ID
+    /// </summary>
+    public class AccountIdValidator : ValidationRule
     {
-        private Regex _regex = new("^[a-zA-Z0-9-]+$", RegexOptions.Compiled);
-
-        public void Dispose()
-        {
-            _regex = null;
-            GC.SuppressFinalize(this);
-        }
-
+        /// <summary>
+        /// Compiled regex that we match with the input string
+        /// </summary>
+        private readonly Regex _regex = new("^[a-zA-Z0-9-]+$", RegexOptions.Compiled);
+        /// <summary>
+        /// Validates the input object
+        /// </summary>
+        /// <param name="value">The object you wish to validate, it must be a string</param>
+        /// <param name="cultureInfo"></param>
+        /// <returns>A validation result depending on how the validation went</returns>
+        /// <exception cref="ArgumentException"></exception>
         public override ValidationResult Validate(object value, CultureInfo cultureInfo)
         {
+            if (value is not string) throw new ArgumentException("Input must be a string");
+
             if (!_regex.IsMatch(value.ToString()))
             {
                 return new ValidationResult(false, "Please enter a valid account ID");

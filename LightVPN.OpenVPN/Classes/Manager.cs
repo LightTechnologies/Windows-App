@@ -30,6 +30,9 @@ using System.Threading.Tasks;
 
 namespace LightVPN.OpenVPN
 {
+    /// <summary>
+    /// The main OpenVPN manager class, handles connecting, disconnecting and the OpenVPN process as a whole.
+    /// </summary>
     public class Manager : IManager
     {
         private readonly FileLoggerBase _errorLogger = new ErrorLogger();
@@ -55,7 +58,8 @@ namespace LightVPN.OpenVPN
         /// <summary>
         /// Constructs the OpenVPN manager class
         /// </summary>
-        /// <param name="openVpnExeFileName">Path to the OpenVPN binary (if the platform is Linux make sure it's /usr/bin/openvpn or whereever the binary is located at)</param>
+        /// <param name="openVpnExeFileName">Path to the OpenVPN binary (if the platform is Linux make sure it's /usr/bin/openvpn or where-ever the binary is located at)</param>
+        /// <param name="platform">The platform the manager class is working on, depending on this parameter the class will adapt to support the platform</param>
         public Manager(string openVpnExeFileName = @"C:\Program Files\OpenVPN\bin\openvpn.exe", PlatformID platform = PlatformID.Win32NT)
         {
             try
@@ -112,11 +116,17 @@ namespace LightVPN.OpenVPN
 
             Error
         }
-
+        /// <summary>
+        /// Gets the connection state from OpenVPN
+        /// </summary>
         public bool IsConnected { get; private set; }
-
+        /// <summary>
+        /// Whether the class has been disposed or not
+        /// </summary>
         public bool IsDisposed { get; private set; }
-
+        /// <summary>
+        /// The port the management server is running on, this can vary if the port needed is being used by another process
+        /// </summary>
         public ushort ManagementPort
         {
             get
@@ -154,6 +164,15 @@ namespace LightVPN.OpenVPN
             await ConnectToManagementServerAsync();
             return _managementSocket.Connected;
         }
+        /// <summary>
+        /// Stops the system from redirecting OpenVPN's output, this is only really used on the Linux client
+        /// </summary>
+        public void StopStdOutRedirection()
+        {
+            _ = _ovpnProcess ?? throw new ArgumentNullException("The OpenVPN process is null");
+            _ovpnProcess.CancelOutputRead();
+            _ovpnProcess.CancelErrorRead();
+        }
 
         /// <summary>
         /// Disconnects from any VPN currently connected
@@ -179,7 +198,13 @@ namespace LightVPN.OpenVPN
             this.Dispose(true);
             GC.SuppressFinalize(this);
         }
-
+        /// <summary>
+        /// Performs the default troubleshooting steps that we'd normally tell people to do themselves
+        /// </summary>
+        /// <param name="isServerRelated">Whether the issue is related to the VPN server</param>
+        /// <param name="invokationMessage">The message that will pop-up when this method fails to fix the issue</param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
         public async Task PerformAutoTroubleshootAsync(bool isServerRelated, string invokationMessage, CancellationToken cancellationToken = default)
         {
             if (_retryCount >= 1)
@@ -233,12 +258,18 @@ namespace LightVPN.OpenVPN
                 IsDisposed = true;
             }
         }
-
+        /// <summary>
+        /// Refetches the configurations files, this is here to clean the code up a little bit
+        /// </summary>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
         private static async Task RefetchConfigsAsync(CancellationToken cancellationToken = default)
         {
             await Globals.Container.GetInstance<IHttp>().CacheConfigsAsync(true, cancellationToken);
         }
-
+        /// <summary>
+        /// Reinstalls the TAP adapter, this is also here to clean up the code a little bit
+        /// </summary>
         private static void ReinstallTap()
         {
             var instance = Globals.Container.GetInstance<ITapManager>();
@@ -316,7 +347,6 @@ namespace LightVPN.OpenVPN
         {
             Disconnect();
 
-            // this really pisses me off with how gay it is but i dont want to violate dry that much
             if (Error == null) return;
             Error.Invoke(this, message);
         }
@@ -397,20 +427,20 @@ namespace LightVPN.OpenVPN
         /// Starts the OpenVPN process, and connects to the specified config, and the TAP adapter
         /// </summary>
         /// <param name="ovpn">Path to the OpenVPN config file</param>
-        private void RunOpenVpnProcess(string ovpn)
+        private async Task RunOpenVpnProcessAsync(string ovpn)
         {
             ManagementPort = SocketUtils.GetAvailablePort(30000);
 
             // Patch OpenVPN on Linux, we use OperatingSystem instead of pLatform because of debugging.
             if (OperatingSystem.IsLinux() && !DnsLeakPatcher.IsDnsLeaksPatched())
             {
-                DnsLeakPatcher.PatchDnsLeaksAsync();
+                await DnsLeakPatcher.PatchDnsLeaksAsync();
             }
 
             _ovpnProcess.StartInfo = new()
             {
                 CreateNoWindow = true,
-                Arguments = _platform == PlatformID.Win32NT ? $"--config \"{_config}\" --register-dns {(_platform == PlatformID.Unix ? "" : "--dev-node LightVPN-TAP")} --management 127.0.0.1 {ManagementPort}" : $"--config \"{_config}\" --register-dns --management 127.0.0.1 {ManagementPort}",
+                Arguments = _platform == PlatformID.Win32NT ? $"--config \"{_config}\" {(_platform == PlatformID.Unix ? "" : "--register-dns --dev-node LightVPN-TAP")} --management 127.0.0.1 {ManagementPort}" : $"--config \"{_config}\" --management 127.0.0.1 {ManagementPort}",
                 FileName = _ovpnPath,
                 WindowStyle = ProcessWindowStyle.Hidden,
                 WorkingDirectory = Path.GetDirectoryName(ovpn),
@@ -483,7 +513,7 @@ namespace LightVPN.OpenVPN
         /// <summary>
         /// Shuts down the OpenVPN management server asynchronously
         /// </summary>
-        /// <returns>Completed task</returns>
+        /// <returns></returns>
         private async Task ShutdownManagementServerAsync(CancellationToken cancellationToken = default)
         {
             if (_managementSocket is not null && _managementSocket.Connected)

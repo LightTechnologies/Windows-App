@@ -2,6 +2,9 @@
 
 namespace LightVPN.Auth.Models
 {
+    /// <summary>
+    /// Contains data about a changelog request
+    /// </summary>
     public class Changelog
     {
         [JsonPropertyName("code")]

@@ -18,6 +18,9 @@ using System.Text.Json;
 
 namespace LightVPN.Common
 {
+    /// <summary>
+    /// Contains various extension methods that are usually used by most classes
+    /// </summary>
     public static class Extensions
     {
         /// <summary>
@@ -25,16 +28,18 @@ namespace LightVPN.Common
         /// </summary>
         /// <param name="assembly">The assembly, should be the executing assembly</param>
         /// <returns>The version of the executing assembly</returns>
+        [Obsolete("Use the reflection based method instead, this won't work because of single file")]
         public static Version GetVersion(this Assembly assembly)
         {
             return Version.Parse(FileVersionInfo.GetVersionInfo(Path.GetFullPath(assembly.Location)).FileVersion);
         }
 
         /// <summary>
-        /// Checks if the input string is valid Json data using JToken
+        /// Attempts to parse <paramref name="strInput"/> as <typeparamref name="T"/>
         /// </summary>
-        /// <param name="strInput">The input string</param>
-        /// <returns>True or false value whether the string was valid Json or not</returns>
+        /// <typeparam name="T">The object you want to deserialize <paramref name="strInput"/> to</typeparam>
+        /// <param name="strInput">The input you want to validate</param>
+        /// <returns>True if we could parse, false otherwise</returns>
         public static bool IsValidJson<T>(this string strInput)
         {
             strInput = strInput.Trim();

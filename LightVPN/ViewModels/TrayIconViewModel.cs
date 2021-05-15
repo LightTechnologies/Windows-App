@@ -5,6 +5,9 @@ using System.Windows.Input;
 
 namespace LightVPN.ViewModels
 {
+    /// <summary>
+    /// View model for the tray context menu
+    /// </summary>
     public class TrayIconViewModel
     {
         /// <summary>

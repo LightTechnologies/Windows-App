@@ -6,7 +6,10 @@ using System.Windows.Input;
 
 namespace LightVPN.ViewModels.Base
 {
-    public abstract class WindowBaseViewModel : BaseViewModel, INotifyPropertyChanged
+    /// <summary>
+    /// Window base view model that inherits from the BaseViewModel but it contains commands that handle window closing, maximizing and minimizing.
+    /// </summary>
+    public abstract class WindowBaseViewModel : BaseViewModel
     {
         private readonly bool _isLoginWindow;
 

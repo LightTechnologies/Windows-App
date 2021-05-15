@@ -15,6 +15,9 @@ using System.Text.Json.Serialization;
 
 namespace LightVPN.Auth.Models
 {
+    /// <summary>
+    /// The class used to serialize the authentication data file
+    /// </summary>
     public class AuthFile
     {
         [JsonPropertyName("password")]

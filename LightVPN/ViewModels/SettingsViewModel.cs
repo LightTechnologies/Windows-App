@@ -14,6 +14,9 @@ using System.Windows.Input;
 
 namespace LightVPN.ViewModels
 {
+    /// <summary>
+    /// View model for the settings view
+    /// </summary>
     public class SettingsViewModel : BaseViewModel
     {
         private bool autoConnect;
@@ -27,7 +30,9 @@ namespace LightVPN.ViewModels
         private bool isReinstallingTap;
 
         private bool saveWindowSize;
-
+        /// <summary>
+        /// Command that opens the error log in notepad
+        /// </summary>
         public static ICommand ViewErrorLogCommand
         {
             get
@@ -42,6 +47,9 @@ namespace LightVPN.ViewModels
             }
         }
 
+        /// <summary>
+        /// Command that opens the OpenVPN log in notepad
+        /// </summary>
         public static ICommand ViewOpenVpnLogCommand
         {
             get
@@ -55,7 +63,9 @@ namespace LightVPN.ViewModels
                 };
             }
         }
-
+        /// <summary>
+        /// Binded boolean value that represents the auto connect value in settings
+        /// </summary>
         public bool AutoConnect
         {
             get { return autoConnect; }
@@ -66,7 +76,9 @@ namespace LightVPN.ViewModels
                 OnPropertyChanged(nameof(AutoConnect));
             }
         }
-
+        /// <summary>
+        /// Binded boolean value that represents the dark mode value in settings
+        /// </summary>
         public bool DarkMode
         {
             get { return darkMode; }
@@ -80,7 +92,9 @@ namespace LightVPN.ViewModels
                 OnPropertyChanged(nameof(DarkMode));
             }
         }
-
+        /// <summary>
+        /// Binded boolean value that represents the Discord RPC value in settings
+        /// </summary>
         public bool DiscordRpc
         {
             get { return discordRpc; }
@@ -108,7 +122,9 @@ namespace LightVPN.ViewModels
                 OnPropertyChanged(nameof(DiscordRpc));
             }
         }
-
+        /// <summary>
+        /// Handles the settings changes, this is called for every toggle switch change
+        /// </summary>
         public ICommand HandleSettingsChangesCommand
         {
             get
@@ -132,7 +148,9 @@ namespace LightVPN.ViewModels
                 };
             }
         }
-
+        /// <summary>
+        /// Tells the UI if the server cache is currently being refreshed, this controls the progress bar and the state of the button
+        /// </summary>
         public bool IsRefreshingServerCache
         {
             get { return isRefreshingServerCache; }
@@ -143,7 +161,9 @@ namespace LightVPN.ViewModels
                 OnPropertyChanged(nameof(IsRefreshingServerCache));
             }
         }
-
+        /// <summary>
+        /// Tells the UI if the TAP adapter is being reinstalled, this controls the progrss bar and the state of the button
+        /// </summary>
         public bool IsReinstallingTap
         {
             get { return isReinstallingTap; }
@@ -154,7 +174,9 @@ namespace LightVPN.ViewModels
                 OnPropertyChanged(nameof(IsReinstallingTap));
             }
         }
-
+        /// <summary>
+        /// Command that handles the views initial loading
+        /// </summary>
         public ICommand LoadCommand
         {
             get
@@ -178,7 +200,9 @@ namespace LightVPN.ViewModels
                 };
             }
         }
-
+        /// <summary>
+        /// Refreshes the VPN server cache
+        /// </summary>
         public ICommand RefreshServerCacheCommand
         {
             get
@@ -196,7 +220,9 @@ namespace LightVPN.ViewModels
                 };
             }
         }
-
+        /// <summary>
+        /// Reinstalls the OpenVPN TAP adapter
+        /// </summary>
         public ICommand ReinstallTapCommand
         {
             get
@@ -222,7 +248,9 @@ namespace LightVPN.ViewModels
                 };
             }
         }
-
+        /// <summary>
+        /// Binded boolean value that represents the window saving value in settings
+        /// </summary>
         public bool SaveWindowSize
         {
             get { return saveWindowSize; }
@@ -233,8 +261,11 @@ namespace LightVPN.ViewModels
                 OnPropertyChanged(nameof(SaveWindowSize));
             }
         }
-
-        internal static void StartNotepadProcess(string filePath)
+        /// <summary>
+        /// Starts a notepad process
+        /// </summary>
+        /// <param name="filePath">The file notepad should open</param>
+        private static void StartNotepadProcess(string filePath)
         {
             var process = new Process
             {

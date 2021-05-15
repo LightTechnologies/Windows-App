@@ -37,12 +37,23 @@ using System.Windows;
 
 namespace LightVPN
 {
+    /// <summary>
+    /// The startup class for the application, this is where the magic happens
+    /// </summary>
     public class Startup : Application
     {
         internal static readonly FileLoggerBase logger = new ErrorLogger();
-
+        /// <summary>
+        /// LoginWindow cache, used to allow the ViewModel to close the LoginWindow
+        /// </summary>
         public static LoginWindow LoginWindow { get; set; }
 
+        /// <summary>
+        /// The entry point for the application
+        /// </summary>
+        /// <exception cref="TimeoutException"></exception>
+        /// <exception cref="AbandonedMutexException"></exception>
+        /// <exception cref="Exception"></exception>
         [STAThread]
         public static void Main()
         {

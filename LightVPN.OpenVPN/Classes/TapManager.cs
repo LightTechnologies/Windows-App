@@ -16,13 +16,15 @@ using System;
 using System.Diagnostics;
 using System.IO;
 using System.Management;
+using System.Runtime.Versioning;
 using System.Threading.Tasks;
 
 namespace LightVPN.OpenVPN
 {
     /// <summary>
-    /// The class for managing OpenVPN TAP adapters
+    /// The class for managing OpenVPN TAP adapters on Windows clients
     /// </summary>
+    [SupportedOSPlatform("windows")]
     public class TapManager : ITapManager
     {
         private string _path;

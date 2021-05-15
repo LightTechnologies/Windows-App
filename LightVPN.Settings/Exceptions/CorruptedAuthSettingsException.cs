@@ -13,6 +13,9 @@ using System;
 
 namespace LightVPN.Settings.Exceptions
 {
+    /// <summary>
+    /// Thrown when the encryption class fails to decrypt data passed to it
+    /// </summary>
     public class CorruptedAuthSettingsException : Exception
     {
         public CorruptedAuthSettingsException()

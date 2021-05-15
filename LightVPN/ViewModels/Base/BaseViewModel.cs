@@ -3,6 +3,9 @@ using System.Runtime.CompilerServices;
 
 namespace LightVPN.ViewModels.Base
 {
+    /// <summary>
+    /// The base view model, this gives all the view model the INotifyPropertyChanged inheritance and all of the methods needed for data bindings
+    /// </summary>
     public abstract class BaseViewModel : INotifyPropertyChanged
     {
         public event PropertyChangedEventHandler PropertyChanged;

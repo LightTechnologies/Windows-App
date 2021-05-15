@@ -16,6 +16,7 @@ using System;
 using System.Diagnostics;
 using System.IO;
 using System.Management;
+using System.Runtime.Versioning;
 using System.Threading.Tasks;
 
 namespace LightVPN.OpenVPN.Utils.Linux
@@ -23,6 +24,7 @@ namespace LightVPN.OpenVPN.Utils.Linux
     /// <summary>
     /// The class for managing OpenVPN TAP adapters
     /// </summary>
+    [SupportedOSPlatform("linux")]
     public class TapManager : ITapManager
     {
         private string _path;

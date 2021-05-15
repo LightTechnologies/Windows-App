@@ -15,6 +15,10 @@ namespace LightVPN.Discord
     {
         private readonly DiscordRpcClient _client;
 
+        /// <summary>
+        /// Constructs the DiscordRpc class
+        /// </summary>
+        /// <param name="client">The client you want to use</param>
         public DiscordRpc(DiscordRpcClient client)
         {
             _client = client;

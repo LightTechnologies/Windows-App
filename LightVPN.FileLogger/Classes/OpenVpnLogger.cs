@@ -15,6 +15,9 @@ using LightVPN.FileLogger.Base;
 
 namespace LightVPN.FileLogger
 {
+    /// <summary>
+    /// Class used to write OpenVPN output to the OpenVPN log file
+    /// </summary>
     public class OpenVpnLogger : FileLoggerBase
     {
         public OpenVpnLogger() : base(Globals.OpenVpnLogPath)

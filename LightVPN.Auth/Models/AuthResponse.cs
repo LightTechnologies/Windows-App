@@ -15,6 +15,9 @@ using System.Text.Json.Serialization;
 
 namespace LightVPN.Auth.Models
 {
+    /// <summary>
+    /// Contains data about an authentication request result
+    /// </summary>
     public class AuthResponse
     {
         [JsonPropertyName("code")]

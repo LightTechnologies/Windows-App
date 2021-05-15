@@ -19,6 +19,9 @@ using System.Windows.Input;
 
 namespace LightVPN.ViewModels
 {
+    /// <summary>
+    /// The view model for the main view, this is a really large view model
+    /// </summary>
     public class MainViewModel : BaseViewModel, IDisposable
     {
         private readonly CancellationTokenSource _cancellationToken = new();

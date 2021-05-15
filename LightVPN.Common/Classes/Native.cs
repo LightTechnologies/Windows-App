@@ -16,9 +16,15 @@ using Microsoft.Win32;
 
 namespace LightVPN.Common
 {
+    /// <summary>
+    /// Class that handles Windows registry related stuff, this is unused at the moment due to Windows startup based restrictions
+    /// </summary>
     [SupportedOSPlatform("windows")]
     public static class Native
     {
+        /// <summary>
+        /// The registry key that points to the applications that will run when Windows logs on
+        /// </summary>
         private static readonly RegistryKey _regKey = Registry.CurrentUser.OpenSubKey(@"SOFTWARE\Microsoft\Windows\CurrentVersion\Run", true);
 
         /// <summary>

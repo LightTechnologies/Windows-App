@@ -10,14 +10,31 @@ using System.Threading.Tasks;
 
 namespace LightVPN.Auth
 {
+    /// <summary>
+    /// Custom class derived from HttpClient that handles all the API authorization for us
+    /// </summary>
     public class ApiHttpClient : HttpClient
     {
+        /// <summary>
+        /// Constructs the class
+        /// </summary>
+        /// <param name="handler">Any spare arguments you want the client to take into account</param>
         public ApiHttpClient(HttpClientHandler handler) : base(handler)
         {
             base.DefaultRequestVersion = new Version("2.0.0.0");
+            base.BaseAddress = new Uri("https://lightvpn.org/api/");
             base.DefaultRequestHeaders.TryAddWithoutValidation("User-Agent", "LightVPN/1.0");
         }
-
+        /// <summary>
+        /// Validates a response and throws the appropriate exception if something is not right
+        /// </summary>
+        /// <param name="resp">The response message</param>
+        /// <param name="cancellationToken"></param>
+        /// <exception cref="InvalidResponseException"></exception>
+        /// <exception cref="RatelimitedException"></exception>
+        /// <exception cref="ClientUpdateRequired"></exception>
+        /// <exception cref="ApiOfflineException"></exception>
+        /// <returns></returns>
         public async Task CheckResponseAsync(HttpResponseMessage resp, CancellationToken cancellationToken = default)
         {
             var content = await resp.Content.ReadAsStreamAsync(cancellationToken);
@@ -56,7 +73,17 @@ namespace LightVPN.Auth
                     throw new InvalidResponseException("The API seems to be down, or sending back invalid responses, please try again later.");
             }
         }
-
+        /// <summary>
+        /// Gets the specified page and parses it to <typeparamref name="T"/>
+        /// </summary>
+        /// <typeparam name="T">The object to parse the response to</typeparam>
+        /// <param name="url">The URL of the API you want to request</param>
+        /// <param name="cancellationToken"></param>
+        /// <exception cref="InvalidResponseException"></exception>
+        /// <exception cref="RatelimitedException"></exception>
+        /// <exception cref="ClientUpdateRequired"></exception>
+        /// <exception cref="ApiOfflineException"></exception>
+        /// <returns>The serialized object</returns>
         public async Task<T> GetAsync<T>(string url, CancellationToken cancellationToken = default)
         {
             try
@@ -70,7 +97,18 @@ namespace LightVPN.Auth
                 throw new ApiOfflineException("Failed to connect to the internet, please check your internet connection");
             }
         }
-
+        /// <summary>
+        /// Posts JSON data to the specified page and parses the response to <typeparamref name="T"/>
+        /// </summary>
+        /// <typeparam name="T">The object you want to parse the response to</typeparam>
+        /// <param name="url">The URL of the API you want to request</param>
+        /// <param name="body">The body which will be serialized to JSON</param>
+        /// <param name="cancellationToken"></param>
+        /// <exception cref="InvalidResponseException"></exception>
+        /// <exception cref="RatelimitedException"></exception>
+        /// <exception cref="ClientUpdateRequired"></exception>
+        /// <exception cref="ApiOfflineException"></exception>
+        /// <returns>The serialized object</returns>
         public async Task<T> PostAsync<T>(string url, object body, CancellationToken cancellationToken = default)
         {
             try

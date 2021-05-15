@@ -8,6 +8,9 @@ using WindowsFirewallHelper.FirewallRules;
 
 namespace LightVPN.OpenVPN
 {
+    /// <summary>
+    /// Class relating to the Killswitch (this is unused at this point as it doesn't work)
+    /// </summary>
     public class Killswitch : IKillswitch
     {
         private readonly string _interfaceFriendlyName;

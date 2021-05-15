@@ -12,6 +12,9 @@ namespace LightVPN.Controls
      *
      */
 
+    /// <summary>
+    /// Custom data grid that has a mouse double click dependency property and a command parameter
+    /// </summary>
     public class CustomDataGrid : DataGrid
     {
         public static readonly DependencyProperty CommandParameterProperty = DependencyProperty.Register("CommandParameter",

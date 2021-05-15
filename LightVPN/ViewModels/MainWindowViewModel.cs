@@ -15,6 +15,9 @@ using System.ComponentModel;
 
 namespace LightVPN.ViewModels
 {
+    /// <summary>
+    /// View model for the main window
+    /// </summary>
     public class MainWindowViewModel : WindowBaseViewModel
     {
         public MainWindowViewModel() : base(false)

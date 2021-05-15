@@ -19,6 +19,9 @@ using System.Windows.Media;
 
 namespace LightVPN
 {
+    /// <summary>
+    /// Class that handles MaterialDesignInXaml theme changes
+    /// </summary>
     public static class ThemeUtils
     {
         private static readonly FileLoggerBase logger = new ErrorLogger();

@@ -16,6 +16,9 @@ using System.Net.NetworkInformation;
 
 namespace LightVPN.OpenVPN
 {
+    /// <summary>
+    /// Miscellaneous methods relating to OpenVPN
+    /// </summary>
     public static class Misc
     {
         /// <summary>

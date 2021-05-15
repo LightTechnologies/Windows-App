@@ -18,17 +18,20 @@ using System.Text;
 
 namespace LightVPN.Settings
 {
+    /// <summary>
+    /// Class handling settings encryption, typically used for the authentication data file 
+    /// </summary>
     public static class Encryption
     {
         /// <summary>
-        /// Private encryption key used for this class
+        /// Encryption key used for this class
         /// </summary>
         private static readonly string EncryptionKey = "h46V2usZ5y2sMMDQRjcFQHXFGrLMrQSkEGGzeLBevCJ2MeGQRUE2k3pMUP4jTQrhcgEe5VgpwsThdHmJM3XbnLdvrk";
 
         /// <summary>
-        /// Decrypts the specified base64 encoded string
+        /// Decrypts the specified Base64 encoded string
         /// </summary>
-        /// <param name="cipherText">Input string, encoded with base64</param>
+        /// <param name="cipherText">Input string, encoded with Base64</param>
         /// <returns>Input string decrypted into plaintext, if decryption was successful</returns>
         public static string Decrypt(string cipherText)
         {
@@ -60,7 +63,7 @@ namespace LightVPN.Settings
         /// Encrypts the input plaintext with the AES encryption standard, on the CBC cipher
         /// </summary>
         /// <param name="clearText">Input string in plaintext to be encrypted</param>
-        /// <returns>Encrypted text encoded in base64</returns>
+        /// <returns>Encrypted text encoded with Base64</returns>
         public static string Encrypt(string clearText)
         {
             byte[] clearBytes = Encoding.Unicode.GetBytes(clearText);

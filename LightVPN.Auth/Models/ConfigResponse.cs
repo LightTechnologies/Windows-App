@@ -2,6 +2,9 @@
 
 namespace LightVPN.Auth.Models
 {
+    /// <summary>
+    /// Contains information about a get configuration request
+    /// </summary>
     public class ConfigResponse : GenericResponse
     {
         [JsonPropertyName("bytes")]

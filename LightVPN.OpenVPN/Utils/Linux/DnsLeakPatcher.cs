@@ -3,13 +3,22 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Runtime.Versioning;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace LightVPN.OpenVPN.Utils.Linux
 {
+    /// <summary>
+    /// Class dedicated to patching DNS leaks on Linux clients
+    /// </summary>
+    [SupportedOSPlatform("linux")]
     public static class DnsLeakPatcher
     {
+        /// <summary>
+        /// Checks if the DNS leak patch has been applied on the system
+        /// </summary>
+        /// <returns>True if it has, false otherwise</returns>
         public static bool IsDnsLeaksPatched()
         {
             Console.ForegroundColor = ConsoleColor.Cyan;
@@ -18,9 +27,12 @@ namespace LightVPN.OpenVPN.Utils.Linux
             var networkManagerConfiguration = File.ReadAllText("/etc/NetworkManager/NetworkManager.conf");
             var resolvdConfiguration = File.ReadAllText("/etc/resolv.conf");
 
-            return networkManagerConfiguration.Contains("dns=dnsmasq") && resolvdConfiguration.Contains("nameserver 127.0.0.1");
+            return networkManagerConfiguration.Contains("dns=dnsmasq");
         }
-
+        /// <summary>
+        /// Applies the DNS leak patch onto the system. The patch disables resolved and configures NetworkManager to use DNSMASQ.
+        /// </summary>
+        /// <returns></returns>
         public static async Task PatchDnsLeaksAsync()
         {
             /* Commands adapted from https://askubuntu.com/questions/1065568/block-outside-dns-fix-dns-leak-ubuntu-18-04 */
@@ -67,13 +79,13 @@ namespace LightVPN.OpenVPN.Utils.Linux
             proc.Dispose();
 
             Console.ForegroundColor = ConsoleColor.Cyan;
-            Console.WriteLine("[-] Backing up resolvd & NetworkManager configurations...");
+            Console.WriteLine("[-] Backing up resolved & NetworkManager configurations...");
 
             File.Copy("/etc/resolv.conf", "/etc/resolv.conf.bak");
             File.Copy("/etc/NetworkManager/NetworkManager.conf", "/etc/NetworkManager/NetworkManager.conf.bak");
 
             Console.ForegroundColor = ConsoleColor.Cyan;
-            Console.WriteLine("[-] Configuring resolvd...");
+            Console.WriteLine("[-] Configuring resolved...");
 
             // Deletes the existing DNS resolver config
             File.Delete("/etc/resolv.conf");

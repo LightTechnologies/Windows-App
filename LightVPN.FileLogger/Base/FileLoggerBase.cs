@@ -17,6 +17,9 @@ using System.Threading.Tasks;
 
 namespace LightVPN.FileLogger.Base
 {
+    /// <summary>
+    /// Base class that all the file loggers derive from
+    /// </summary>
     public abstract class FileLoggerBase
     {
         private readonly string _fileName;

@@ -26,20 +26,38 @@ using System.Threading.Tasks;
 
 namespace LightVPN.Auth
 {
+    /// <summary>
+    /// The class that handles everything to do with the LightVPN API
+    /// </summary>
     public class Http : IHttp
     {
+        /// <summary>
+        /// The last date that the servers were retrieved and cached
+        /// </summary>
         private static DateTime _lastRetrieved = default;
-
+        /// <summary>
+        /// Cached servers that will be returned an hour has not passed from the last cache
+        /// </summary>
         private static HashSet<Server> _servers = new();
-
+        /// <summary>
+        /// The API client
+        /// </summary>
         private readonly ApiHttpClient _apiclient;
-
+        /// <summary>
+        /// The current platform the class is running on
+        /// </summary>
         private static PlatformID _platform;
-
+        /// <summary>
+        /// Current VPN server cache path for this class, this can vary depending on the platform in use
+        /// </summary>
         private readonly string ConfigPath;
-
+        /// <summary>
+        /// Path to the OpenVPN binaries, this can vary depending on the platform in use
+        /// </summary>
         private readonly string OpenVpnPath;
-
+        /// <summary>
+        /// Path to the OpenVPN TAP drivers, this can vary depending on the platform in use
+        /// </summary>
         private readonly string OpenVpnDriversPath;
 
         /// <summary>
