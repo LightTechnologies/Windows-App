@@ -181,8 +181,6 @@ namespace LightVPN.OpenVPN
             StopStdOutRedirection();
 
             await ShutdownManagementServerAsync();
-
-            IsConnected = false;
         }
 
         /// <summary>
@@ -318,10 +316,7 @@ namespace LightVPN.OpenVPN
         private void ErrorDataReceived(object sender, DataReceivedEventArgs e)
         {
             OutputReceived onOutput = this.OnOutput;
-            if (Output == null)
-            {
-                return;
-            }
+            if (Output is null) return;
             Output.Invoke(this, OutputType.Error, e.Data);
         }
 
@@ -333,7 +328,7 @@ namespace LightVPN.OpenVPN
         {
             Disconnect();
 
-            if (Error == null) return;
+            if (Error is null) return;
             Error.Invoke(this, message);
         }
 
@@ -387,7 +382,8 @@ namespace LightVPN.OpenVPN
                     return;
 
                 case string str when str.Contains("Initialization Sequence Completed"):
-                    if (Connected == null) return;
+                    if (Connected is null) return;
+
                     Connected.Invoke(this);
 
                     await ConnectToManagementServerAsync();
@@ -395,7 +391,8 @@ namespace LightVPN.OpenVPN
                     break;
 
                 default:
-                    if (Output == null) return;
+                    if (Output is null) return;
+
                     Output.Invoke(this, OutputType.Error, e.Data);
 
                     break;
@@ -445,6 +442,7 @@ namespace LightVPN.OpenVPN
 
         private void OpenVPN_Exited(object sender, EventArgs e)
         {
+            IsConnected = false;
             _ovpnProcess.Dispose();
             _ovpnProcess = new();
         }

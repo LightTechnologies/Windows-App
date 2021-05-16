@@ -80,16 +80,16 @@ namespace LightVPN.ViewModels
                 {
                     CommandAction = async (args) =>
                     {
-                        if (args is not ServersModel serversModel)
+                        if (args is not ServersModel serversModel) return;
+
+                        if (serversModel.Status == "Close")
                         {
+                            MessageBox.Show("This server is explicitly offline, please try again later.", "LightVPN", MessageBoxButton.OK, MessageBoxImage.Warning);
                             return;
                         }
 
                         if (ConnectionState == ConnectionState.Connecting) return;
-                        if (ConnectionState == ConnectionState.Connected)
-                        {
-                            await DisconnectAsync();
-                        }
+                        if (ConnectionState == ConnectionState.Connected) await DisconnectAsync();
 
                         SaveServer(serversModel.Id, serversModel.ServerName, serversModel.Type);
 
