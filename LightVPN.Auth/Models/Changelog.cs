@@ -5,10 +5,8 @@ namespace LightVPN.Auth.Models
     /// <summary>
     /// Contains data about a changelog request
     /// </summary>
-    public class Changelog
+    public class Changelog : GenericResponse
     {
-        [JsonPropertyName("code")]
-        public int Code { get; set; }
 
         [JsonPropertyName("changelog")]
         public string Content { get; set; }

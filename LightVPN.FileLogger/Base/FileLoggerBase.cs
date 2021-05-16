@@ -28,10 +28,7 @@ namespace LightVPN.FileLogger.Base
         /// Constructs the FileLogger base class
         /// </summary>
         /// <param name="fileName">The location of the log file that this class will use</param>
-        public FileLoggerBase(string fileName)
-        {
-            _fileName = fileName;
-        }
+        public FileLoggerBase(string fileName) => _fileName = fileName;
 
         /// <summary>
         /// Deletes the log file and re-creates it.
@@ -91,10 +88,7 @@ namespace LightVPN.FileLogger.Base
         /// </summary>
         internal void Verify()
         {
-            if (!Directory.Exists(Path.GetDirectoryName(_fileName)))
-            {
-                Directory.CreateDirectory(Path.GetDirectoryName(_fileName));
-            }
+            if (!Directory.Exists(Path.GetDirectoryName(_fileName))) Directory.CreateDirectory(Path.GetDirectoryName(_fileName));
             if (!File.Exists(_fileName))
             {
                 File.WriteAllText(_fileName, @"██╗░░░░░██╗░██████╗░██╗░░██╗████████╗██╗░░░██╗██████╗░███╗░░██╗

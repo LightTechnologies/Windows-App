@@ -7,10 +7,7 @@ namespace LightVPN.Views
     /// </summary>
     public partial class Main : Page
     {
-        public Main()
-        {
-            InitializeComponent();
-        }
+        public Main() => InitializeComponent();
 
         private void BeginningEdit(object sender, DataGridBeginningEditEventArgs e) => e.Cancel = true;
     }

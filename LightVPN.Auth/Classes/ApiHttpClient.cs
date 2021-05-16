@@ -3,6 +3,7 @@ using LightVPN.Auth.Models;
 using System;
 using System.Net;
 using System.Net.Http;
+using System.Reflection;
 using System.Text;
 using System.Text.Json;
 using System.Threading;
@@ -24,6 +25,8 @@ namespace LightVPN.Auth
             base.DefaultRequestVersion = new Version("2.0.0.0");
             base.BaseAddress = new Uri("https://lightvpn.org/api/");
             base.DefaultRequestHeaders.TryAddWithoutValidation("User-Agent", "LightVPN/1.0");
+            // This is bad for future compatibility but we only have these two clients at the moment so yeah.
+            base.DefaultRequestHeaders.TryAddWithoutValidation("X-Client-Version", $"{(OperatingSystem.IsWindows() ? "Windows" : "Linux")} {Assembly.GetEntryAssembly().GetName().Version}");
         }
         /// <summary>
         /// Validates a response and throws the appropriate exception if something is not right
@@ -58,6 +61,8 @@ namespace LightVPN.Auth
                 case HttpStatusCode.NotFound:
                     throw new InvalidResponseException("Not found, a manual client update may be required. Please visit the LightVPN dashboard and download the latest installer.");
                 case HttpStatusCode.Unauthorized:
+                    throw new InvalidResponseException("You've been blocked by the edge firewall. You could've requested from a blocked location or typed something in that could cause issues.");
+                case HttpStatusCode.Forbidden:
                     throw new InvalidResponseException("You've been blocked by the edge firewall. You could've requested from a blocked location or typed something in that could cause issues.");
                 case HttpStatusCode.InternalServerError:
                     throw new InvalidResponseException("A server error has occurred. Please contact support to inform us about this issue.");
@@ -97,6 +102,13 @@ namespace LightVPN.Auth
                 throw new ApiOfflineException("Failed to connect to the internet, please check your internet connection");
             }
         }
+
+        public void AssignAuthorizationHeader(string username, Guid sessionId)
+        {
+            base.DefaultRequestHeaders.Remove("Authorization");
+            base.DefaultRequestHeaders.TryAddWithoutValidation("Authorization", $"{username} {sessionId}");
+        }
+
         /// <summary>
         /// Posts JSON data to the specified page and parses the response to <typeparamref name="T"/>
         /// </summary>
@@ -114,7 +126,7 @@ namespace LightVPN.Auth
             try
             {
                 var content = new StringContent(JsonSerializer.Serialize(body), Encoding.UTF8, "application/json");
-                var resp = await this.PostAsync(url, content, cancellationToken);
+                var resp = await PostAsync(url, content, cancellationToken);
                 await CheckResponseAsync(resp, cancellationToken);
                 return await JsonSerializer.DeserializeAsync<T>(await resp.Content.ReadAsStreamAsync(cancellationToken), cancellationToken: cancellationToken);
             }

@@ -80,15 +80,15 @@ namespace LightVPN.ViewModels
                 {
                     CommandAction = async (args) =>
                     {
+                        if (args is not ServersModel serversModel)
+                        {
+                            return;
+                        }
+
                         if (ConnectionState == ConnectionState.Connecting) return;
                         if (ConnectionState == ConnectionState.Connected)
                         {
                             await DisconnectAsync();
-                        }
-
-                        if (args is not ServersModel serversModel)
-                        {
-                            return;
                         }
 
                         SaveServer(serversModel.Id, serversModel.ServerName, serversModel.Type);
@@ -405,12 +405,9 @@ namespace LightVPN.ViewModels
 
             private void OnPropertyChanged(string propertyName)
             {
-                var saved = PropertyChanged;
-                if (saved != null)
-                {
-                    var e = new PropertyChangedEventArgs(propertyName);
-                    saved(this, e);
-                }
+                if (PropertyChanged is null) return;
+
+                PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
             }
         }
     }

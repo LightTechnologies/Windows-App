@@ -13,10 +13,7 @@ namespace LightVPN.ViewModels.Base
     {
         private readonly bool _isLoginWindow;
 
-        public WindowBaseViewModel(bool isLoginWindow)
-        {
-            _isLoginWindow = isLoginWindow;
-        }
+        public WindowBaseViewModel(bool isLoginWindow) => _isLoginWindow = isLoginWindow;
 
         public static ICommand ExitWindowCommand
         {
@@ -24,10 +21,7 @@ namespace LightVPN.ViewModels.Base
             {
                 return new CommandDelegate
                 {
-                    CommandAction = (args) =>
-                    {
-                        Application.Current.Shutdown();
-                    }
+                    CommandAction = (args) => Application.Current.Shutdown()
                 };
             }
         }

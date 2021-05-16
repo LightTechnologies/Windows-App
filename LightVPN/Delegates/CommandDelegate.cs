@@ -20,19 +20,13 @@ namespace LightVPN.Delegates
         /// Executes the commmand with the specified parameter
         /// </summary>
         /// <param name="parameter">The parameter to be passed to the command action</param>
-        public void Execute(object parameter)
-        {
-            CommandAction(parameter);
-        }
+        public void Execute(object parameter) => CommandAction(parameter);
         /// <summary>
         /// Checks if the command can be executed or not
         /// </summary>
         /// <param name="parameter">The parameter, this is not used</param>
         /// <returns></returns>
-        public bool CanExecute(object parameter)
-        {
-            return CanExecuteFunc == null || CanExecuteFunc();
-        }
+        public bool CanExecute(object parameter) => CanExecuteFunc == null || CanExecuteFunc();
         /// <summary>
         /// The event that is raised when the execution state is changed
         /// </summary>

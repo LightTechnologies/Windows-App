@@ -188,17 +188,11 @@ namespace LightVPN.ViewModels
             Startup.LoginWindow.Close();
         }
 
-        private void ExecChangePassword(object obj)
-        {
-            Password = ((PasswordBox)obj).Password;
-        }
+        private void ExecChangePassword(object obj) => Password = ((PasswordBox)obj).Password;
 
         private async Task ProcessLoginAsync(bool isSessionAuth = false, Guid sessionId = default)
         {
-            if (!isSessionAuth)
-            {
-                if (string.IsNullOrWhiteSpace(UserName) || string.IsNullOrWhiteSpace(Password)) return;
-            }
+            if (!isSessionAuth && (string.IsNullOrWhiteSpace(UserName) || string.IsNullOrWhiteSpace(Password))) return;
 
             IsAuthenticating = true;
             SetProgressIndeterminate();
@@ -206,14 +200,10 @@ namespace LightVPN.ViewModels
             try
             {
                 AuthResponse authResponse = new();
-                if (isSessionAuth)
+                if (isSessionAuth && !await Globals.Container.GetInstance<IHttp>().ValidateSessionAsync(UserName, sessionId))
                 {
-                    var sessionResponse = await Globals.Container.GetInstance<IHttp>().ValidateSessionAsync(UserName, sessionId);
-                    if (!sessionResponse)
-                    {
-                        MessageBox.Show("Your session has been closed or is invalid, please sign back in.", "LightVPN", MessageBoxButton.OK, MessageBoxImage.Warning);
-                        return;
-                    }
+                    MessageBox.Show("Your session has been closed or is invalid, please sign back in.", "LightVPN", MessageBoxButton.OK, MessageBoxImage.Warning);
+                    return;
                 }
                 else
                 {
@@ -292,7 +282,7 @@ namespace LightVPN.ViewModels
             {
                 switch (e.Message)
                 {
-                    case "The SSL connection could not be established, see inner exception.":
+                    case string str when str.Contains("The SSL connection could not be established, see inner exception."):
                         MessageBox.Show("API certificate check failed.", "LightVPN", MessageBoxButton.OK, MessageBoxImage.Warning);
                         break;
 
@@ -306,7 +296,7 @@ namespace LightVPN.ViewModels
             {
                 await logger.WriteAsync(e.ToString());
 
-                MessageBox.Show("Something went wrong, check the error log for more info.", "LightVPN", MessageBoxButton.OK, MessageBoxImage.Warning);
+                MessageBox.Show($"Something went wrong.\n\n{e.Message}", "LightVPN", MessageBoxButton.OK, MessageBoxImage.Warning);
             }
             finally
             {

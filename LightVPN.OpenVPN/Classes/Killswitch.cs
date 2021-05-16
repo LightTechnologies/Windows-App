@@ -95,15 +95,7 @@ namespace LightVPN.OpenVPN
             var interfaces = NetworkInterface.GetAllNetworkInterfaces().Where(x => x.Name == _interfaceFriendlyName);
             foreach (var nic in interfaces)
             {
-                if (nic.OperationalStatus == OperationalStatus.Up)
-                {
-                    Execute(false);
-                    return;
-                }
-                else
-                {
-                    Execute(true);
-                }
+                Execute(nic.OperationalStatus != OperationalStatus.Up);
             }
         }
     }

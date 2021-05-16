@@ -70,14 +70,12 @@ namespace LightVPN.Auth
             _platform = platformID;
             if (platformID == PlatformID.Unix)
             {
-                checkingClient.DefaultRequestHeaders.TryAddWithoutValidation("X-Client-Version", $"Linux {Assembly.GetEntryAssembly().GetName().Version}");
                 ConfigPath = Globals.LinuxConfigPath;
                 OpenVpnPath = Globals.LinuxOpenVpnPath;
                 OpenVpnDriversPath = Globals.LinuxOpenVpnDriversPath;
             }
             else if (platformID == PlatformID.Win32NT)
             {
-                checkingClient.DefaultRequestHeaders.TryAddWithoutValidation("X-Client-Version", $"Windows {Assembly.GetEntryAssembly().GetName().Version}");
                 ConfigPath = Globals.ConfigPath;
                 OpenVpnDriversPath = Globals.OpenVpnDriversPath;
                 OpenVpnPath = Globals.OpenVpnPath;
@@ -263,14 +261,8 @@ namespace LightVPN.Auth
         {
             var model = new { username, password };
             var response = await _apiclient.PostAsync<AuthResponse>("https://lightvpn.org/api/auth", model, cancellationToken);
-            AssignAuthHeader(username, response.SessionId);
+            _apiclient.AssignAuthorizationHeader(username, response.SessionId);
             return response;
-        }
-
-        private void AssignAuthHeader(string username, Guid sessionId)
-        {
-            _apiclient.DefaultRequestHeaders.Remove("Authorization");
-            _apiclient.DefaultRequestHeaders.TryAddWithoutValidation("Authorization", $"{username} {sessionId}");
         }
 
         /// <summary>
@@ -282,7 +274,7 @@ namespace LightVPN.Auth
         /// <returns>True if the session is valid, false otherwise</returns>
         public async Task<bool> ValidateSessionAsync(string username, Guid sessionId, CancellationToken cancellationToken = default)
         {
-            _apiclient.DefaultRequestHeaders.TryAddWithoutValidation("Authorization", $"{username} {sessionId}");
+            _apiclient.AssignAuthorizationHeader(username, sessionId);
 
             var resp = await _apiclient.GetAsync("https://lightvpn.org/api/profile", cancellationToken);
             await _apiclient.CheckResponseAsync(resp, cancellationToken);

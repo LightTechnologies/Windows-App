@@ -88,11 +88,7 @@ namespace LightVPN
                     UseProxy = false,
                     ServerCertificateCustomValidationCallback = (sender, cert, chain, error) =>
                     {
-                        if (!cert.Issuer.ToLower().Contains("cloudflare") || error != System.Net.Security.SslPolicyErrors.None)
-                        {
-                            return false;
-                        }
-                        return true;
+                        return cert.Issuer.ToLower().Contains("cloudflare") || error != System.Net.Security.SslPolicyErrors.None;
                     },
                 };
                 var httpClient = new HttpClient();
@@ -100,17 +96,13 @@ namespace LightVPN
                 {
                     NoCache = true
                 };
-                Globals.Container.Register(() => httpClientHandler, Lifestyle.Singleton);
-                Globals.Container.Register<IDiscordRpc, DiscordRpc>(Lifestyle.Singleton);
-                Globals.Container.Register(() => httpClient, Lifestyle.Singleton);
-                Globals.Container.Register<ApiHttpClient>(Lifestyle.Singleton);
+                Globals.Container.Register<IDiscordRpc>(() => new DiscordRpc(new DiscordRpcClient("833767448041226301")), Lifestyle.Singleton);
+                Globals.Container.Register(() => new ApiHttpClient(httpClientHandler) ,Lifestyle.Singleton);
                 Globals.Container.Register<IHttp>(() => new Http(new ApiHttpClient(httpClientHandler), PlatformID.Win32NT), Lifestyle.Singleton);
                 Globals.Container.Register<ITapManager>(() => new TapManager(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "LightVPN", "ovpn", "tapctl.exe")), Lifestyle.Singleton);
                 Globals.Container.Register<IManager>(() => new Manager(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "LightVPN", "ovpn", "openvpn.exe")), Lifestyle.Singleton);
-                Globals.Container.Register(() => new DiscordRpcClient("833767448041226301"), Lifestyle.Singleton);
                 Globals.Container.Register<ISettingsManager<SettingsModel>>(() => new SettingsManager<SettingsModel>(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "LightVPN", "config.json")), Lifestyle.Singleton);
 
-                Globals.Container.Verify();
                 logger.Write("(Startup/Main) Injected deps");
 
                 // Starts a new resource dictionary

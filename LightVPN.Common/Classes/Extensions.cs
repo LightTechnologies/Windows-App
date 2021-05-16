@@ -29,10 +29,7 @@ namespace LightVPN.Common
         /// <param name="assembly">The assembly, should be the executing assembly</param>
         /// <returns>The version of the executing assembly</returns>
         [Obsolete("Use the reflection based method instead, this won't work because of single file")]
-        public static Version GetVersion(this Assembly assembly)
-        {
-            return Version.Parse(FileVersionInfo.GetVersionInfo(Path.GetFullPath(assembly.Location)).FileVersion);
-        }
+        public static Version GetVersion(this Assembly assembly) => Version.Parse(FileVersionInfo.GetVersionInfo(Path.GetFullPath(assembly.Location)).FileVersion);
 
         /// <summary>
         /// Attempts to parse <paramref name="strInput"/> as <typeparamref name="T"/>
@@ -45,7 +42,7 @@ namespace LightVPN.Common
             strInput = strInput.Trim();
             try
             {
-                var obj = JsonSerializer.Deserialize<T>(strInput);
+                JsonSerializer.Deserialize<T>(strInput);
                 return true;
             }
             catch (JsonException)

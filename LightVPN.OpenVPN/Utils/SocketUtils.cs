@@ -68,10 +68,6 @@ namespace LightVPN.OpenVPN.Utils
         /// </summary>
         /// <param name="socket">Socket to send the buffer through</param>
         /// <param name="buffer">The buffer you wish to send</param>
-        public static void SendBuffer(this Socket socket, byte[] buffer)
-        {
-            /* \r\n is required because OpenVPN Management Interface says so (and it likes legacy). */
-            socket.Send(buffer, SocketFlags.None);
-        }
+        public static void SendBuffer(this Socket socket, byte[] buffer) => socket.Send(buffer, SocketFlags.None);
     }
 }

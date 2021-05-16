@@ -18,10 +18,8 @@ namespace LightVPN.Auth.Models
     /// <summary>
     /// Contains data about an authentication request result
     /// </summary>
-    public class AuthResponse
+    public class AuthResponse : GenericResponse
     {
-        [JsonPropertyName("code")]
-        public int Code { get; set; }
 
         [JsonPropertyName("sessionId")]
         public Guid SessionId { get; set; }

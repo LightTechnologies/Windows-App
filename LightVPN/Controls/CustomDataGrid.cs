@@ -39,17 +39,13 @@ namespace LightVPN.Controls
         /// <summary>
         /// Constructs the custom data grid
         /// </summary>
-        public CustomDataGrid()
-                    : base()
-        {
-            this.PreviewMouseDoubleClick += new MouseButtonEventHandler(CustomDataGrid_PreviewMouseDoubleClick);
-        }
+        public CustomDataGrid() : base() => PreviewMouseDoubleClick += new MouseButtonEventHandler(CustomDataGrid_PreviewMouseDoubleClick);
         /// <summary>
         /// Property for the CommandParameter
         /// </summary>
         public object CommandParameter
         {
-            get { return (object)GetValue(CommandParameterProperty); }
+            get { return GetValue(CommandParameterProperty); }
             set { SetValue(CommandParameterProperty, value); }
         }
         /// <summary>
@@ -67,7 +63,7 @@ namespace LightVPN.Controls
         /// <param name="e"></param>
         private void CustomDataGrid_PreviewMouseDoubleClick(object sender, MouseButtonEventArgs e)
         {
-            if (DoubleClickCommand != null)
+            if (DoubleClickCommand is not null)
             {
                 DoubleClickCommand.Execute(CommandParameter);
             }

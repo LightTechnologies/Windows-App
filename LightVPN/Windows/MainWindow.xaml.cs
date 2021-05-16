@@ -19,8 +19,6 @@ namespace LightVPN.Windows
     {
         private readonly Main _mainView;
 
-        private readonly IManager _manager;
-
         private readonly TaskbarIcon _nofifyIcon;
 
         private readonly BeginStoryboard _viewLoaded;
@@ -45,8 +43,9 @@ namespace LightVPN.Windows
 
             _viewLoaded = FindResource("LoadView") as BeginStoryboard;
             _viewUnloaded = FindResource("UnloadView") as BeginStoryboard;
+
             _mainView = new Main();
-            _manager = Globals.Container.GetInstance<IManager>();
+
             NavigatePage(_mainView);
 
             // Just to initialize it
@@ -59,10 +58,10 @@ namespace LightVPN.Windows
         public void Dispose()
         {
             _nofifyIcon.Dispose();
-            if (_manager.IsConnected)
+            if (Globals.Container.GetInstance<IManager>().IsConnected && !Globals.Container.GetInstance<IManager>().IsDisposed)
             {
-                _manager.Disconnect();
-                _manager.Dispose();
+                Globals.Container.GetInstance<IManager>().Disconnect();
+                Globals.Container.GetInstance<IManager>().Dispose();
             }
             GC.SuppressFinalize(this);
         }
