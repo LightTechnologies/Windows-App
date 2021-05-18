@@ -4,7 +4,7 @@ namespace LightVPN.Discord.Interfaces
 {
     public interface IDiscordRpc : IDisposable
     {
-        void ClearPresence();
+        void ResetPresence();
 
         void Deinitialize();
 
@@ -19,5 +19,7 @@ namespace LightVPN.Discord.Interfaces
         void UpdateState(string state);
 
         void UpdateTimestamps();
+        void ClearPresence();
+        void SetPresence();
     }
 }

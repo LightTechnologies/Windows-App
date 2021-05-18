@@ -109,11 +109,12 @@ namespace LightVPN.ViewModels
                     }
                     else if (discordRpc != value)
                     {
-                        Globals.Container.GetInstance<IDiscordRpc>().Deinitialize();
+                        Globals.Container.GetInstance<IDiscordRpc>().ClearPresence();
                     }
                 }
-                catch (Exception)
+                catch (Exception e)
                 {
+                    MessageBox.Show(e.ToStringDemystified());
                     // Too lazy to ensure it's not already initialized.
                 }
 

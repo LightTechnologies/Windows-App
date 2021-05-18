@@ -36,7 +36,7 @@ namespace LightVPN.Auth
         /// </summary>
         private static DateTime _lastRetrieved = default;
         /// <summary>
-        /// Cached servers that will be returned an hour has not passed from the last cache
+        /// Cached servers that will be returned if an hour has not passed from the last cache
         /// </summary>
         private static HashSet<Server> _servers = new();
         /// <summary>
@@ -213,7 +213,7 @@ namespace LightVPN.Auth
         {
             // This is memory based caching... but Toshi kind of didn't set it up correctly, so I
             // fixed it
-            if (DateTime.Now < _lastRetrieved.AddHours(1))
+            if (_servers != null && DateTime.Now < _lastRetrieved.AddHours(1))
             {
                 return _servers;
             }

@@ -96,7 +96,7 @@ namespace LightVPN
                 {
                     NoCache = true
                 };
-                Globals.Container.Register<IDiscordRpc>(() => new DiscordRpc(new DiscordRpcClient("833767448041226301")), Lifestyle.Singleton);
+                Globals.Container.Register<IDiscordRpc>(() => new DiscordRpc(new DiscordRpcClient("833767448041226301", logger: new DiscordRPC.Logging.FileLogger("logs.txt"))), Lifestyle.Singleton);
                 Globals.Container.Register(() => new ApiHttpClient(httpClientHandler) ,Lifestyle.Singleton);
                 Globals.Container.Register<IHttp>(() => new Http(new ApiHttpClient(httpClientHandler), PlatformID.Win32NT), Lifestyle.Singleton);
                 Globals.Container.Register<ITapManager>(() => new TapManager(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "LightVPN", "ovpn", "tapctl.exe")), Lifestyle.Singleton);

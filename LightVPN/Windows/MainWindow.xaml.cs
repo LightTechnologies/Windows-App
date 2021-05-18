@@ -60,7 +60,7 @@ namespace LightVPN.Windows
             _nofifyIcon.Dispose();
             if (Globals.Container.GetInstance<IManager>().IsConnected && !Globals.Container.GetInstance<IManager>().IsDisposed)
             {
-                Globals.Container.GetInstance<IManager>().Disconnect();
+                Globals.Container.GetInstance<IManager>().DisconnectAsync();
                 Globals.Container.GetInstance<IManager>().Dispose();
             }
             GC.SuppressFinalize(this);

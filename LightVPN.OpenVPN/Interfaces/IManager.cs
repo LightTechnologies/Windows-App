@@ -32,7 +32,7 @@ namespace LightVPN.OpenVPN.Interfaces
 
         Task ConnectAsync(string configpath);
 
-        void Disconnect();
+        Task DisconnectAsync();
 
         Task PerformAutoTroubleshootAsync(bool isServerRelated, string invokationMessage, CancellationToken cancellationToken = default);
     }

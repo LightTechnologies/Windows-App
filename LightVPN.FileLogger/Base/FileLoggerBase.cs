@@ -23,6 +23,7 @@ namespace LightVPN.FileLogger.Base
     public abstract class FileLoggerBase
     {
         private readonly string _fileName;
+        private static object _mylocker = new object();
 
         /// <summary>
         /// Constructs the FileLogger base class
@@ -65,8 +66,11 @@ namespace LightVPN.FileLogger.Base
         /// <param name="line">The line you want to write to the file</param>
         public void Write(string line)
         {
-            Verify();
-            File.AppendAllText(_fileName, $"[UTC: {DateTime.UtcNow}]: {line}\n");
+            lock (_mylocker)
+            {
+                Verify();
+                File.AppendAllText(_fileName, $"[UTC: {DateTime.UtcNow}]: {line}\n");
+            }
         }
 
         /// <summary>

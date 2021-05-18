@@ -176,11 +176,16 @@ namespace LightVPN.OpenVPN
         /// <summary>
         /// Disconnects from any VPN currently connected
         /// </summary>
-        public async void Disconnect()
+        public async Task DisconnectAsync()
         {
+            await ShutdownManagementServerAsync();
             StopStdOutRedirection();
 
-            await ShutdownManagementServerAsync();
+            await _ovpnProcess.WaitForExitAsync(); // this might lock up the thread it is executed on. From testing it it doesnt seem to lock up. Its non async counterpart does lock the thread without
+            // a time being passed into it though
+            IsConnected = false;
+            _ovpnProcess.Dispose();
+            _ovpnProcess = new();
         }
 
         /// <summary>
@@ -203,30 +208,38 @@ namespace LightVPN.OpenVPN
             if (_retryCount >= 1)
             {
                 _retryCount = 0;
-                InvokeError($"Automated troubleshooting has failed!\n\n{invokationMessage}");
+                await InvokeError($"Automated troubleshooting has failed!\n\n{invokationMessage}");
                 return;
             }
-            if (!isServerRelated)
+            try
             {
-                _retryCount++;
+                if (!isServerRelated)
+                {
+                    _retryCount++;
 
-                Disconnect();
+                    await DisconnectAsync();
 
-                ReinstallTap();
+                    ReinstallTap();
 
-                await ConnectAsync(_config);
-                return;
+                    await ConnectAsync(_config);
+                    return;
+                }
+                else
+                {
+                    _retryCount++;
+
+                    await DisconnectAsync();
+
+                    await RefetchConfigsAsync(cancellationToken);
+
+                    await ConnectAsync(_config);
+                    return;
+                }
             }
-            else
+            catch (Exception e)
             {
-                _retryCount++;
-
-                Disconnect();
-
-                await RefetchConfigsAsync(cancellationToken);
-
-                await ConnectAsync(_config);
-                return;
+                _errorLogger.Write($"(Manager/TroubleShooter) Exception:\n{e}"); 
+                await InvokeError($"Exception was thrown during automated troubleshooting.!\n\nPlease report it to support");
             }
         }
 
@@ -324,9 +337,9 @@ namespace LightVPN.OpenVPN
         /// Invoked when an error occurrs, prevents a error loop
         /// </summary>
         /// <param name="message"></param>
-        private void InvokeError(string message)
+        private async Task InvokeError(string message)
         {
-            Disconnect();
+            await DisconnectAsync();
 
             if (Error is null) return;
             Error.Invoke(this, message);
@@ -342,7 +355,9 @@ namespace LightVPN.OpenVPN
         {
             if (string.IsNullOrWhiteSpace(e.Data)) return;
 
-            await _logger.WriteAsync(e.Data);
+
+            await ConnectToManagementServerAsync();
+            _logger.Write(e.Data);
 
             switch (e.Data)
             {
@@ -352,7 +367,7 @@ namespace LightVPN.OpenVPN
                     return;
 
                 case string str when str.Contains("MANAGEMENT: Socket bind failed on local address"):
-                    InvokeError($"Failed to bind socket on local address. To fix this issue, restart LightVPN or try again.");
+                    await InvokeError($"Failed to bind socket on local address. To fix this issue, restart LightVPN or try again.");
 
                     return;
 
@@ -385,8 +400,6 @@ namespace LightVPN.OpenVPN
                     if (Connected is null) return;
 
                     Connected.Invoke(this);
-
-                    await ConnectToManagementServerAsync();
 
                     break;
 
@@ -433,18 +446,10 @@ namespace LightVPN.OpenVPN
             _ovpnProcess.Start();
             _ovpnProcess.BeginOutputReadLine();
             _ovpnProcess.BeginErrorReadLine();
-            _ovpnProcess.Exited += OpenVPN_Exited;
             if (_platform == PlatformID.Win32NT)
             {
                 ChildProcessTracker.AddProcess(_ovpnProcess);
             }
-        }
-
-        private void OpenVPN_Exited(object sender, EventArgs e)
-        {
-            IsConnected = false;
-            _ovpnProcess.Dispose();
-            _ovpnProcess = new();
         }
 
         /// <summary>
