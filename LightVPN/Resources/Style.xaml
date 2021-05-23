@@ -26,6 +26,7 @@
         <Setter Property="FontSize" Value="13" />
         <Setter Property="TextOptions.TextFormattingMode" Value="Ideal" />
         <Setter Property="TextOptions.TextRenderingMode" Value="Aliased" />
+        <Setter Property="TextOptions.TextHintingMode" Value="Fixed"/>
     </Style>
     <Style x:Key="LightUIWindow" TargetType="Window">
         <Setter Property="FontFamily" Value="pack://application:,,,/LightVPN;component/Resources/Fonts/#Inter Medium" />
@@ -34,6 +35,7 @@
         <Setter Property="FontSize" Value="13" />
         <Setter Property="TextOptions.TextFormattingMode" Value="Ideal" />
         <Setter Property="TextOptions.TextRenderingMode" Value="Aliased" />
+        <Setter Property="TextOptions.TextHintingMode" Value="Fixed"/>
         <Setter Property="AllowsTransparency" Value="False" />
         <Setter Property="Icon" Value="pack://application:,,,/LightVPN;component/Resources/lightvpn-purple-ico.ico" />
         <Setter Property="WindowStyle" Value="None" />
@@ -41,18 +43,21 @@
     <Style x:Key="BrightHeadline" TargetType="TextBlock">
         <Setter Property="Foreground" Value="White" />
         <Setter Property="FontSize" Value="20" />
-        <Setter Property="FontFamily" Value="pack://application:,,,/LightVPN;component/Resources/Fonts/#Inter Extra Bold" />
+        <Setter Property="TextOptions.TextHintingMode" Value="Animated"/>
+        <Setter Property="FontFamily" Value="pack://application:,,,/LightVPN;component/Resources/Fonts/#Ubuntu Bold" />
     </Style>
     <Style x:Key="BrightSmall" TargetType="TextBlock">
         <Setter Property="Foreground" Value="White" />
         <Setter Property="FontSize" Value="14" />
         <Setter Property="Opacity" Value="0.5" />
+        <Setter Property="TextOptions.TextHintingMode" Value="Animated"/>
         <Setter Property="FontFamily" Value="pack://application:,,,/LightVPN;component/Resources/Fonts/#Inter Bold" />
     </Style>
     <Style x:Key="DarkSmall" TargetType="TextBlock">
         <Setter Property="Foreground" Value="Black" />
         <Setter Property="FontSize" Value="14" />
         <Setter Property="Opacity" Value="0.5" />
+        <Setter Property="TextOptions.TextHintingMode" Value="Animated"/>
         <Setter Property="FontFamily" Value="pack://application:,,,/LightVPN;component/Resources/Fonts/#Inter Bold" />
     </Style>
     <Style x:Key="Semibold" TargetType="TextBlock">
@@ -62,28 +67,33 @@
         <Setter Property="FontSize" Value="14" />
         <Setter Property="Opacity" Value="0.5" />
         <Setter Property="Foreground" Value="{DynamicResource MaterialDesignBody}" />
+        <Setter Property="TextOptions.TextHintingMode" Value="Animated"/>
         <Setter Property="FontFamily" Value="pack://application:,,,/LightVPN;component/Resources/Fonts/#Inter Bold" />
     </Style>
     <Style x:Key="SmallLabel" TargetType="Label">
         <Setter Property="FontSize" Value="14" />
         <Setter Property="Opacity" Value="0.5" />
         <Setter Property="Foreground" Value="{DynamicResource MaterialDesignBody}" />
+        <Setter Property="TextOptions.TextHintingMode" Value="Animated"/>
         <Setter Property="FontFamily" Value="pack://application:,,,/LightVPN;component/Resources/Fonts/#Inter Bold" />
     </Style>
     <Style x:Key="DarkHeadline" TargetType="TextBlock">
         <Setter Property="Foreground" Value="Black" />
         <Setter Property="FontSize" Value="20" />
-        <Setter Property="FontFamily" Value="pack://application:,,,/LightVPN;component/Resources/Fonts/#Inter Extra Bold" />
+        <Setter Property="TextOptions.TextHintingMode" Value="Animated"/>
+        <Setter Property="FontFamily" Value="pack://application:,,,/LightVPN;component/Resources/Fonts/#Ubuntu Bold" />
     </Style>
     <Style x:Key="Headline" TargetType="TextBlock">
         <Setter Property="FontSize" Value="20" />
         <Setter Property="Foreground" Value="{DynamicResource MaterialDesignBody}" />
-        <Setter Property="FontFamily" Value="pack://application:,,,/LightVPN;component/Resources/Fonts/#Inter Extra Bold" />
+        <Setter Property="TextOptions.TextHintingMode" Value="Animated"/>
+        <Setter Property="FontFamily" Value="pack://application:,,,/LightVPN;component/Resources/Fonts/#Ubuntu Bold" />
     </Style>
     <Style x:Key="HeadlineLabel" TargetType="Label">
         <Setter Property="FontSize" Value="20" />
         <Setter Property="Foreground" Value="{DynamicResource MaterialDesignBody}" />
-        <Setter Property="FontFamily" Value="pack://application:,,,/LightVPN;component/Resources/Fonts/#Inter Extra Bold" />
+        <Setter Property="TextOptions.TextHintingMode" Value="Animated"/>
+        <Setter Property="FontFamily" Value="pack://application:,,,/LightVPN;component/Resources/Fonts/#Ubuntu Bold" />
     </Style>
     <Style x:Key="GradientBackground" TargetType="materialDesign:Card">
         <Setter Property="Background">

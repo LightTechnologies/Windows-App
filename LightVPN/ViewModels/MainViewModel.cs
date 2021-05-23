@@ -1,4 +1,5 @@
-﻿using LightVPN.Auth.Interfaces;
+﻿using LightVPN.Auth.Exceptions;
+using LightVPN.Auth.Interfaces;
 using LightVPN.Common.Models;
 using LightVPN.Delegates;
 using LightVPN.Discord.Interfaces;
@@ -136,28 +137,56 @@ namespace LightVPN.ViewModels
                 {
                     CommandAction = async (args) =>
                     {
-                        Servers.Clear();
-
-                        var settings = Globals.Container.GetInstance<ISettingsManager<SettingsModel>>().Load();
-
-                        var servers = await Globals.Container.GetInstance<IHttp>().GetServersAsync(_cancellationToken.Token);
-
-                        foreach (var server in servers.OrderByDescending(x => x.CountryName).ThenBy(x => x.ServerName).ThenBy(x => x.Type))
+                        try
                         {
-                            Servers.Add(new ServersModel
-                            {
-                                ServerName = server.ServerName,
-                                Country = server.Location,
-                                Id = server.FileName,
-                                Type = server.Type,
-                                Status = server.Status ? "Check" : "Close",
-                                Flag = $"pack://application:,,,/LightVPN;Component/Resources/Flags/{server.CountryName.Replace(' ', '-')}.png"
-                            });
+                            Servers.Clear();
 
-                            if (settings.AutoConnect && settings.PreviousServer?.Id is not null)
+                            var settings = Globals.Container.GetInstance<ISettingsManager<SettingsModel>>().Load();
+
+                            var servers = await Globals.Container.GetInstance<IHttp>().GetServersAsync(_cancellationToken.Token);
+
+                            foreach (var server in servers.OrderByDescending(x => x.CountryName).ThenBy(x => x.ServerName).ThenBy(x => x.Type))
                             {
-                                await ConnectAsync(settings.PreviousServer?.Id);
+                                Servers.Add(new ServersModel
+                                {
+                                    ServerName = server.ServerName,
+                                    Country = server.Location,
+                                    Id = server.FileName,
+                                    Type = server.Type,
+                                    Status = server.Status ? "Check" : "Close",
+                                    Flag = $"pack://application:,,,/LightVPN;Component/Resources/Flags/{server.CountryName.Replace(' ', '-')}.png"
+                                });
+
+                                if (settings.AutoConnect && settings.PreviousServer?.Id is not null)
+                                {
+                                    await ConnectAsync(settings.PreviousServer?.Id);
+                                }
                             }
+                        }
+                        catch (ClientUpdateRequired)
+                        {
+                            MessageBox.Show("There's a new version of LightVPN available, please close LightVPN and re-open it to automatically download and install the update", "LightVPN", MessageBoxButton.OK, MessageBoxImage.Warning);
+                            return;
+                        }
+                        catch (RatelimitedException e)
+                        {
+                            MessageBox.Show($"Couldn't get servers.\n\n{e}", "LightVPN", MessageBoxButton.OK, MessageBoxImage.Warning);
+                            return;
+                        }
+                        catch (ApiOfflineException e)
+                        {
+                            MessageBox.Show($"Couldn't get servers.\n\n{e}", "LightVPN", MessageBoxButton.OK, MessageBoxImage.Warning);
+                            return;
+                        }
+                        catch (SubscriptionExpiredException)
+                        {
+                            MessageBox.Show($"Looks like your subscription to LightVPN has expired, please head over to the dashboard to renew it.", "LightVPN", MessageBoxButton.OK, MessageBoxImage.Warning);
+                            return;
+                        }
+                        catch (InvalidResponseException e)
+                        {
+                            MessageBox.Show($"Couldn't get servers.\n\n{e}", "LightVPN", MessageBoxButton.OK, MessageBoxImage.Warning);
+                            return;
                         }
                     }
                 };

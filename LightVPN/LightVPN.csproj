@@ -17,7 +17,7 @@
 		<ApplicationManifest>app.manifest</ApplicationManifest>
 		<ApplicationIcon>lightvpn-purple-ico.ico</ApplicationIcon>
 		<PackageLicenseFile>License.txt</PackageLicenseFile>
-		<Version>2.1.2.6</Version>
+		<Version>2.1.2.5</Version>
 		<NeutralLanguage>en-US</NeutralLanguage>
 		<ProjectGuid>f35bd589-5219-4668-9f78-b646442b1661</ProjectGuid>
 		<PackageIcon>lightvpn-purple.png</PackageIcon>
@@ -315,6 +315,14 @@
 		<None Remove="Resources\Fonts\Inter-SemiBoldItalic.ttf" />
 		<None Remove="Resources\Fonts\Inter-Thin.ttf" />
 		<None Remove="Resources\Fonts\Inter-ThinItalic.ttf" />
+		<None Remove="Resources\Fonts\Ubuntu-Bold.ttf" />
+		<None Remove="Resources\Fonts\Ubuntu-BoldItalic.ttf" />
+		<None Remove="Resources\Fonts\Ubuntu-Italic.ttf" />
+		<None Remove="Resources\Fonts\Ubuntu-Light.ttf" />
+		<None Remove="Resources\Fonts\Ubuntu-LightItalic.ttf" />
+		<None Remove="Resources\Fonts\Ubuntu-Medium.ttf" />
+		<None Remove="Resources\Fonts\Ubuntu-MediumItalic.ttf" />
+		<None Remove="Resources\Fonts\Ubuntu-Regular.ttf" />
 		<None Remove="Resources\lightvpn-purple-100.png" />
 		<None Remove="Resources\lightvpn-purple-20.png" />
 		<None Remove="Resources\lightvpn-purple-ico.ico" />
@@ -636,6 +644,14 @@
 		<Resource Include="Resources\Fonts\Inter-SemiBoldItalic.ttf" />
 		<Resource Include="Resources\Fonts\Inter-Thin.ttf" />
 		<Resource Include="Resources\Fonts\Inter-ThinItalic.ttf" />
+		<Resource Include="Resources\Fonts\Ubuntu-Bold.ttf" />
+		<Resource Include="Resources\Fonts\Ubuntu-BoldItalic.ttf" />
+		<Resource Include="Resources\Fonts\Ubuntu-Italic.ttf" />
+		<Resource Include="Resources\Fonts\Ubuntu-Light.ttf" />
+		<Resource Include="Resources\Fonts\Ubuntu-LightItalic.ttf" />
+		<Resource Include="Resources\Fonts\Ubuntu-Medium.ttf" />
+		<Resource Include="Resources\Fonts\Ubuntu-MediumItalic.ttf" />
+		<Resource Include="Resources\Fonts\Ubuntu-Regular.ttf" />
 		<Resource Include="Resources\lightvpn-purple-100.png" />
 		<Resource Include="Resources\lightvpn-purple-20.png" />
 		<Resource Include="Resources\lightvpn-purple-ico.ico" />

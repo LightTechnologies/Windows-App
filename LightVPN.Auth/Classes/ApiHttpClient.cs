@@ -47,6 +47,11 @@ namespace LightVPN.Auth
                 {
                     var errorresp = await JsonSerializer.DeserializeAsync<GenericResponse>(content, cancellationToken: cancellationToken);
 
+                    if (resp.StatusCode == HttpStatusCode.UpgradeRequired)
+                    {
+                        throw new ClientUpdateRequired(errorresp.Message);
+                    }
+
                     throw new InvalidResponseException(errorresp.Message);
                 }
                 catch (JsonException)
