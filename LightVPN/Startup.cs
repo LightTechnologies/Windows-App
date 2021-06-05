@@ -89,13 +89,15 @@ namespace LightVPN
                     ServerCertificateCustomValidationCallback = (sender, cert, chain, error) =>
                     {
                         return cert.Issuer.ToLower().Contains("cloudflare") || error != System.Net.Security.SslPolicyErrors.None;
-                    },
+                    }
                 };
                 var httpClient = new HttpClient();
                 httpClient.DefaultRequestHeaders.CacheControl = new CacheControlHeaderValue
                 {
                     NoCache = true
                 };
+                httpClient.DefaultRequestHeaders.ConnectionClose = true;
+
                 Globals.Container.Register<IDiscordRpc>(() => new DiscordRpc(new DiscordRpcClient("833767448041226301", logger: new DiscordRPC.Logging.FileLogger("logs.txt"))), Lifestyle.Singleton);
                 Globals.Container.Register(() => new ApiHttpClient(httpClientHandler) ,Lifestyle.Singleton);
                 Globals.Container.Register<IHttp>(() => new Http(new ApiHttpClient(httpClientHandler), PlatformID.Win32NT), Lifestyle.Singleton);
