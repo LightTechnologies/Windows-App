@@ -304,6 +304,10 @@ namespace LightVPN.OpenVPN
                 CreateSocket();
                 await ConnectToManagementServerAsync(cancellationToken);
             }
+            catch (SocketException e)
+            {
+                _errorLogger.Write($"Fatal Exception: {e}");
+            }
             catch (Exception e)
             {
                 _errorLogger.Write($"(Manager/ConnectToManagementServer) Ignored exception:\n{e}");
@@ -339,7 +343,11 @@ namespace LightVPN.OpenVPN
         /// <param name="message"></param>
         private async Task InvokeError(string message)
         {
-            await DisconnectAsync();
+            _logger.Write(message);
+            if (_managementSocket.Connected)
+                 await DisconnectAsync();
+            else
+                _logger.Write("We were not connected this could be bad");
 
             if (Error is null) return;
             Error.Invoke(this, message);
@@ -356,55 +364,58 @@ namespace LightVPN.OpenVPN
             if (string.IsNullOrWhiteSpace(e.Data)) return;
 
 
-            await ConnectToManagementServerAsync();
+            
             _logger.Write(e.Data);
 
             switch (e.Data)
             {
+                case string str when str.Contains("Using --management on a TCP port WITHOUT passwords is STRONGLY discouraged and considered insecure"):
+                    await ConnectToManagementServerAsync();
+                    break;
                 case string str when str.Contains("Received control message: AUTH_FAILED"):
                     await PerformAutoTroubleshootAsync(true, $"Authentication to the VPN server has failed, your plan could've expired. Check https://lightvpn.org/dashboard");
 
-                    return;
+                    break;
 
                 case string str when str.Contains("MANAGEMENT: Socket bind failed on local address"):
                     await InvokeError($"Failed to bind socket on local address. To fix this issue, restart LightVPN or try again.");
 
-                    return;
+                    break;
 
                 case string str when str.Contains("Error opening configuration file"):
                     await PerformAutoTroubleshootAsync(true, "Error opening configuration file, your antivirus could be blocking LightVPN as we couldn't re-fetch them.");
 
-                    return;
+                    break;
 
                 case string str when str.Contains("Exiting due to fatal error"):
                     await PerformAutoTroubleshootAsync(false, "OpenVPN has exited unexpectedly, this could be due to a TAP adapter issue.");
 
-                    return;
+                    break;
 
                 case string str when str.Contains("Server poll timeout"):
-                    await PerformAutoTroubleshootAsync(true, "Timed out connecting to server, the server could currently be down. Check https://lightvpn.org/locations to see server status.");
+                    await InvokeError("Timed out connecting to server, the server could currently be down. Check https://lightvpn.org/locations to see server status.");
 
-                    return;
+                    break;
 
                 case string str when str.Contains("Unknown error"):
                     await PerformAutoTroubleshootAsync(false, "Unknown error connecting to server, reinstall your TAP adapter and try again");
 
-                    return;
+                    break;
 
                 case string str when str.Contains("Adapter 'LightVPN-TAP' not found"):
                     await PerformAutoTroubleshootAsync(false, "Couldn't find TAP adapter, reinstall your TAP adapter and try again");
 
-                    return;
+                    break;
 
                 case string str when str.Contains("Initialization Sequence Completed"):
-                    if (Connected is null) return;
+                    if (Connected is null) break;
 
                     Connected.Invoke(this);
 
                     break;
 
                 default:
-                    if (Output is null) return;
+                    if (Output is null) break;
 
                     Output.Invoke(this, OutputType.Error, e.Data);
 

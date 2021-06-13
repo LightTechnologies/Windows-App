@@ -156,11 +156,10 @@ namespace LightVPN.ViewModels
                                     Status = server.Status ? "Check" : "Close",
                                     Flag = $"pack://application:,,,/LightVPN;Component/Resources/Flags/{server.CountryName.Replace(' ', '-')}.png"
                                 });
-
-                                if (settings.AutoConnect && settings.PreviousServer?.Id is not null)
-                                {
-                                    await ConnectAsync(settings.PreviousServer?.Id);
-                                }
+                            }
+                            if (settings.AutoConnect && settings.PreviousServer?.Id is not null)
+                            {
+                                await ConnectAsync(settings.PreviousServer?.Id);
                             }
                         }
                         catch (ClientUpdateRequired)
@@ -227,10 +226,17 @@ namespace LightVPN.ViewModels
 
         internal async Task ConnectAsync(string serverName)
         {
-            if (servers != null && Servers.First(x => x.Id == serverName).Status == "Close")
+            try
             {
-                MessageBox.Show("This server is explicitly offline, please try again later.", "LightVPN", MessageBoxButton.OK, MessageBoxImage.Warning);
-                return;
+                if (servers != null && Servers.First(x => x.Id == serverName).Status == "Close")
+                {
+                    MessageBox.Show("This server is explicitly offline, please try again later.", "LightVPN", MessageBoxButton.OK, MessageBoxImage.Warning);
+                    return;
+                }
+            }
+            catch (Exception e)
+            {
+                await _logger.WriteAsync($"Bandaid Solution was triggered: {serverName}");
             }
             if (_manager.IsConnected || ConnectionState == ConnectionState.Connecting) return;
 
