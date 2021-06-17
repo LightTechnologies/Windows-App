@@ -1,0 +1,167 @@
+{
+  "runtimeTarget": {
+    "name": ".NETCoreApp,Version=v5.0",
+    "signature": ""
+  },
+  "compilationOptions": {},
+  "targets": {
+    ".NETCoreApp,Version=v5.0": {
+      "LightVPN.Client.Windows/1.0.0": {
+        "dependencies": {
+          "LightVPN.Client.Auth": "1.0.0",
+          "LightVPN.Client.OpenVPN": "1.0.0",
+          "LightVPN.Client.Windows.Services": "1.0.0",
+          "MaterialDesignColors": "2.0.1",
+          "MaterialDesignThemes": "4.1.0",
+          "Microsoft.Extensions.DependencyInjection": "5.0.1",
+          "Microsoft.Extensions.DependencyInjection.Abstractions": "5.0.0"
+        },
+        "runtime": {
+          "LightVPN.Client.Windows.dll": {}
+        }
+      },
+      "MaterialDesignColors/2.0.1": {
+        "runtime": {
+          "lib/netcoreapp3.1/MaterialDesignColors.dll": {
+            "assemblyVersion": "2.0.1.2556",
+            "fileVersion": "2.0.1.2556"
+          }
+        }
+      },
+      "MaterialDesignThemes/4.1.0": {
+        "dependencies": {
+          "MaterialDesignColors": "2.0.1"
+        },
+        "runtime": {
+          "lib/netcoreapp3.1/MaterialDesignThemes.Wpf.dll": {
+            "assemblyVersion": "4.1.0.2556",
+            "fileVersion": "4.1.0.2556"
+          }
+        }
+      },
+      "Microsoft.Extensions.DependencyInjection/5.0.1": {
+        "dependencies": {
+          "Microsoft.Extensions.DependencyInjection.Abstractions": "5.0.0"
+        },
+        "runtime": {
+          "lib/net5.0/Microsoft.Extensions.DependencyInjection.dll": {
+            "assemblyVersion": "5.0.0.1",
+            "fileVersion": "5.0.120.57516"
+          }
+        }
+      },
+      "Microsoft.Extensions.DependencyInjection.Abstractions/5.0.0": {
+        "runtime": {
+          "lib/netstandard2.0/Microsoft.Extensions.DependencyInjection.Abstractions.dll": {
+            "assemblyVersion": "5.0.0.0",
+            "fileVersion": "5.0.20.51904"
+          }
+        }
+      },
+      "LightVPN.Client.Auth/1.0.0": {
+        "dependencies": {
+          "LightVPN.Client.Cryptography": "1.0.0",
+          "LightVPN.Client.Windows.Common": "1.0.0",
+          "Microsoft.Extensions.DependencyInjection": "5.0.1",
+          "Microsoft.Extensions.DependencyInjection.Abstractions": "5.0.0"
+        },
+        "runtime": {
+          "LightVPN.Client.Auth.dll": {}
+        }
+      },
+      "LightVPN.Client.Cryptography/1.0.0": {
+        "dependencies": {
+          "Microsoft.Extensions.DependencyInjection": "5.0.1",
+          "Microsoft.Extensions.DependencyInjection.Abstractions": "5.0.0"
+        },
+        "runtime": {
+          "LightVPN.Client.Cryptography.dll": {}
+        }
+      },
+      "LightVPN.Client.OpenVPN/1.0.0": {
+        "dependencies": {
+          "Microsoft.Extensions.DependencyInjection.Abstractions": "5.0.0"
+        },
+        "runtime": {
+          "LightVPN.Client.OpenVPN.dll": {}
+        }
+      },
+      "LightVPN.Client.Windows.Common/1.0.0": {
+        "runtime": {
+          "LightVPN.Client.Windows.Common.dll": {}
+        }
+      },
+      "LightVPN.Client.Windows.Services/1.0.0": {
+        "dependencies": {
+          "LightVPN.Client.OpenVPN": "1.0.0",
+          "LightVPN.Client.Windows.Common": "1.0.0",
+          "Microsoft.Extensions.DependencyInjection": "5.0.1",
+          "Microsoft.Extensions.DependencyInjection.Abstractions": "5.0.0"
+        },
+        "runtime": {
+          "LightVPN.Client.Windows.Services.dll": {}
+        }
+      }
+    }
+  },
+  "libraries": {
+    "LightVPN.Client.Windows/1.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "MaterialDesignColors/2.0.1": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-Azl8nN23SD6QPE0PdsfpKiIqWTvH7rzXwgXPiFSEt91NFOrwB5cx3iq/sbINWMZunhXJ32+jVUHiV03B8eJbZw==",
+      "path": "materialdesigncolors/2.0.1",
+      "hashPath": "materialdesigncolors.2.0.1.nupkg.sha512"
+    },
+    "MaterialDesignThemes/4.1.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-WqrO9AbtdE4pLPtDk/C5BZRnkgWFwVGyUHWj7tRJrgnKl089DEobVXBCLeqp2mkgBeFHj4Xe3AfWyhmlnO6AZA==",
+      "path": "materialdesignthemes/4.1.0",
+      "hashPath": "materialdesignthemes.4.1.0.nupkg.sha512"
+    },
+    "Microsoft.Extensions.DependencyInjection/5.0.1": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-//mDNrYeiJ0eh/awFhDFJQzkRVra/njU5Y4fyK7X29g5HScrzbUkKOKlyTtygthcGFt4zNC8G5CFCjb/oizomA==",
+      "path": "microsoft.extensions.dependencyinjection/5.0.1",
+      "hashPath": "microsoft.extensions.dependencyinjection.5.0.1.nupkg.sha512"
+    },
+    "Microsoft.Extensions.DependencyInjection.Abstractions/5.0.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-ORj7Zh81gC69TyvmcUm9tSzytcy8AVousi+IVRAI8nLieQjOFryRusSFh7+aLk16FN9pQNqJAiMd7BTKINK0kA==",
+      "path": "microsoft.extensions.dependencyinjection.abstractions/5.0.0",
+      "hashPath": "microsoft.extensions.dependencyinjection.abstractions.5.0.0.nupkg.sha512"
+    },
+    "LightVPN.Client.Auth/1.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "LightVPN.Client.Cryptography/1.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "LightVPN.Client.OpenVPN/1.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "LightVPN.Client.Windows.Common/1.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "LightVPN.Client.Windows.Services/1.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    }
+  }
+}

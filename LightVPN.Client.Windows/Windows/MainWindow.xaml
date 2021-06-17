@@ -1,0 +1,18 @@
+﻿<Window x:Class="LightVPN.Client.Windows.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+        mc:Ignorable="d"
+        Title="MainWindow" Height="450" Width="800"
+        x:ClassModifier="internal">
+    <Grid>
+        <Button Style="{DynamicResource MaterialDesignRaisedButton}" VerticalAlignment="Center" HorizontalAlignment="Center">
+            <StackPanel Orientation="Horizontal">
+                <materialDesign:PackIcon Kind="Connection"></materialDesign:PackIcon>
+                <TextBlock Margin="5,0,0,0">CONNECT</TextBlock>
+            </StackPanel>
+        </Button>
+    </Grid>
+</Window>

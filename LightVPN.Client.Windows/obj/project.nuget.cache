@@ -1,0 +1,13 @@
+{
+  "version": 2,
+  "dgSpecHash": "bN7wMAUGPoGsu2kqpsGZEwIpTN0J0T1ACjXQ35lOI+W32cFK5cRU0wQRNzBE8R25mnPHwaHdViBppL+oH/ON4w==",
+  "success": true,
+  "projectFilePath": "C:\\Users\\Admin\\RiderProjects\\LightVPN.Client.Windows\\LightVPN.Client.Windows\\LightVPN.Client.Windows.csproj",
+  "expectedPackageFiles": [
+    "C:\\Users\\Admin\\.nuget\\packages\\materialdesigncolors\\2.0.1\\materialdesigncolors.2.0.1.nupkg.sha512",
+    "C:\\Users\\Admin\\.nuget\\packages\\materialdesignthemes\\4.1.0\\materialdesignthemes.4.1.0.nupkg.sha512",
+    "C:\\Users\\Admin\\.nuget\\packages\\microsoft.extensions.dependencyinjection\\5.0.1\\microsoft.extensions.dependencyinjection.5.0.1.nupkg.sha512",
+    "C:\\Users\\Admin\\.nuget\\packages\\microsoft.extensions.dependencyinjection.abstractions\\5.0.0\\microsoft.extensions.dependencyinjection.abstractions.5.0.0.nupkg.sha512"
+  ],
+  "logs": []
+}

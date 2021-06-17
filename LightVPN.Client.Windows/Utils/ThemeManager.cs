@@ -1,0 +1,48 @@
+﻿using System;
+using System.Windows;
+using System.Windows.Media;
+using LightVPN.Client.Windows.Models;
+using MaterialDesignThemes.Wpf;
+
+namespace LightVPN.Client.Windows.Utils
+{
+    internal static class ThemeManager
+    {
+        internal static void SwitchTheme(ThemeColor primaryColor, BackgroundMode backgroundMode, Color customColorBrush = default)
+        {
+            try
+            {
+                var baseTheme = backgroundMode switch
+                {
+                    BackgroundMode.Dark => Theme.Dark,
+                    BackgroundMode.Light => Theme.Light,
+                    _ => throw new ArgumentOutOfRangeException(nameof(backgroundMode), backgroundMode, null)
+                };
+                
+                ITheme theme = primaryColor switch
+                {
+                    ThemeColor.Default => Theme.Create(baseTheme,
+                        Color.FromRgb(147, 91, 249),
+                        Color.FromRgb(114, 124, 245)),
+                    ThemeColor.Accent => Theme.Create(baseTheme,
+                        SystemParameters.WindowGlassColor,
+                        SystemParameters.WindowGlassColor),
+                    ThemeColor.Custom => Theme.Create(baseTheme,
+                        customColorBrush,
+                        customColorBrush),
+                    _ => Theme.Create(baseTheme,
+                        (Color)ColorConverter.ConvertFromString(primaryColor.ToString()),
+                        (Color)ColorConverter.ConvertFromString(primaryColor.ToString())),
+                };
+
+                Application.Current.Resources.SetTheme(theme);
+            }
+            catch (Exception)
+            {
+                MessageBox.Show("Something went wrong when processing theme settings, please report this exception, and the log file to LightVPN support.", "LightVPN", MessageBoxButton.OK, MessageBoxImage.Error);
+                Application.Current.Shutdown();
+                return;
+            }
+        }
+    }
+}

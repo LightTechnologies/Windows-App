@@ -1,0 +1,10 @@
+{
+  "version": 2,
+  "dgSpecHash": "lBtrbb+CuOLXqbm087sNln3GN05RcE9DeEHHlLuyJBCMUfWXRlZ04RmjHG1L9HPf11SpOaBpz8HIwPMYBBPjtA==",
+  "success": true,
+  "projectFilePath": "C:\\Users\\Admin\\RiderProjects\\LightVPN.Client.Windows\\LightVPN.Client.OpenVPN\\LightVPN.Client.OpenVPN.csproj",
+  "expectedPackageFiles": [
+    "C:\\Users\\Admin\\.nuget\\packages\\microsoft.extensions.dependencyinjection.abstractions\\5.0.0\\microsoft.extensions.dependencyinjection.abstractions.5.0.0.nupkg.sha512"
+  ],
+  "logs": []
+}

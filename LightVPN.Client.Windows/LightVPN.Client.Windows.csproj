@@ -1,0 +1,22 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <OutputType>WinExe</OutputType>
+        <TargetFramework>net5.0-windows</TargetFramework>
+        <UseWPF>true</UseWPF>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <PackageReference Include="MaterialDesignColors" Version="2.0.1" />
+      <PackageReference Include="MaterialDesignThemes" Version="4.1.0" />
+      <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="5.0.1" />
+      <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="5.0.0" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\LightVPN.Client.Auth\LightVPN.Client.Auth.csproj" />
+      <ProjectReference Include="..\LightVPN.Client.OpenVPN\LightVPN.Client.OpenVPN.csproj" />
+      <ProjectReference Include="..\LightVPN.Client.Windows.Services\LightVPN.Client.Windows.Services.csproj" />
+    </ItemGroup>
+
+</Project>

@@ -1,0 +1,11 @@
+{
+  "version": 2,
+  "dgSpecHash": "GVfKSqT69/L7ylSyKbmXNql1k9uHtWu6yiGMxq/CAU3NFTV1F7ZVeIGi+I/u1B80D3VAYXHtr7ftfL5y/yLlRg==",
+  "success": true,
+  "projectFilePath": "C:\\Users\\Admin\\RiderProjects\\LightVPN.Client.Windows\\LightVPN.Client.Cryptography\\LightVPN.Client.Cryptography.csproj",
+  "expectedPackageFiles": [
+    "C:\\Users\\Admin\\.nuget\\packages\\microsoft.extensions.dependencyinjection\\5.0.1\\microsoft.extensions.dependencyinjection.5.0.1.nupkg.sha512",
+    "C:\\Users\\Admin\\.nuget\\packages\\microsoft.extensions.dependencyinjection.abstractions\\5.0.0\\microsoft.extensions.dependencyinjection.abstractions.5.0.0.nupkg.sha512"
+  ],
+  "logs": []
+}

@@ -1,0 +1,428 @@
+{
+  "format": 1,
+  "restore": {
+    "C:\\Users\\Admin\\RiderProjects\\LightVPN.Client.Windows\\LightVPN.Client.Windows\\LightVPN.Client.Windows.csproj": {}
+  },
+  "projects": {
+    "C:\\Users\\Admin\\RiderProjects\\LightVPN.Client.Windows\\LightVPN.Client.Auth\\LightVPN.Client.Auth.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "C:\\Users\\Admin\\RiderProjects\\LightVPN.Client.Windows\\LightVPN.Client.Auth\\LightVPN.Client.Auth.csproj",
+        "projectName": "LightVPN.Client.Auth",
+        "projectPath": "C:\\Users\\Admin\\RiderProjects\\LightVPN.Client.Windows\\LightVPN.Client.Auth\\LightVPN.Client.Auth.csproj",
+        "packagesPath": "C:\\Users\\Admin\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\Admin\\RiderProjects\\LightVPN.Client.Windows\\LightVPN.Client.Auth\\obj\\",
+        "projectStyle": "PackageReference",
+        "fallbackFolders": [
+          "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"
+        ],
+        "configFilePaths": [
+          "C:\\Users\\Admin\\RiderProjects\\LightVPN.Client.Windows\\NuGet.Config",
+          "C:\\Users\\Admin\\AppData\\Roaming\\NuGet\\NuGet.Config"
+        ],
+        "originalTargetFrameworks": [
+          "net5.0"
+        ],
+        "sources": {
+          "https://api.nuget.org/v3/index.json": {}
+        },
+        "frameworks": {
+          "net5.0": {
+            "targetAlias": "net5.0",
+            "projectReferences": {
+              "C:\\Users\\Admin\\RiderProjects\\LightVPN.Client.Windows\\LightVPN.Client.Cryptography\\LightVPN.Client.Cryptography.csproj": {
+                "projectPath": "C:\\Users\\Admin\\RiderProjects\\LightVPN.Client.Windows\\LightVPN.Client.Cryptography\\LightVPN.Client.Cryptography.csproj"
+              },
+              "C:\\Users\\Admin\\RiderProjects\\LightVPN.Client.Windows\\LightVPN.Client.Windows.Common\\LightVPN.Client.Windows.Common.csproj": {
+                "projectPath": "C:\\Users\\Admin\\RiderProjects\\LightVPN.Client.Windows\\LightVPN.Client.Windows.Common\\LightVPN.Client.Windows.Common.csproj"
+              }
+            }
+          }
+        },
+        "warningProperties": {
+          "warnAsError": [
+            "NU1605"
+          ]
+        }
+      },
+      "frameworks": {
+        "net5.0": {
+          "targetAlias": "net5.0",
+          "dependencies": {
+            "Microsoft.Extensions.DependencyInjection": {
+              "target": "Package",
+              "version": "[5.0.1, )"
+            },
+            "Microsoft.Extensions.DependencyInjection.Abstractions": {
+              "target": "Package",
+              "version": "[5.0.0, )"
+            }
+          },
+          "imports": [
+            "net461",
+            "net462",
+            "net47",
+            "net471",
+            "net472",
+            "net48"
+          ],
+          "assetTargetFallback": true,
+          "warn": true,
+          "frameworkReferences": {
+            "Microsoft.NETCore.App": {
+              "privateAssets": "all"
+            }
+          },
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\5.0.300\\RuntimeIdentifierGraph.json"
+        }
+      }
+    },
+    "C:\\Users\\Admin\\RiderProjects\\LightVPN.Client.Windows\\LightVPN.Client.Cryptography\\LightVPN.Client.Cryptography.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "C:\\Users\\Admin\\RiderProjects\\LightVPN.Client.Windows\\LightVPN.Client.Cryptography\\LightVPN.Client.Cryptography.csproj",
+        "projectName": "LightVPN.Client.Cryptography",
+        "projectPath": "C:\\Users\\Admin\\RiderProjects\\LightVPN.Client.Windows\\LightVPN.Client.Cryptography\\LightVPN.Client.Cryptography.csproj",
+        "packagesPath": "C:\\Users\\Admin\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\Admin\\RiderProjects\\LightVPN.Client.Windows\\LightVPN.Client.Cryptography\\obj\\",
+        "projectStyle": "PackageReference",
+        "fallbackFolders": [
+          "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"
+        ],
+        "configFilePaths": [
+          "C:\\Users\\Admin\\RiderProjects\\LightVPN.Client.Windows\\NuGet.Config",
+          "C:\\Users\\Admin\\AppData\\Roaming\\NuGet\\NuGet.Config"
+        ],
+        "originalTargetFrameworks": [
+          "net5.0"
+        ],
+        "sources": {
+          "https://api.nuget.org/v3/index.json": {}
+        },
+        "frameworks": {
+          "net5.0": {
+            "targetAlias": "net5.0",
+            "projectReferences": {}
+          }
+        },
+        "warningProperties": {
+          "warnAsError": [
+            "NU1605"
+          ]
+        }
+      },
+      "frameworks": {
+        "net5.0": {
+          "targetAlias": "net5.0",
+          "dependencies": {
+            "Microsoft.Extensions.DependencyInjection": {
+              "target": "Package",
+              "version": "[5.0.1, )"
+            },
+            "Microsoft.Extensions.DependencyInjection.Abstractions": {
+              "target": "Package",
+              "version": "[5.0.0, )"
+            }
+          },
+          "imports": [
+            "net461",
+            "net462",
+            "net47",
+            "net471",
+            "net472",
+            "net48"
+          ],
+          "assetTargetFallback": true,
+          "warn": true,
+          "frameworkReferences": {
+            "Microsoft.NETCore.App": {
+              "privateAssets": "all"
+            }
+          },
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\5.0.300\\RuntimeIdentifierGraph.json"
+        }
+      }
+    },
+    "C:\\Users\\Admin\\RiderProjects\\LightVPN.Client.Windows\\LightVPN.Client.OpenVPN\\LightVPN.Client.OpenVPN.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "C:\\Users\\Admin\\RiderProjects\\LightVPN.Client.Windows\\LightVPN.Client.OpenVPN\\LightVPN.Client.OpenVPN.csproj",
+        "projectName": "LightVPN.Client.OpenVPN",
+        "projectPath": "C:\\Users\\Admin\\RiderProjects\\LightVPN.Client.Windows\\LightVPN.Client.OpenVPN\\LightVPN.Client.OpenVPN.csproj",
+        "packagesPath": "C:\\Users\\Admin\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\Admin\\RiderProjects\\LightVPN.Client.Windows\\LightVPN.Client.OpenVPN\\obj\\",
+        "projectStyle": "PackageReference",
+        "fallbackFolders": [
+          "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"
+        ],
+        "configFilePaths": [
+          "C:\\Users\\Admin\\RiderProjects\\LightVPN.Client.Windows\\NuGet.Config",
+          "C:\\Users\\Admin\\AppData\\Roaming\\NuGet\\NuGet.Config"
+        ],
+        "originalTargetFrameworks": [
+          "net5.0"
+        ],
+        "sources": {
+          "https://api.nuget.org/v3/index.json": {}
+        },
+        "frameworks": {
+          "net5.0": {
+            "targetAlias": "net5.0",
+            "projectReferences": {}
+          }
+        },
+        "warningProperties": {
+          "warnAsError": [
+            "NU1605"
+          ]
+        }
+      },
+      "frameworks": {
+        "net5.0": {
+          "targetAlias": "net5.0",
+          "dependencies": {
+            "Microsoft.Extensions.DependencyInjection.Abstractions": {
+              "target": "Package",
+              "version": "[5.0.0, )"
+            }
+          },
+          "imports": [
+            "net461",
+            "net462",
+            "net47",
+            "net471",
+            "net472",
+            "net48"
+          ],
+          "assetTargetFallback": true,
+          "warn": true,
+          "frameworkReferences": {
+            "Microsoft.NETCore.App": {
+              "privateAssets": "all"
+            }
+          },
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\5.0.300\\RuntimeIdentifierGraph.json"
+        }
+      }
+    },
+    "C:\\Users\\Admin\\RiderProjects\\LightVPN.Client.Windows\\LightVPN.Client.Windows.Common\\LightVPN.Client.Windows.Common.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "C:\\Users\\Admin\\RiderProjects\\LightVPN.Client.Windows\\LightVPN.Client.Windows.Common\\LightVPN.Client.Windows.Common.csproj",
+        "projectName": "LightVPN.Client.Windows.Common",
+        "projectPath": "C:\\Users\\Admin\\RiderProjects\\LightVPN.Client.Windows\\LightVPN.Client.Windows.Common\\LightVPN.Client.Windows.Common.csproj",
+        "packagesPath": "C:\\Users\\Admin\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\Admin\\RiderProjects\\LightVPN.Client.Windows\\LightVPN.Client.Windows.Common\\obj\\",
+        "projectStyle": "PackageReference",
+        "fallbackFolders": [
+          "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"
+        ],
+        "configFilePaths": [
+          "C:\\Users\\Admin\\RiderProjects\\LightVPN.Client.Windows\\NuGet.Config",
+          "C:\\Users\\Admin\\AppData\\Roaming\\NuGet\\NuGet.Config"
+        ],
+        "originalTargetFrameworks": [
+          "net5.0"
+        ],
+        "sources": {
+          "https://api.nuget.org/v3/index.json": {}
+        },
+        "frameworks": {
+          "net5.0": {
+            "targetAlias": "net5.0",
+            "projectReferences": {}
+          }
+        },
+        "warningProperties": {
+          "warnAsError": [
+            "NU1605"
+          ]
+        }
+      },
+      "frameworks": {
+        "net5.0": {
+          "targetAlias": "net5.0",
+          "imports": [
+            "net461",
+            "net462",
+            "net47",
+            "net471",
+            "net472",
+            "net48"
+          ],
+          "assetTargetFallback": true,
+          "warn": true,
+          "frameworkReferences": {
+            "Microsoft.NETCore.App": {
+              "privateAssets": "all"
+            }
+          },
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\5.0.300\\RuntimeIdentifierGraph.json"
+        }
+      }
+    },
+    "C:\\Users\\Admin\\RiderProjects\\LightVPN.Client.Windows\\LightVPN.Client.Windows.Services\\LightVPN.Client.Windows.Services.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "C:\\Users\\Admin\\RiderProjects\\LightVPN.Client.Windows\\LightVPN.Client.Windows.Services\\LightVPN.Client.Windows.Services.csproj",
+        "projectName": "LightVPN.Client.Windows.Services",
+        "projectPath": "C:\\Users\\Admin\\RiderProjects\\LightVPN.Client.Windows\\LightVPN.Client.Windows.Services\\LightVPN.Client.Windows.Services.csproj",
+        "packagesPath": "C:\\Users\\Admin\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\Admin\\RiderProjects\\LightVPN.Client.Windows\\LightVPN.Client.Windows.Services\\obj\\",
+        "projectStyle": "PackageReference",
+        "fallbackFolders": [
+          "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"
+        ],
+        "configFilePaths": [
+          "C:\\Users\\Admin\\RiderProjects\\LightVPN.Client.Windows\\NuGet.Config",
+          "C:\\Users\\Admin\\AppData\\Roaming\\NuGet\\NuGet.Config"
+        ],
+        "originalTargetFrameworks": [
+          "net5.0"
+        ],
+        "sources": {
+          "https://api.nuget.org/v3/index.json": {}
+        },
+        "frameworks": {
+          "net5.0": {
+            "targetAlias": "net5.0",
+            "projectReferences": {
+              "C:\\Users\\Admin\\RiderProjects\\LightVPN.Client.Windows\\LightVpn.Client.OpenVpn\\LightVpn.Client.OpenVpn.csproj": {
+                "projectPath": "C:\\Users\\Admin\\RiderProjects\\LightVPN.Client.Windows\\LightVpn.Client.OpenVpn\\LightVpn.Client.OpenVpn.csproj"
+              },
+              "C:\\Users\\Admin\\RiderProjects\\LightVPN.Client.Windows\\LightVPN.Client.OpenVPN\\LightVPN.Client.OpenVPN.csproj": {
+                "projectPath": "C:\\Users\\Admin\\RiderProjects\\LightVPN.Client.Windows\\LightVPN.Client.OpenVPN\\LightVPN.Client.OpenVPN.csproj"
+              },
+              "C:\\Users\\Admin\\RiderProjects\\LightVPN.Client.Windows\\LightVPN.Client.Windows.Common\\LightVPN.Client.Windows.Common.csproj": {
+                "projectPath": "C:\\Users\\Admin\\RiderProjects\\LightVPN.Client.Windows\\LightVPN.Client.Windows.Common\\LightVPN.Client.Windows.Common.csproj"
+              }
+            }
+          }
+        },
+        "warningProperties": {
+          "warnAsError": [
+            "NU1605"
+          ]
+        }
+      },
+      "frameworks": {
+        "net5.0": {
+          "targetAlias": "net5.0",
+          "dependencies": {
+            "Microsoft.Extensions.DependencyInjection": {
+              "target": "Package",
+              "version": "[5.0.1, )"
+            },
+            "Microsoft.Extensions.DependencyInjection.Abstractions": {
+              "target": "Package",
+              "version": "[5.0.0, )"
+            }
+          },
+          "imports": [
+            "net461",
+            "net462",
+            "net47",
+            "net471",
+            "net472",
+            "net48"
+          ],
+          "assetTargetFallback": true,
+          "warn": true,
+          "frameworkReferences": {
+            "Microsoft.NETCore.App": {
+              "privateAssets": "all"
+            }
+          },
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\5.0.300\\RuntimeIdentifierGraph.json"
+        }
+      }
+    },
+    "C:\\Users\\Admin\\RiderProjects\\LightVPN.Client.Windows\\LightVPN.Client.Windows\\LightVPN.Client.Windows.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "C:\\Users\\Admin\\RiderProjects\\LightVPN.Client.Windows\\LightVPN.Client.Windows\\LightVPN.Client.Windows.csproj",
+        "projectName": "LightVPN.Client.Windows",
+        "projectPath": "C:\\Users\\Admin\\RiderProjects\\LightVPN.Client.Windows\\LightVPN.Client.Windows\\LightVPN.Client.Windows.csproj",
+        "packagesPath": "C:\\Users\\Admin\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\Admin\\RiderProjects\\LightVPN.Client.Windows\\LightVPN.Client.Windows\\obj\\",
+        "projectStyle": "PackageReference",
+        "fallbackFolders": [
+          "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"
+        ],
+        "configFilePaths": [
+          "C:\\Users\\Admin\\RiderProjects\\LightVPN.Client.Windows\\NuGet.Config",
+          "C:\\Users\\Admin\\AppData\\Roaming\\NuGet\\NuGet.Config"
+        ],
+        "originalTargetFrameworks": [
+          "net5.0-windows"
+        ],
+        "sources": {
+          "https://api.nuget.org/v3/index.json": {}
+        },
+        "frameworks": {
+          "net5.0-windows7.0": {
+            "targetAlias": "net5.0-windows",
+            "projectReferences": {
+              "C:\\Users\\Admin\\RiderProjects\\LightVPN.Client.Windows\\LightVPN.Client.Auth\\LightVPN.Client.Auth.csproj": {
+                "projectPath": "C:\\Users\\Admin\\RiderProjects\\LightVPN.Client.Windows\\LightVPN.Client.Auth\\LightVPN.Client.Auth.csproj"
+              },
+              "C:\\Users\\Admin\\RiderProjects\\LightVPN.Client.Windows\\LightVPN.Client.OpenVPN\\LightVPN.Client.OpenVPN.csproj": {
+                "projectPath": "C:\\Users\\Admin\\RiderProjects\\LightVPN.Client.Windows\\LightVPN.Client.OpenVPN\\LightVPN.Client.OpenVPN.csproj"
+              },
+              "C:\\Users\\Admin\\RiderProjects\\LightVPN.Client.Windows\\LightVPN.Client.Windows.Services\\LightVPN.Client.Windows.Services.csproj": {
+                "projectPath": "C:\\Users\\Admin\\RiderProjects\\LightVPN.Client.Windows\\LightVPN.Client.Windows.Services\\LightVPN.Client.Windows.Services.csproj"
+              }
+            }
+          }
+        },
+        "warningProperties": {
+          "warnAsError": [
+            "NU1605"
+          ]
+        }
+      },
+      "frameworks": {
+        "net5.0-windows7.0": {
+          "targetAlias": "net5.0-windows",
+          "dependencies": {
+            "MaterialDesignColors": {
+              "target": "Package",
+              "version": "[2.0.1, )"
+            },
+            "MaterialDesignThemes": {
+              "target": "Package",
+              "version": "[4.1.0, )"
+            },
+            "Microsoft.Extensions.DependencyInjection": {
+              "target": "Package",
+              "version": "[5.0.1, )"
+            },
+            "Microsoft.Extensions.DependencyInjection.Abstractions": {
+              "target": "Package",
+              "version": "[5.0.0, )"
+            }
+          },
+          "imports": [
+            "net461",
+            "net462",
+            "net47",
+            "net471",
+            "net472",
+            "net48"
+          ],
+          "assetTargetFallback": true,
+          "warn": true,
+          "frameworkReferences": {
+            "Microsoft.NETCore.App": {
+              "privateAssets": "all"
+            },
+            "Microsoft.WindowsDesktop.App.WPF": {
+              "privateAssets": "none"
+            }
+          },
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\5.0.300\\RuntimeIdentifierGraph.json"
+        }
+      }
+    }
+  }
+}

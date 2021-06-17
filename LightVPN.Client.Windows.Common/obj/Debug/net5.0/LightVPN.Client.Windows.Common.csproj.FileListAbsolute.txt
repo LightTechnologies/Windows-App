@@ -1,0 +1,12 @@
+C:\Users\Admin\RiderProjects\LightVPN.Client.Windows\LightVPN.Client.Windows.Common\bin\Debug\net5.0\LightVPN.Client.Windows.Common.deps.json
+C:\Users\Admin\RiderProjects\LightVPN.Client.Windows\LightVPN.Client.Windows.Common\bin\Debug\net5.0\LightVPN.Client.Windows.Common.dll
+C:\Users\Admin\RiderProjects\LightVPN.Client.Windows\LightVPN.Client.Windows.Common\bin\Debug\net5.0\ref\LightVPN.Client.Windows.Common.dll
+C:\Users\Admin\RiderProjects\LightVPN.Client.Windows\LightVPN.Client.Windows.Common\bin\Debug\net5.0\LightVPN.Client.Windows.Common.pdb
+C:\Users\Admin\RiderProjects\LightVPN.Client.Windows\LightVPN.Client.Windows.Common\obj\Debug\net5.0\LightVPN.Client.Windows.Common.csproj.AssemblyReference.cache
+C:\Users\Admin\RiderProjects\LightVPN.Client.Windows\LightVPN.Client.Windows.Common\obj\Debug\net5.0\LightVPN.Client.Windows.Common.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\Admin\RiderProjects\LightVPN.Client.Windows\LightVPN.Client.Windows.Common\obj\Debug\net5.0\LightVPN.Client.Windows.Common.AssemblyInfoInputs.cache
+C:\Users\Admin\RiderProjects\LightVPN.Client.Windows\LightVPN.Client.Windows.Common\obj\Debug\net5.0\LightVPN.Client.Windows.Common.AssemblyInfo.cs
+C:\Users\Admin\RiderProjects\LightVPN.Client.Windows\LightVPN.Client.Windows.Common\obj\Debug\net5.0\LightVPN.Client.Windows.Common.csproj.CoreCompileInputs.cache
+C:\Users\Admin\RiderProjects\LightVPN.Client.Windows\LightVPN.Client.Windows.Common\obj\Debug\net5.0\LightVPN.Client.Windows.Common.dll
+C:\Users\Admin\RiderProjects\LightVPN.Client.Windows\LightVPN.Client.Windows.Common\obj\Debug\net5.0\ref\LightVPN.Client.Windows.Common.dll
+C:\Users\Admin\RiderProjects\LightVPN.Client.Windows\LightVPN.Client.Windows.Common\obj\Debug\net5.0\LightVPN.Client.Windows.Common.pdb
