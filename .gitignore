@@ -7,6 +7,12 @@
 LightVPN/App.config
 
 ###################
+# jetbrains stuff #
+###################
+.idea
+
+
+###################
 # compiled source #
 ###################
 *.com
