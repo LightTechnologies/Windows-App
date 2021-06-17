@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "ZkD/eGFsUKCJWNBAXxgKwfOz7QQomGTMqhhCgK3vUlPsPt2J/TqhojY/81HsSKiVNDPwHBK5QoMOEBWu4yzHEQ==",
+  "dgSpecHash": "J0sO46WLWR+aFZ0Tdz3W9zlN4x6byOuhXk4zXjsNTu53XEkgJj3ox07pz/Jb5qjLGhb9yAeUQDCbufC8lEbZnQ==",
   "success": true,
-  "projectFilePath": "C:\\Users\\Admin\\RiderProjects\\LightVPN.Client.Windows\\LightVPN.Client.Auth\\LightVPN.Client.Auth.csproj",
+  "projectFilePath": "C:\\Users\\Admin\\Documents\\GitHub\\Windows-App\\LightVPN.Client.Auth\\LightVPN.Client.Auth.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\Admin\\.nuget\\packages\\microsoft.extensions.dependencyinjection\\5.0.1\\microsoft.extensions.dependencyinjection.5.0.1.nupkg.sha512",
     "C:\\Users\\Admin\\.nuget\\packages\\microsoft.extensions.dependencyinjection.abstractions\\5.0.0\\microsoft.extensions.dependencyinjection.abstractions.5.0.0.nupkg.sha512"

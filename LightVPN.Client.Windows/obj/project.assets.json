@@ -262,17 +262,17 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\Admin\\RiderProjects\\LightVPN.Client.Windows\\LightVPN.Client.Windows\\LightVPN.Client.Windows.csproj",
+      "projectUniqueName": "C:\\Users\\Admin\\Documents\\GitHub\\Windows-App\\LightVPN.Client.Windows\\LightVPN.Client.Windows.csproj",
       "projectName": "LightVPN.Client.Windows",
-      "projectPath": "C:\\Users\\Admin\\RiderProjects\\LightVPN.Client.Windows\\LightVPN.Client.Windows\\LightVPN.Client.Windows.csproj",
+      "projectPath": "C:\\Users\\Admin\\Documents\\GitHub\\Windows-App\\LightVPN.Client.Windows\\LightVPN.Client.Windows.csproj",
       "packagesPath": "C:\\Users\\Admin\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\Admin\\RiderProjects\\LightVPN.Client.Windows\\LightVPN.Client.Windows\\obj\\",
+      "outputPath": "C:\\Users\\Admin\\Documents\\GitHub\\Windows-App\\LightVPN.Client.Windows\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"
       ],
       "configFilePaths": [
-        "C:\\Users\\Admin\\RiderProjects\\LightVPN.Client.Windows\\NuGet.Config",
+        "C:\\Users\\Admin\\Documents\\GitHub\\Windows-App\\NuGet.Config",
         "C:\\Users\\Admin\\AppData\\Roaming\\NuGet\\NuGet.Config"
       ],
       "originalTargetFrameworks": [
@@ -285,14 +285,14 @@
         "net5.0-windows7.0": {
           "targetAlias": "net5.0-windows",
           "projectReferences": {
-            "C:\\Users\\Admin\\RiderProjects\\LightVPN.Client.Windows\\LightVPN.Client.Auth\\LightVPN.Client.Auth.csproj": {
-              "projectPath": "C:\\Users\\Admin\\RiderProjects\\LightVPN.Client.Windows\\LightVPN.Client.Auth\\LightVPN.Client.Auth.csproj"
+            "C:\\Users\\Admin\\Documents\\GitHub\\Windows-App\\LightVPN.Client.Auth\\LightVPN.Client.Auth.csproj": {
+              "projectPath": "C:\\Users\\Admin\\Documents\\GitHub\\Windows-App\\LightVPN.Client.Auth\\LightVPN.Client.Auth.csproj"
             },
-            "C:\\Users\\Admin\\RiderProjects\\LightVPN.Client.Windows\\LightVPN.Client.OpenVPN\\LightVPN.Client.OpenVPN.csproj": {
-              "projectPath": "C:\\Users\\Admin\\RiderProjects\\LightVPN.Client.Windows\\LightVPN.Client.OpenVPN\\LightVPN.Client.OpenVPN.csproj"
+            "C:\\Users\\Admin\\Documents\\GitHub\\Windows-App\\LightVPN.Client.OpenVPN\\LightVPN.Client.OpenVPN.csproj": {
+              "projectPath": "C:\\Users\\Admin\\Documents\\GitHub\\Windows-App\\LightVPN.Client.OpenVPN\\LightVPN.Client.OpenVPN.csproj"
             },
-            "C:\\Users\\Admin\\RiderProjects\\LightVPN.Client.Windows\\LightVPN.Client.Windows.Services\\LightVPN.Client.Windows.Services.csproj": {
-              "projectPath": "C:\\Users\\Admin\\RiderProjects\\LightVPN.Client.Windows\\LightVPN.Client.Windows.Services\\LightVPN.Client.Windows.Services.csproj"
+            "C:\\Users\\Admin\\Documents\\GitHub\\Windows-App\\LightVPN.Client.Windows.Services\\LightVPN.Client.Windows.Services.csproj": {
+              "projectPath": "C:\\Users\\Admin\\Documents\\GitHub\\Windows-App\\LightVPN.Client.Windows.Services\\LightVPN.Client.Windows.Services.csproj"
             }
           }
         }

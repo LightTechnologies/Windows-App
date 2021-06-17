@@ -84,17 +84,17 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\Admin\\RiderProjects\\LightVPN.Client.Windows\\LightVPN.Client.Cryptography\\LightVPN.Client.Cryptography.csproj",
+      "projectUniqueName": "C:\\Users\\Admin\\Documents\\GitHub\\Windows-App\\LightVPN.Client.Cryptography\\LightVPN.Client.Cryptography.csproj",
       "projectName": "LightVPN.Client.Cryptography",
-      "projectPath": "C:\\Users\\Admin\\RiderProjects\\LightVPN.Client.Windows\\LightVPN.Client.Cryptography\\LightVPN.Client.Cryptography.csproj",
+      "projectPath": "C:\\Users\\Admin\\Documents\\GitHub\\Windows-App\\LightVPN.Client.Cryptography\\LightVPN.Client.Cryptography.csproj",
       "packagesPath": "C:\\Users\\Admin\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\Admin\\RiderProjects\\LightVPN.Client.Windows\\LightVPN.Client.Cryptography\\obj\\",
+      "outputPath": "C:\\Users\\Admin\\Documents\\GitHub\\Windows-App\\LightVPN.Client.Cryptography\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"
       ],
       "configFilePaths": [
-        "C:\\Users\\Admin\\RiderProjects\\LightVPN.Client.Windows\\NuGet.Config",
+        "C:\\Users\\Admin\\Documents\\GitHub\\Windows-App\\NuGet.Config",
         "C:\\Users\\Admin\\AppData\\Roaming\\NuGet\\NuGet.Config"
       ],
       "originalTargetFrameworks": [

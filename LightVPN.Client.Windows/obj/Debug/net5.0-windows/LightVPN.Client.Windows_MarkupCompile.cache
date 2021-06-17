@@ -4,7 +4,7 @@
 winexe
 C#
 .cs
-C:\Users\Admin\RiderProjects\LightVPN.Client.Windows\LightVPN.Client.Windows\obj\Debug\net5.0-windows\
+C:\Users\Admin\Documents\GitHub\Windows-App\LightVPN.Client.Windows\obj\Debug\net5.0-windows\
 LightVPN.Client.Windows
 none
 false
@@ -13,7 +13,7 @@ TRACE;DEBUG;NET;NET5_0;NETCOREAPP
 21700574717
 
 8-455526475
-2021543051678
+202-1601690945
 Windows\LoginWindow.xaml;Windows\MainWindow.xaml;
 
 False

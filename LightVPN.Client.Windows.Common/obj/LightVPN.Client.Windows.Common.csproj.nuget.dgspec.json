@@ -1,23 +1,23 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\Admin\\RiderProjects\\LightVPN.Client.Windows\\LightVPN.Client.Windows.Common\\LightVPN.Client.Windows.Common.csproj": {}
+    "C:\\Users\\Admin\\Documents\\GitHub\\Windows-App\\LightVPN.Client.Windows.Common\\LightVPN.Client.Windows.Common.csproj": {}
   },
   "projects": {
-    "C:\\Users\\Admin\\RiderProjects\\LightVPN.Client.Windows\\LightVPN.Client.Windows.Common\\LightVPN.Client.Windows.Common.csproj": {
+    "C:\\Users\\Admin\\Documents\\GitHub\\Windows-App\\LightVPN.Client.Windows.Common\\LightVPN.Client.Windows.Common.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\Admin\\RiderProjects\\LightVPN.Client.Windows\\LightVPN.Client.Windows.Common\\LightVPN.Client.Windows.Common.csproj",
+        "projectUniqueName": "C:\\Users\\Admin\\Documents\\GitHub\\Windows-App\\LightVPN.Client.Windows.Common\\LightVPN.Client.Windows.Common.csproj",
         "projectName": "LightVPN.Client.Windows.Common",
-        "projectPath": "C:\\Users\\Admin\\RiderProjects\\LightVPN.Client.Windows\\LightVPN.Client.Windows.Common\\LightVPN.Client.Windows.Common.csproj",
+        "projectPath": "C:\\Users\\Admin\\Documents\\GitHub\\Windows-App\\LightVPN.Client.Windows.Common\\LightVPN.Client.Windows.Common.csproj",
         "packagesPath": "C:\\Users\\Admin\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\Admin\\RiderProjects\\LightVPN.Client.Windows\\LightVPN.Client.Windows.Common\\obj\\",
+        "outputPath": "C:\\Users\\Admin\\Documents\\GitHub\\Windows-App\\LightVPN.Client.Windows.Common\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"
         ],
         "configFilePaths": [
-          "C:\\Users\\Admin\\RiderProjects\\LightVPN.Client.Windows\\NuGet.Config",
+          "C:\\Users\\Admin\\Documents\\GitHub\\Windows-App\\NuGet.Config",
           "C:\\Users\\Admin\\AppData\\Roaming\\NuGet\\NuGet.Config"
         ],
         "originalTargetFrameworks": [

@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "SmrR1h8LAY2JSV06Cxnip60p2iknF95jputtcmVlntM2T2pgjFkuzE4o3nNMYuoCyt/s7xcE7+VfKA5vQMekQQ==",
+  "dgSpecHash": "UjrPAA7YEWYcLIcrck/tBvYI034tTkrNupM27BySkSjfswjOnGsxgtGtTG4CIbijoodiJiUekFMf/VhkN2bYZA==",
   "success": true,
-  "projectFilePath": "C:\\Users\\Admin\\RiderProjects\\LightVPN.Client.Windows\\LightVPN.Client.Windows.Common\\LightVPN.Client.Windows.Common.csproj",
+  "projectFilePath": "C:\\Users\\Admin\\Documents\\GitHub\\Windows-App\\LightVPN.Client.Windows.Common\\LightVPN.Client.Windows.Common.csproj",
   "expectedPackageFiles": [],
   "logs": []
 }

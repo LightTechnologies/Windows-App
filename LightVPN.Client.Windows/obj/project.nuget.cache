@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "bN7wMAUGPoGsu2kqpsGZEwIpTN0J0T1ACjXQ35lOI+W32cFK5cRU0wQRNzBE8R25mnPHwaHdViBppL+oH/ON4w==",
+  "dgSpecHash": "MrouVTo1AbHk7Dkb/KvQA/MH745bJk4eYb4SYdRh3R7vjvjP+SHFfKDQk6UDYNGMYkVKRqKIoepD9KmqiHt1tg==",
   "success": true,
-  "projectFilePath": "C:\\Users\\Admin\\RiderProjects\\LightVPN.Client.Windows\\LightVPN.Client.Windows\\LightVPN.Client.Windows.csproj",
+  "projectFilePath": "C:\\Users\\Admin\\Documents\\GitHub\\Windows-App\\LightVPN.Client.Windows\\LightVPN.Client.Windows.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\Admin\\.nuget\\packages\\materialdesigncolors\\2.0.1\\materialdesigncolors.2.0.1.nupkg.sha512",
     "C:\\Users\\Admin\\.nuget\\packages\\materialdesignthemes\\4.1.0\\materialdesignthemes.4.1.0.nupkg.sha512",
