@@ -7,6 +7,13 @@ namespace LightVPN.Client.OpenVPN
 {
     public static class ExtensionMethods
     {
+        /// <summary>
+        ///     Adds a instance of IVpnManager to the service collection
+        /// </summary>
+        /// <param name="services">The existing service collection</param>
+        /// <param name="configuration">The OpenVPN configuration</param>
+        /// <returns>The same service collection but with IVpnManager injected into it</returns>
+        /// <exception cref="ArgumentNullException"></exception>
         public static IServiceCollection AddOpenVpn(this IServiceCollection services,
             Action<OpenVpnConfiguration> configuration)
         {

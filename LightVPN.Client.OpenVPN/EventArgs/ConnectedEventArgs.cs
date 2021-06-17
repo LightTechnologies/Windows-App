@@ -1,9 +1,11 @@
 ﻿namespace LightVPN.Client.OpenVPN.EventArgs
 {
-    /// <inheritdoc />
-    public class ConnectedEventArgs : BaseEventArgs
+    /// <summary>
+    ///     Event args for the OnConnected event
+    /// </summary>
+    public sealed class ConnectedEventArgs : BaseEventArgs
     {
-        public ConnectedEventArgs(string output) : base(output)
+        internal ConnectedEventArgs(string output) : base(output)
         {
         }
     }

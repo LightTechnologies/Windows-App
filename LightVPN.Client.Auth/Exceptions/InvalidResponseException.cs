@@ -3,12 +3,12 @@ using System.Net;
 
 namespace LightVPN.Client.Auth.Exceptions
 {
+    /// <inheritdoc />
+    /// <summary>
+    /// Thrown when the API returns a undesired response
+    /// </summary>
     internal sealed class InvalidResponseException : Exception
     {
-        public InvalidResponseException()
-        {
-        }
-
         internal InvalidResponseException(string message) : base(message)
         {
         }

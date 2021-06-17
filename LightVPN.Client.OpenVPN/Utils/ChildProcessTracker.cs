@@ -7,17 +7,21 @@ using LightVPN.Client.OpenVPN.Models;
 namespace LightVPN.Client.OpenVPN.Utils
 {
     /// <summary>
-    /// Allows processes to be automatically killed if this parent process unexpectedly quits.
-    /// This feature requires Windows 8 or greater. On Windows 7, nothing is done.</summary>
-    /// <remarks>References:
-    ///  https://stackoverflow.com/a/4657392/386091
-    ///  https://stackoverflow.com/a/9164742/386091 </remarks>
+    ///     Allows processes to be automatically killed if this parent process unexpectedly quits.
+    ///     This feature requires Windows 8 or greater. On Windows 7, nothing is done.
+    /// </summary>
+    /// <remarks>
+    ///     References:
+    ///     https://stackoverflow.com/a/4657392/386091
+    ///     https://stackoverflow.com/a/9164742/386091
+    /// </remarks>
     internal static class ChildProcessTracker
     {
         /// <summary>
-        /// Add the process to be tracked. If our current process is killed, the child processes
-        /// that we are tracking will be automatically killed, too. If the child process terminates
-        /// first, that's fine, too.</summary>
+        ///     Add the process to be tracked. If our current process is killed, the child processes
+        ///     that we are tracking will be automatically killed, too. If the child process terminates
+        ///     first, that's fine, too.
+        /// </summary>
         /// <param name="process"></param>
         public static void AddProcess(Process process)
         {
@@ -65,9 +69,7 @@ namespace LightVPN.Client.OpenVPN.Utils
 
                 if (!SetInformationJobObject(SJobHandle, JobObjectInfoType.ExtendedLimitInformation,
                     extendedInfoPtr, (uint)length))
-                {
                     throw new Win32Exception();
-                }
             }
             finally
             {

@@ -9,6 +9,10 @@ using LightVPN.Client.Windows.Services.Interfaces;
 
 namespace LightVPN.Client.Windows.Services
 {
+    /// <inheritdoc />
+    /// <summary>
+    ///     Essentially a Windows only wrapper for the OpenVPN manager class
+    /// </summary>
     public sealed class OpenVpnService : IOpenVpnService
     {
         private readonly IVpnManager _vpnManager;
@@ -20,7 +24,7 @@ namespace LightVPN.Client.Windows.Services
 
         /// <inheritdoc />
         /// <summary>
-        /// Locates a OpenVPN configuration file in the cache and tells the OpenVPN manager to connect to it.
+        ///     Locates a OpenVPN configuration file in the cache and tells the OpenVPN manager to connect to it.
         /// </summary>
         /// <param name="serverName">Server name (normally the Pritunl name)</param>
         /// <param name="cancellationToken">Cancellation token</param>

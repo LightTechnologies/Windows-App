@@ -5,7 +5,7 @@ using LightVPN.Client.OpenVPN.Utils;
 namespace LightVPN.Client.OpenVPN.Models
 {
     [StructLayout(LayoutKind.Sequential)]
-    public struct JobobjectBasicLimitInformation
+    internal struct JobobjectBasicLimitInformation
     {
         private readonly long PerProcessUserTimeLimit;
         private readonly long PerJobUserTimeLimit;

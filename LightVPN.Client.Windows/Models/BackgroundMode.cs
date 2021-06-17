@@ -2,6 +2,9 @@
 
 namespace LightVPN.Client.Windows.Models
 {
+    /// <summary>
+    /// Contains all the possible theme combinations
+    /// </summary>
     internal enum BackgroundMode
     {
         [Description("Dark mode")] Dark,

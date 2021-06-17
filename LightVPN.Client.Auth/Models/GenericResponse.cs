@@ -2,10 +2,21 @@
 
 namespace LightVPN.Client.Auth.Models
 {
+    /// <summary>
+    ///     Generic failure / non-failure response from the API
+    /// </summary>
     public sealed class GenericResponse
     {
-        [JsonPropertyName("code")] public int Code { get; set; }
+        /// <summary>
+        ///     The error code
+        /// </summary>
+        [JsonPropertyName("code")]
+        public int Code { get; set; }
 
-        [JsonPropertyName("message")] public string Message { get; set; }
+        /// <summary>
+        ///     The message (normally what has gone wrong in the request)
+        /// </summary>
+        [JsonPropertyName("message")]
+        public string Message { get; set; }
     }
 }

@@ -28,8 +28,6 @@ namespace LightVPN.Client.OpenVPN.Interfaces
         /// <exception cref="InvalidOperationException">Thrown when attempting to connect whilst connected or connecting or if the configuration file doesn't exist</exception>
         Task ConnectAsync(string configurationPath, CancellationToken cancellationToken = default);
 
-        void OVpnProcessOnErrorDataReceived(object sender, DataReceivedEventArgs e);
-        void OVpnProcessOnOutputDataReceived(object sender, DataReceivedEventArgs e);
         ValueTask DisposeAsync();
     }
 }

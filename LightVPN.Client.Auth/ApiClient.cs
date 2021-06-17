@@ -14,8 +14,15 @@ using LightVPN.Client.Auth.Utils;
 
 namespace LightVPN.Client.Auth
 {
-    public class ApiClient : HttpClient, IApiClient
+    /// <inheritdoc cref="System.Net.Http.HttpClient" />
+    /// <summary>
+    ///     Custom implementation for HttpClient that makes talking to the LightVPN API a hell of a lot easier
+    /// </summary>
+    public sealed class ApiClient : HttpClient, IApiClient
     {
+        /// <summary>
+        ///     The authentication data for the current user
+        /// </summary>
         public AuthResponse AuthData { get; }
 
         public ApiClient()
@@ -40,24 +47,53 @@ namespace LightVPN.Client.Auth
             }
         }
 
+        /// <summary>
+        ///     Sends a GET request to the specified URL path
+        /// </summary>
+        /// <param name="url">URL path</param>
+        /// <param name="cancellationToken">The cancellation token</param>
+        /// <typeparam name="T">The object to attempt to parse to</typeparam>
+        /// <returns>If successful, the response deserialized to an object</returns>
         public async Task<T> GetAsync<T>(string url, CancellationToken cancellationToken = default)
         {
             var resp = await GetAsync(url, cancellationToken);
             return await CheckResponse<T>(resp, cancellationToken);
         }
 
+        /// <summary>
+        ///     Sends a POST request to the specified URL path
+        /// </summary>
+        /// <param name="url">URL path</param>
+        /// <param name="body">Body to be serialized to JSON and sent</param>
+        /// <param name="cancellationToken">The cancellation token</param>
+        /// <typeparam name="T">The object to attempt to parse to</typeparam>
+        /// <returns>If successful, the response deserialized to an object</returns>
         public async Task<T> PostAsync<T>(string url, object body, CancellationToken cancellationToken = default)
         {
             var resp = await PostAsync(url, new StringContent(JsonSerializer.Serialize(body)), cancellationToken);
             return await CheckResponse<T>(resp, cancellationToken);
         }
 
+        /// <summary>
+        ///     Assigns the Authorization header for API authentication
+        /// </summary>
+        /// <param name="userName">Username of the user</param>
+        /// <param name="sessionId">ID pointing to an active session for the specified user</param>
         private void AssignSessionHeader(string userName, string sessionId)
         {
             DefaultRequestHeaders.Remove("Authorization");
             DefaultRequestHeaders.TryAddWithoutValidation("Authorization", $"{userName} {sessionId}");
         }
 
+        /// <summary>
+        ///     Checks a response message and if successful, returns the response serialized to an object
+        /// </summary>
+        /// <param name="responseMessage">The response message</param>
+        /// <param name="cancellationToken">The cancellation token</param>
+        /// <typeparam name="T">The object to check and serialize to</typeparam>
+        /// <returns>The response serialized to the object specified in the type parameter</returns>
+        /// <exception cref="UpdateRequiredException">Thrown when the API requires the client to be updated</exception>
+        /// <exception cref="InvalidResponseException">Thrown when a undesired response is received from the API</exception>
         private async Task<T> CheckResponse<T>(HttpResponseMessage responseMessage,
             CancellationToken cancellationToken = default)
         {

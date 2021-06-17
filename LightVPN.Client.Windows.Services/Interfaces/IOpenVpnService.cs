@@ -3,10 +3,13 @@ using System.Threading.Tasks;
 
 namespace LightVPN.Client.Windows.Services.Interfaces
 {
+    /// <summary>
+    ///     Interface for the OpenVpnService
+    /// </summary>
     public interface IOpenVpnService
     {
         /// <summary>
-        /// Locates a OpenVPN configuration file in the cache and tells the OpenVPN manager to connect to it.
+        ///     Locates a OpenVPN configuration file in the cache and tells the OpenVPN manager to connect to it.
         /// </summary>
         /// <param name="serverName">Server name (normally the Pritunl name)</param>
         /// <param name="cancellationToken">Cancellation token</param>

@@ -6,8 +6,18 @@ using MaterialDesignThemes.Wpf;
 
 namespace LightVPN.Client.Windows.Utils
 {
+    /// <summary>
+    /// Responsible for managing the colors, themes, etc. (dark or light mode, UI colors)
+    /// </summary>
     internal static class ThemeManager
     {
+        /// <summary>
+        /// Switches the theme by hot-swapping the resource dictionaries
+        /// </summary>
+        /// <param name="primaryColor">Primary color to set</param>
+        /// <param name="backgroundMode">Background color to set (dark or light)</param>
+        /// <param name="customColorBrush">Custom color brush to be set for the UI colors</param>
+        /// <exception cref="ArgumentOutOfRangeException">Thrown when <paramref name="backgroundMode"/> is out-of-range</exception>
         internal static void SwitchTheme(ThemeColor primaryColor, BackgroundMode backgroundMode, Color customColorBrush = default)
         {
             try
@@ -18,7 +28,7 @@ namespace LightVPN.Client.Windows.Utils
                     BackgroundMode.Light => Theme.Light,
                     _ => throw new ArgumentOutOfRangeException(nameof(backgroundMode), backgroundMode, null)
                 };
-                
+
                 ITheme theme = primaryColor switch
                 {
                     ThemeColor.Default => Theme.Create(baseTheme,

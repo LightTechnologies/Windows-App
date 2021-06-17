@@ -7,6 +7,9 @@ namespace LightVPN.Client.Windows
 {
     internal sealed class Program : Application
     {
+        /// <summary>
+        /// Main entry-point for the application, this is where it all begins.
+        /// </summary>
         [STAThread]
         public static void Main()
         {
