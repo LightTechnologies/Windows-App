@@ -48,4 +48,10 @@
     <data name="OVPN_SHUTDOWN_SIG" xml:space="preserve">
         <value>signal SIGTERM</value>
     </data>
+    <data name="OVPN_TAP_ALREADY_EXISTS" xml:space="preserve">
+        <value>Adapter "{0}" already exists</value>
+    </data>
+    <data name="OVPN_TAP_NO_EXISTS" xml:space="preserve">
+        <value>"{0}" adapter not found.</value>
+    </data>
 </root>

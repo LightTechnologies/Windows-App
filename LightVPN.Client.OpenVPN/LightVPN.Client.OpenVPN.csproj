@@ -6,6 +6,7 @@
 
     <ItemGroup>
       <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="5.0.0" />
+      <PackageReference Include="System.Management" Version="5.0.0" />
     </ItemGroup>
 
     <ItemGroup>
@@ -21,6 +22,10 @@
         <AutoGen>True</AutoGen>
         <DependentUpon>StringTable.resx</DependentUpon>
       </Compile>
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\LightVPN.Client.Windows.Common\LightVPN.Client.Windows.Common.csproj" />
     </ItemGroup>
 
 </Project>

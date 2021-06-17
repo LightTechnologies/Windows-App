@@ -142,6 +142,24 @@ namespace LightVPN.Client.OpenVPN.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Adapter &quot;{0}&quot; already exists.
+        /// </summary>
+        internal static string OVPN_TAP_ALREADY_EXISTS {
+            get {
+                return ResourceManager.GetString("OVPN_TAP_ALREADY_EXISTS", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to &quot;{0}&quot; adapter not found..
+        /// </summary>
+        internal static string OVPN_TAP_NO_EXISTS {
+            get {
+                return ResourceManager.GetString("OVPN_TAP_NO_EXISTS", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Received an unknown error from OpenVPN..
         /// </summary>
         internal static string OVPN_UNKNOWN_ERROR {
