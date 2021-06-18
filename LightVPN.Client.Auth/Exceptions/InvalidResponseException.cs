@@ -7,13 +7,13 @@ namespace LightVPN.Client.Auth.Exceptions
     /// <summary>
     /// Thrown when the API returns a undesired response
     /// </summary>
-    internal sealed class InvalidResponseException : Exception
+    public sealed class InvalidResponseException : Exception
     {
         internal InvalidResponseException(string message) : base(message)
         {
         }
 
-        public InvalidResponseException(string message, string responseString, HttpStatusCode code)
+        internal InvalidResponseException(string message, string responseString, HttpStatusCode code)
         {
             Code = code;
             ResponseString = responseString;

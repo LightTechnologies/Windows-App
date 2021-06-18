@@ -32,7 +32,7 @@ namespace LightVPN.Client.Windows
         /// Injects and configures all the services
         /// </summary>
         /// <param name="services">The service collection</param>
-        private static void ConfigureServices(IServiceCollection services)
+        private static void ConfigureServices([NotNull] IServiceCollection services)
         {
             services.AddSingleton<IApiClient, ApiClient>()
                 .AddOpenVpn(config =>

@@ -11,6 +11,6 @@
             Output = output;
         }
 
-        public string Output { get; set; }
+        private string Output { get; set; }
     }
 }

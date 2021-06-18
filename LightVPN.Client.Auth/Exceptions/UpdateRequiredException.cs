@@ -6,7 +6,7 @@ namespace LightVPN.Client.Auth.Exceptions
     /// <summary>
     /// Thrown when the API requires the client to be more up-to-date
     /// </summary>
-    internal sealed class UpdateRequiredException : Exception
+    public sealed class UpdateRequiredException : Exception
     {
         internal UpdateRequiredException(string message) : base(message)
         {

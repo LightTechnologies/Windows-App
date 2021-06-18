@@ -1,5 +1,6 @@
 ﻿namespace LightVPN.Client.OpenVPN.EventArgs
 {
+    /// <inheritdoc />
     /// <summary>
     ///     Event args for the OnConnected event
     /// </summary>

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.IO;
 using System.Text.Json;
+using LightVPN.Client.Auth.Exceptions;
 using LightVPN.Client.Auth.Models;
 using LightVPN.Client.Cryptography;
 using LightVPN.Client.Windows.Common;
@@ -49,13 +50,21 @@ namespace LightVPN.Client.Auth.Utils
         /// <returns></returns>
         public static AuthResponse Read()
         {
-            Verify();
+            try
+            {
+                Verify();
 
-            var encryptedData = File.ReadAllText(Globals.AuthDataPath);
+                var encryptedData = File.ReadAllText(Globals.AuthDataPath);
 
-            var decryptedContent = Aes.Decrypt(encryptedData);
+                var decryptedContent = Aes.Decrypt(encryptedData);
 
-            return JsonSerializer.Deserialize<AuthResponse>(decryptedContent);
+                return JsonSerializer.Deserialize<AuthResponse>(decryptedContent);
+            }
+            catch (Exception)
+            {
+                throw new AuthDecryptionException(
+                    "Failed to decrypt authentication data, it is most likely corrupt. It has been cleared, you will have to sign in again.");
+            }
         }
     }
 }
