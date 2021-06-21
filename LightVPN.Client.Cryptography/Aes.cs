@@ -1,6 +1,4 @@
-﻿using System;
-using System.IO;
-using System.Linq;
+﻿using System.IO;
 using System.Security.Cryptography;
 using System.Text;
 
@@ -22,102 +20,52 @@ namespace LightVPN.Client.Cryptography
         /// </summary>
         private const string InitVector = "?^Y)2Q`cr#pZAxZ*";
 
-        public static byte[] Encrypt(string plainText)
-        {
-            byte[] encrypted;
-            // Create a new AesManaged.    
-            using (AesManaged aes = new AesManaged())
-            {
-                // Create encryptor    
-                ICryptoTransform encryptor = aes.CreateEncryptor(Encoding.UTF8.GetBytes(EncryptionKey), Encoding.UTF8.GetBytes(InitVector));
-                // Create MemoryStream    
-                using (MemoryStream ms = new MemoryStream())
-                {
-                    // Create crypto stream using the CryptoStream class. This class is the key to encryption    
-                    // and encrypts and decrypts data from any given stream. In this case, we will pass a memory stream    
-                    // to encrypt    
-                    using (CryptoStream cs = new CryptoStream(ms, encryptor, CryptoStreamMode.Write))
-                    {
-                        // Create StreamWriter and write data to a stream    
-                        using (StreamWriter sw = new StreamWriter(cs))
-                            sw.Write(plainText);
-                        encrypted = ms.ToArray();
-                    }
-                }
-            }
-            // Return encrypted data    
-            return encrypted;
-        }
-        public static string Decrypt(byte[] cipherText)
-        {
-            string plaintext = null;
-            // Create AesManaged    
-            using (AesManaged aes = new AesManaged())
-            {
-                // Create a decryptor    
-                ICryptoTransform decryptor = aes.CreateDecryptor(Encoding.UTF8.GetBytes(EncryptionKey), Encoding.UTF8.GetBytes(InitVector));
-                // Create the streams used for decryption.    
-                using (MemoryStream ms = new MemoryStream(cipherText))
-                {
-                    // Create crypto stream    
-                    using (CryptoStream cs = new CryptoStream(ms, decryptor, CryptoStreamMode.Read))
-                    {
-                        // Read crypto stream    
-                        using (StreamReader reader = new StreamReader(cs))
-                            plaintext = reader.ReadToEnd();
-                    }
-                }
-            }
-            return plaintext;
-        }
-
         ///// <summary>
         /////     Encrypts the data with AES-256, CBC with a random init vector (IV)
         ///// </summary>
         ///// <param name="data">The data to encrypt</param>
-        ///// <returns>The encrypted data, encoded to base64</returns>
-        //public static string Encrypt(string data)
-        //{
-        //    using var rijAlg = new RijndaelManaged();
+        ///// <returns>The encrypted data in bytes</returns>
+        public static byte[] Encrypt(string plainText)
+        {
+            using var aes = new AesManaged();
 
-        //    rijAlg.Key = Encoding.UTF8.GetBytes(EncryptionKey);
-        //    rijAlg.IV = Encoding.UTF8.GetBytes(InitVector);
+            var encryptor =
+                aes.CreateEncryptor(Encoding.UTF8.GetBytes(EncryptionKey), Encoding.UTF8.GetBytes(InitVector));
 
-        //    var encryptor = rijAlg.CreateEncryptor(rijAlg.Key, rijAlg.IV);
+            using var ms = new MemoryStream();
 
-        //    using var msEncrypt = new MemoryStream();
-        //    using var csEncrypt = new CryptoStream(msEncrypt, encryptor, CryptoStreamMode.Write);
-        //    using var swEncrypt = new StreamWriter(csEncrypt);
+            using var cs = new CryptoStream(ms, encryptor, CryptoStreamMode.Write);
 
-        //    swEncrypt.Write(data);
+            using (var sw = new StreamWriter(cs))
+            {
+                sw.Write(plainText);
+            }
 
-        //    var encrypted = msEncrypt.ToArray();
+            var encrypted = ms.ToArray();
 
-        //    return Convert.ToBase64String(encrypted);
-        //}
+            return encrypted;
+        }
 
         ///// <summary>
-        /////     Decrypts the data from base64 to plain-text
+        /////     Decrypts the data from bytes to plain-text
         ///// </summary>
         ///// <param name="data">The data to decrypt</param>
         ///// <returns>The decrypted data</returns>
-        //public static string Decrypt(string data)
-        //{
-        //    var cipherText = Convert.FromBase64String(data.Replace(' ', '+'));
+        public static string Decrypt(byte[] cipherText)
+        {
+            using var aes = new AesManaged();
 
-        //    using var rijAlg = new RijndaelManaged();
-        //    rijAlg.Key = Encoding.UTF8.GetBytes(EncryptionKey);
-        //    rijAlg.IV = Encoding.UTF8.GetBytes(InitVector);
+            var decryptor =
+                aes.CreateDecryptor(Encoding.UTF8.GetBytes(EncryptionKey), Encoding.UTF8.GetBytes(InitVector));
 
-        //    var decryptor = rijAlg.CreateDecryptor(rijAlg.Key, rijAlg.IV);
+            using var ms = new MemoryStream(cipherText);
 
-        //    using var msDecrypt = new MemoryStream(cipherText);
-        //    using var csDecrypt = new CryptoStream(msDecrypt, decryptor, CryptoStreamMode.Read);
-        //    using var srDecrypt = new StreamReader(csDecrypt);
+            using var cs = new CryptoStream(ms, decryptor, CryptoStreamMode.Read);
 
-        //    var plaintext = srDecrypt.ReadToEnd();
+            using var reader = new StreamReader(cs);
+            var plaintext = reader.ReadToEnd();
 
-        //    return plaintext;
-        //}
+            return plaintext;
+        }
     }
 }
