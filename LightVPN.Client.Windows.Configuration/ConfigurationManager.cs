@@ -17,7 +17,7 @@ namespace LightVPN.Client.Windows.Configuration
 
         private void Verify()
         {
-            if (!File.Exists(_configurationPath)) Write(new object());
+            if (!File.Exists(_configurationPath)) File.WriteAllText(_configurationPath, "{}");
         }
 
         public async Task WriteAsync(T value, CancellationToken cancellationToken = default)
