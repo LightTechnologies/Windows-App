@@ -1,22 +1,16 @@
-﻿using System;
-using System.Windows;
+﻿using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Input;
 using LightVPN.Client.Auth.Exceptions;
 using LightVPN.Client.Auth.Interfaces;
 using LightVPN.Client.Auth.Models;
+using LightVPN.Client.Windows.Common;
 using LightVPN.Client.Windows.Common.Utils;
 
 namespace LightVPN.Client.Windows.ViewModels
 {
-    public class LoginViewModel : BaseViewModel
+    internal sealed class LoginViewModel : WindowViewModel
     {
-        private readonly IApiClient _apiClient;
-
-        public LoginViewModel(IApiClient apiClient)
-        {
-            _apiClient = apiClient;
-        }
-
         public string UserName
         {
             get => _userName;
@@ -41,6 +35,70 @@ namespace LightVPN.Client.Windows.ViewModels
 
         private bool _isAuthenticating;
 
+
+        private int _progressInt = -1;
+
+        public int ProgressInt
+        {
+            get => _progressInt;
+
+            set
+            {
+                _progressInt = value;
+                OnPropertyChanged(nameof(ProgressInt));
+            }
+        }
+
+        private string _statusText = "SIGN IN";
+
+        public string StatusText
+        {
+            get => _statusText;
+
+            set
+            {
+                _statusText = value.ToUpper();
+                OnPropertyChanged(nameof(StatusText));
+            }
+        }
+
+        private bool _isIndeterminate = true;
+
+        public bool IsIndeterminate
+        {
+            get => _isIndeterminate;
+
+            set
+            {
+                _isIndeterminate = value;
+                OnPropertyChanged(nameof(IsIndeterminate));
+            }
+        }
+
+        private string _password;
+
+        public string Password
+        {
+            get => _password;
+
+            set
+            {
+                _password = value;
+                OnPropertyChanged(nameof(Password));
+            }
+        }
+
+        public ICommand PasswordChangedCommand =>
+            new UiCommand
+            {
+                CommandAction = ExecChangePassword
+            };
+
+        private void ExecChangePassword(object obj)
+        {
+            Password = ((PasswordBox)obj).Password;
+        }
+
         [NotNull]
         public ICommand LoginCommand
         {
@@ -48,7 +106,7 @@ namespace LightVPN.Client.Windows.ViewModels
             {
                 return new UiCommand
                 {
-                    CommandAction = async args =>
+                    CommandAction = async _ =>
                     {
                         try
                         {
@@ -56,13 +114,22 @@ namespace LightVPN.Client.Windows.ViewModels
 
                             IsAuthenticating = true;
 
-                            var authResponse = await _apiClient.PostAsync<AuthResponse>("auth", new
+                            var apiClient = Globals.Container.GetInstance<IApiClient>();
+
+                            Globals.UserName = UserName;
+
+                            await apiClient.PostAsync<AuthResponse>("auth", new
                             {
                                 username = UserName,
-                                password = "password"
+                                password = Password
                             }, CancellationTokenSource.Token);
 
-                            MessageBox.Show(authResponse.SessionId);
+                            var loginWindow = (LoginWindow)Globals.LoginWindow;
+
+                            var mainWindow = new MainWindow();
+                            mainWindow.Show();
+
+                            loginWindow.Close();
                         }
                         catch (UpdateRequiredException e)
                         {

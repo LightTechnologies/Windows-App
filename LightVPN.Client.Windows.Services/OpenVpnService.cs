@@ -15,13 +15,6 @@ namespace LightVPN.Client.Windows.Services
     /// </summary>
     public sealed class OpenVpnService : IOpenVpnService
     {
-        private readonly IVpnManager _vpnManager;
-
-        public OpenVpnService(IVpnManager vpnManager)
-        {
-            _vpnManager = vpnManager;
-        }
-
         /// <inheritdoc />
         /// <summary>
         ///     Locates a OpenVPN configuration file in the cache and tells the OpenVPN manager to connect to it.
@@ -31,6 +24,8 @@ namespace LightVPN.Client.Windows.Services
         /// <returns></returns>
         public async Task ConnectAsync(string serverName, CancellationToken cancellationToken = default)
         {
+            var vpnManager = Globals.Container.GetInstance<IVpnManager>();
+
             var files = Directory.GetFiles(Globals.AppCachePath);
 
             if (files.Length == 0 || !files.Any(x => x.Contains(serverName)))
@@ -52,7 +47,7 @@ namespace LightVPN.Client.Windows.Services
                 return;
             }
 
-            await _vpnManager.ConnectAsync(configFileName, cancellationToken);
+            await vpnManager.ConnectAsync(configFileName, cancellationToken);
         }
     }
 }

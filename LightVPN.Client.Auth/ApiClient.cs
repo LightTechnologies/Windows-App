@@ -3,6 +3,7 @@ using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Reflection;
+using System.Text;
 using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
@@ -11,6 +12,7 @@ using LightVPN.Client.Auth.Interfaces;
 using LightVPN.Client.Auth.Models;
 using LightVPN.Client.Auth.Resources;
 using LightVPN.Client.Auth.Utils;
+using LightVPN.Client.Windows.Common;
 
 namespace LightVPN.Client.Auth
 {
@@ -70,7 +72,7 @@ namespace LightVPN.Client.Auth
         /// <returns>If successful, the response deserialized to an object</returns>
         public async Task<T> PostAsync<T>(string url, object body, CancellationToken cancellationToken = default)
         {
-            var resp = await PostAsync(url, new StringContent(JsonSerializer.Serialize(body)), cancellationToken);
+            var resp = await PostAsync(url, new StringContent(JsonSerializer.Serialize(body), Encoding.UTF8, "application/json"), cancellationToken);
             return await CheckResponse<T>(resp, cancellationToken);
         }
 
@@ -106,8 +108,6 @@ namespace LightVPN.Client.Auth
 
                 if (responseMessage.StatusCode == HttpStatusCode.UpgradeRequired)
                     throw new UpdateRequiredException("You need to update your client version!");
-
-                throw new InvalidResponseException($"{genericResponse?.Message} ({genericResponse?.Code})");
             }
 
             var responseString = await responseMessage.Content.ReadAsStringAsync(cancellationToken);
@@ -165,7 +165,9 @@ namespace LightVPN.Client.Auth
 
                 if (respJson is not AuthResponse authResponse) return (T)respJson;
 
-                AssignSessionHeader(authResponse.UserName, authResponse.SessionId);
+                authResponse.UserName = Globals.UserName;
+
+                AssignSessionHeader(Globals.UserName, authResponse.SessionId);
                 AuthDataManager.Write(authResponse);
 
                 return (T)respJson;

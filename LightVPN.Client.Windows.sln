@@ -12,6 +12,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LightVPN.Client.OpenVPN", "
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LightVPN.Client.Windows.Common", "LightVPN.Client.Windows.Common\LightVPN.Client.Windows.Common.csproj", "{B237A4DD-3BBB-4C26-8A4E-8B68838261C7}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LightVPN.Client.Windows.Configuration", "LightVPN.Client.Windows.Configuration\LightVPN.Client.Windows.Configuration.csproj", "{097414AE-840E-460E-A919-D63EC9DB01AD}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -42,5 +44,9 @@ Global
 		{B237A4DD-3BBB-4C26-8A4E-8B68838261C7}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B237A4DD-3BBB-4C26-8A4E-8B68838261C7}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B237A4DD-3BBB-4C26-8A4E-8B68838261C7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{097414AE-840E-460E-A919-D63EC9DB01AD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{097414AE-840E-460E-A919-D63EC9DB01AD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{097414AE-840E-460E-A919-D63EC9DB01AD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{097414AE-840E-460E-A919-D63EC9DB01AD}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

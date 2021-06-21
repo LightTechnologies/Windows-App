@@ -28,7 +28,13 @@ namespace LightVPN.Client.Auth.Utils
                 Directory.CreateDirectory(Path.GetDirectoryName(Globals.AuthDataPath) ??
                                           throw new InvalidOperationException());
 
-            if (!File.Exists(Globals.AuthDataPath)) Write(new AuthResponse());
+            if (!File.Exists(Globals.AuthDataPath)) Write(new AuthResponse()
+            {
+                UserId = default,
+                UserName = default,
+                SessionId = default,
+                Email = default
+            });
         }
 
         /// <summary>
@@ -41,7 +47,7 @@ namespace LightVPN.Client.Auth.Utils
 
             var encryptedData = Aes.Encrypt(json);
 
-            File.WriteAllText(Globals.AuthDataPath, encryptedData);
+            File.WriteAllBytes(Globals.AuthDataPath, encryptedData);
         }
 
         /// <summary>
@@ -54,13 +60,13 @@ namespace LightVPN.Client.Auth.Utils
             {
                 Verify();
 
-                var encryptedData = File.ReadAllText(Globals.AuthDataPath);
+                var encryptedData = File.ReadAllBytes(Globals.AuthDataPath);
 
                 var decryptedContent = Aes.Decrypt(encryptedData);
 
                 return JsonSerializer.Deserialize<AuthResponse>(decryptedContent);
             }
-            catch (Exception)
+            catch (Exception e)
             {
                 throw new AuthDecryptionException(
                     "Failed to decrypt authentication data, it is most likely corrupt. It has been cleared, you will have to sign in again.");

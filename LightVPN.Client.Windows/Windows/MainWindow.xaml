@@ -3,15 +3,26 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+        xmlns:viewModels="clr-namespace:LightVPN.Client.Windows.ViewModels"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
-    <Grid>
-        <Button Style="{DynamicResource MaterialDesignRaisedButton}" VerticalAlignment="Center" HorizontalAlignment="Center">
-            <StackPanel Orientation="Horizontal">
-                <materialDesign:PackIcon Kind="Connection"></materialDesign:PackIcon>
-                <TextBlock Margin="5,0,0,0">CONNECT</TextBlock>
-            </StackPanel>
-        </Button>
-    </Grid>
+        x:Name="AppWindow"
+        WindowStartupLocation="CenterScreen"
+        FontSize="14"
+        Style="{DynamicResource LightWindow}"
+        Foreground="{DynamicResource MaterialDesignBody}"
+        Background="{DynamicResource MaterialDesignPaper}"
+        MinHeight="450"
+        MinWidth="350"
+        Title="LightVPN"
+        Height="450"
+        Width="350"
+        
+        x:ClassModifier="internal">
+
+    <Window.DataContext>
+        <viewModels:WindowViewModel/>
+    </Window.DataContext>
+
+    <Frame Name="MainFrame" NavigationUIVisibility="Hidden"/>
+    
 </Window>

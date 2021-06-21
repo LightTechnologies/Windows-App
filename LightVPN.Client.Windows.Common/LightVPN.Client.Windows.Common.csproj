@@ -10,4 +10,8 @@
       </Reference>
     </ItemGroup>
 
+    <ItemGroup>
+      <PackageReference Include="SimpleInjector" Version="5.3.1" />
+    </ItemGroup>
+
 </Project>

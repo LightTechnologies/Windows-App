@@ -1,0 +1,23 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+    <FontFamily x:Key="Inter">pack://application:,,,/LightVPN.Client.Windows;component/Resources/Fonts/#Inter Bold</FontFamily>
+    <FontFamily x:Key="InterSemiBold">pack://application:,,,/LightVPN.Client.Windows;component/Resources/Fonts/#Inter Semi Bold</FontFamily>
+    <FontFamily x:Key="Ubuntu">pack://application:,,,/LightVPN.Client.Windows;component/Resources/Fonts/#Ubuntu</FontFamily>
+    <FontFamily x:Key="UbuntuBold">pack://application:,,,/LightVPN.Client.Windows;component/Resources/Fonts/#Ubuntu Bold</FontFamily>
+
+    <Style TargetType="{x:Type Control}" x:Key="BaseStyle">
+        <Setter Property="FontFamily" Value="{StaticResource Inter}" />
+    </Style>
+
+    <Style TargetType="{x:Type TextBlock}" x:Key="BaseTextBlockStyle">
+        <Setter Property="FontFamily" Value="{StaticResource Inter}" />
+    </Style>
+
+    <Style TargetType="{x:Type Button}" BasedOn="{StaticResource BaseStyle}" />
+    <Style TargetType="{x:Type Label}" BasedOn="{StaticResource BaseStyle}" />
+    <Style TargetType="{x:Type TextBox}" BasedOn="{StaticResource BaseStyle}" />
+    <Style TargetType="{x:Type TextBlock}" BasedOn="{StaticResource BaseTextBlockStyle}" />
+    <Style TargetType="{x:Type ListView}" BasedOn="{StaticResource BaseStyle}" />
+
+</ResourceDictionary>

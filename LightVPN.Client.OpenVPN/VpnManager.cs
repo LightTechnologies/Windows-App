@@ -19,7 +19,7 @@ namespace LightVPN.Client.OpenVPN
     /// <summary>
     ///     Cross-platform class for managing the connection to a OpenVPN server.
     /// </summary>
-    internal sealed class VpnManager : IVpnManager, IAsyncDisposable
+    public sealed class VpnManager : IVpnManager, IAsyncDisposable
     {
         private readonly OpenVpnConfiguration _configuration;
         private readonly Process _ovpnProcess;

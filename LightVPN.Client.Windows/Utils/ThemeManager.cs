@@ -2,6 +2,7 @@
 using System.Windows;
 using System.Windows.Media;
 using LightVPN.Client.Windows.Models;
+using LightVPN.Client.Windows.Configuration.Models;
 using MaterialDesignThemes.Wpf;
 
 namespace LightVPN.Client.Windows.Utils

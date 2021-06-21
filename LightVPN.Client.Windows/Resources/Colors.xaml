@@ -1,0 +1,47 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+    <Color x:Key="Primary">#935bf9</Color>
+    <SolidColorBrush x:Key="PrimaryBrush" Color="{StaticResource Primary}" />
+
+    <Color x:Key="Secondary">#727cf5</Color>
+    <SolidColorBrush x:Key="SecondaryBrush" Color="{StaticResource Secondary}" />
+
+    <Color x:Key="ForegroundDark">#0f0f0f</Color>
+    <SolidColorBrush x:Key="ForegroundDarkBrush" Color="{StaticResource ForegroundDark}" />
+
+    <Color x:Key="ForegroundLight">#ffffff</Color>
+    <SolidColorBrush x:Key="ForegroundLightBrush" Color="{StaticResource ForegroundLight}" />
+
+    <Color x:Key="ForegroundDarkLighter">#2E2E2E</Color>
+    <SolidColorBrush x:Key="ForegroundDarkLighterBrush" Color="{StaticResource ForegroundDarkLighter}"/>
+
+    <LinearGradientBrush x:Key="PrimaryGradientBrush">
+        <LinearGradientBrush.RelativeTransform>
+            <TransformGroup>
+                <ScaleTransform CenterX="0.5" CenterY="0.5" />
+                <SkewTransform CenterX="0.5" CenterY="0.5" />
+                <RotateTransform Angle="75" CenterX="0.5" CenterY="0.5" />
+                <TranslateTransform />
+            </TransformGroup>
+        </LinearGradientBrush.RelativeTransform>
+        <LinearGradientBrush.Transform>
+            <RotateTransform CenterX="75" CenterY="75" />
+        </LinearGradientBrush.Transform>
+        <GradientStop Offset="1" Color="{StaticResource Primary}" />
+        <GradientStop Offset="0" Color="{StaticResource Secondary}" />
+    </LinearGradientBrush>
+
+    <Style x:Key="WindowBorder" TargetType="Border">
+        <Setter Property="BorderBrush" Value="{DynamicResource PrimaryBrush}" />
+        <Setter Property="BorderThickness" Value="1" />
+        <Style.Triggers>
+            <DataTrigger
+                Binding="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Window}}, Path=WindowState}"
+                Value="Maximized">
+                <Setter Property="Margin" Value="6" />
+            </DataTrigger>
+        </Style.Triggers>
+    </Style>
+
+</ResourceDictionary>

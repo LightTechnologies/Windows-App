@@ -6,11 +6,11 @@ using System.Threading;
 namespace LightVPN.Client.Windows.ViewModels
 {
     /// <inheritdoc cref="System.ComponentModel.INotifyPropertyChanged" />
-    public abstract class BaseViewModel : INotifyPropertyChanged, IDisposable
+    internal abstract class BaseViewModel : INotifyPropertyChanged, IDisposable
     {
         public event PropertyChangedEventHandler PropertyChanged;
 
-        public readonly CancellationTokenSource CancellationTokenSource = new();
+        protected readonly CancellationTokenSource CancellationTokenSource = new();
 
         [NotifyPropertyChangedInvocator]
         protected virtual void OnPropertyChanged([CallerMemberName] [CanBeNull] string propertyName = null)

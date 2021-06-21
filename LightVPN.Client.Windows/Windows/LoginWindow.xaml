@@ -3,7 +3,98 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:viewModels="clr-namespace:LightVPN.Client.Windows.ViewModels"
+        xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+        xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
+        xmlns:converters="clr-namespace:LightVPN.Client.Windows.Converters"
         mc:Ignorable="d"
-        Title="LoginWindow" Height="450" Width="800">
-    <Grid />
+        ResizeMode="NoResize"
+        Foreground="{DynamicResource MaterialDesignBody}"
+        Background="{DynamicResource MaterialDesignPaper}"
+        Style="{DynamicResource LightWindow}"
+        FontFamily="{StaticResource Inter}"
+        Title="LoginWindow" Height="435" Width="310" x:ClassModifier="internal">
+
+    <Window.DataContext>
+        <viewModels:LoginViewModel />
+    </Window.DataContext>
+
+    <Window.Resources>
+        <converters:InverseBooleanConverter x:Key="InverseBooleanConverter" />
+    </Window.Resources>
+
+    <StackPanel>
+        <Image Source="/Resources/Images/lightvpn-purple-100.png" Width="50" Height="50" VerticalAlignment="Top"
+               HorizontalAlignment="Center" Margin="0,50,0,0" />
+        <TextBlock VerticalAlignment="Top" HorizontalAlignment="Center" Text="Please sign in..." Margin="0,15,0,0"
+                   Style="{StaticResource Title}" />
+
+        <TextBox
+            Name="UsernameBox"
+            Margin="20,30,20,0"
+            HorizontalAlignment="Stretch"
+            VerticalAlignment="Top"
+            x:FieldModifier="public"
+            IsEnabled="{Binding IsAuthenticating, Converter={StaticResource InverseBooleanConverter}}"
+            MaxLength="30"
+            Style="{StaticResource MaterialDesignOutlinedTextBox}"
+            ToolTip="Enter your LightVPN account ID">
+            <TextBox.Text>
+                <Binding
+                    Mode="TwoWay"
+                    NotifyOnValidationError="True"
+                    Path="UserName"
+                    UpdateSourceTrigger="PropertyChanged" />
+            </TextBox.Text>
+            <materialDesign:HintAssist.Hint>
+                <StackPanel Orientation="Horizontal">
+                    <materialDesign:PackIcon Kind="UserOutline" />
+                    <TextBlock Margin="7,0,0,0" Text="Account ID" />
+                </StackPanel>
+            </materialDesign:HintAssist.Hint>
+        </TextBox>
+        <PasswordBox
+            Name="PasswordBox"
+            Margin="20,25,20,0"
+            HorizontalAlignment="Stretch"
+            VerticalAlignment="Top"
+            x:FieldModifier="public"
+            IsEnabled="{Binding IsAuthenticating, Converter={StaticResource InverseBooleanConverter}}"
+            Style="{StaticResource MaterialDesignOutlinedPasswordBox}"
+            ToolTip="Enter your LightVPN password">
+            <materialDesign:HintAssist.Hint>
+                <StackPanel Orientation="Horizontal">
+                    <materialDesign:PackIcon Kind="KeyOutline" />
+                    <TextBlock Margin="7,0,0,0" Text="Password" />
+                </StackPanel>
+            </materialDesign:HintAssist.Hint>
+            <i:Interaction.Triggers>
+                <i:EventTrigger EventName="PasswordChanged">
+                    <i:InvokeCommandAction Command="{Binding PasswordChangedCommand}"
+                                           CommandParameter="{Binding ElementName=PasswordBox, Mode=OneWay}" />
+                </i:EventTrigger>
+            </i:Interaction.Triggers>
+        </PasswordBox>
+        <Button
+            Name="SignInBtn"
+            Height="40"
+            Margin="20,30,20,0"
+            VerticalAlignment="Top"
+            materialDesign:ButtonProgressAssist.IsIndeterminate="{Binding IsIndeterminate}"
+            materialDesign:ButtonProgressAssist.IsIndicatorVisible="{Binding IsAuthenticating}"
+            materialDesign:ButtonProgressAssist.Value="{Binding ProgressInt}"
+            Command="{Binding LoginCommand}"
+            Cursor="Arrow"
+            IsDefault="True"
+            IsEnabled="{Binding IsAuthenticating, Converter={StaticResource InverseBooleanConverter}}"
+            Style="{StaticResource MaterialDesignRaisedButton}">
+            <StackPanel Orientation="Horizontal">
+                <materialDesign:PackIcon Kind="Login" />
+                <TextBlock
+                    x:Name="SignInText"
+                    Margin="7,0,0,0"
+                    Text="{Binding StatusText}" />
+            </StackPanel>
+        </Button>
+    </StackPanel>
 </Window>

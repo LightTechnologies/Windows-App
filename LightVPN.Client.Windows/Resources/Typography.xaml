@@ -1,0 +1,46 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+    <ResourceDictionary.MergedDictionaries>
+        <ResourceDictionary Source="Colors.xaml" />
+        <ResourceDictionary Source="Fonts.xaml" />
+    </ResourceDictionary.MergedDictionaries>
+
+    <Style TargetType="TextBlock" BasedOn="{StaticResource BaseTextBlockStyle}" x:Key="Small">
+        <Setter Property="FontSize" Value="14"/>
+        <Setter Property="FontFamily" Value="{StaticResource InterSemiBold}"/>
+        <Setter Property="Opacity" Value="0.5"/>
+    </Style>
+
+    <Style TargetType="TextBlock" BasedOn="{StaticResource BaseTextBlockStyle}" x:Key="Title">
+        <Setter Property="FontFamily" Value="{StaticResource UbuntuBold}"/>
+        <Setter Property="FontSize" Value="20"/>
+    </Style>
+
+    <Style TargetType="TextBlock" BasedOn="{StaticResource BaseTextBlockStyle}" x:Key="LightSmall">
+        <Setter Property="FontSize" Value="14"/>
+        <Setter Property="FontFamily" Value="{StaticResource InterSemiBold}"/>
+        <Setter Property="Foreground" Value="{StaticResource ForegroundLightBrush}"/>
+        <Setter Property="Opacity" Value="0.5"/>
+    </Style>
+
+    <Style TargetType="TextBlock" BasedOn="{StaticResource BaseTextBlockStyle}" x:Key="LightTitle">
+        <Setter Property="FontFamily" Value="{StaticResource UbuntuBold}"/>
+        <Setter Property="FontSize" Value="20"/>
+        <Setter Property="Foreground" Value="{DynamicResource ForegroundLightBrush}"/>
+    </Style>
+
+    <Style TargetType="TextBlock" BasedOn="{StaticResource BaseTextBlockStyle}" x:Key="DarkSmall">
+        <Setter Property="FontSize" Value="14"/>
+        <Setter Property="FontFamily" Value="{StaticResource InterSemiBold}"/>
+        <Setter Property="Foreground" Value="{StaticResource ForegroundDarkLighterBrush}"/>
+        <Setter Property="Opacity" Value="0.5"/>
+    </Style>
+
+    <Style TargetType="TextBlock" BasedOn="{StaticResource BaseTextBlockStyle}" x:Key="DarkTitle">
+        <Setter Property="FontFamily" Value="{StaticResource UbuntuBold}"/>
+        <Setter Property="FontSize" Value="20"/>
+        <Setter Property="Foreground" Value="{DynamicResource ForegroundDarkBrush}"/>
+    </Style>
+
+</ResourceDictionary>

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using SimpleInjector;
 
 namespace LightVPN.Client.Windows.Common
 {
@@ -43,5 +44,11 @@ namespace LightVPN.Client.Windows.Common
         ///     Path to the OpenVPN logs
         /// </summary>
         public static readonly string OpenVpnLogPath = Path.Combine(AppSettingsDirectory, "ovpn.log");
+
+        public static readonly Container Container = new();
+
+        public static object LoginWindow;
+
+        public static string UserName;
     }
 }
