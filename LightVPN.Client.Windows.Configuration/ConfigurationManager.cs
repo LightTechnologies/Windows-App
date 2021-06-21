@@ -6,7 +6,7 @@ using LightVPN.Client.Windows.Configuration.Interfaces;
 
 namespace LightVPN.Client.Windows.Configuration
 {
-    public class ConfigurationManager : IConfigurationManager
+    public sealed class ConfigurationManager<T> : IConfigurationManager<T>
     {
         private readonly string _configurationPath;
 
@@ -20,7 +20,7 @@ namespace LightVPN.Client.Windows.Configuration
             if (!File.Exists(_configurationPath)) Write(new object());
         }
 
-        public async Task WriteAsync<T>(T value, CancellationToken cancellationToken = default)
+        public async Task WriteAsync(T value, CancellationToken cancellationToken = default)
         {
             Verify();
 
@@ -28,7 +28,7 @@ namespace LightVPN.Client.Windows.Configuration
             await File.WriteAllTextAsync(_configurationPath, json, cancellationToken);
         }
 
-        public void Write<T>(T value)
+        public void Write(T value)
         {
             Verify();
 
@@ -36,7 +36,7 @@ namespace LightVPN.Client.Windows.Configuration
             File.WriteAllText(_configurationPath, json);
         }
 
-        public async Task<T> ReadAsync<T>(CancellationToken cancellationToken = default)
+        public async Task<T> ReadAsync(CancellationToken cancellationToken = default)
         {
             Verify();
 
@@ -44,7 +44,7 @@ namespace LightVPN.Client.Windows.Configuration
             return JsonSerializer.Deserialize<T>(fileContents);
         }
 
-        public T Read<T>()
+        public T Read()
         {
             Verify();
 
