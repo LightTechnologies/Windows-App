@@ -6,11 +6,5 @@
     /// </summary>
     public abstract class BaseEventArgs : System.EventArgs
     {
-        protected BaseEventArgs(string output)
-        {
-            Output = output;
-        }
-
-        private string Output { get; set; }
     }
 }

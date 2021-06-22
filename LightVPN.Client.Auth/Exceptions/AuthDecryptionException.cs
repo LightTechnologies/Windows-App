@@ -2,9 +2,9 @@
 
 namespace LightVPN.Client.Auth.Exceptions
 {
-    public class AuthDecryptionException : Exception
+    internal sealed class AuthDecryptionException : Exception
     {
-        public AuthDecryptionException(string message) : base(message)
+        internal AuthDecryptionException(string message) : base(message)
         {
         }
     }

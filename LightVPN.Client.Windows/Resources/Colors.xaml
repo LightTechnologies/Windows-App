@@ -39,7 +39,7 @@
             <DataTrigger
                 Binding="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Window}}, Path=WindowState}"
                 Value="Maximized">
-                <Setter Property="Margin" Value="6" />
+                <Setter Property="Margin" Value="7" />
             </DataTrigger>
         </Style.Triggers>
     </Style>

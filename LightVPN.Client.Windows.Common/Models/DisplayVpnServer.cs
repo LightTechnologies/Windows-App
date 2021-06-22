@@ -2,16 +2,13 @@
 
 namespace LightVPN.Client.Windows.Common.Models
 {
-    public class DisplayVpnServer : INotifyPropertyChanged
+    public sealed class DisplayVpnServer : INotifyPropertyChanged
     {
         public event PropertyChangedEventHandler PropertyChanged;
 
         public string Country
         {
-            get
-            {
-                return _country;
-            }
+            get => _country;
 
             set
             {
@@ -22,10 +19,7 @@ namespace LightVPN.Client.Windows.Common.Models
 
         public string Flag
         {
-            get
-            {
-                return _flag;
-            }
+            get => _flag;
 
             set
             {
@@ -36,12 +30,9 @@ namespace LightVPN.Client.Windows.Common.Models
 
         public string Id
         {
-            get
-            {
-                return _id;
-            }
+            get => _id;
 
-            set
+            init
             {
                 _id = value;
                 OnPropertyChanged(nameof(Id));
@@ -50,12 +41,9 @@ namespace LightVPN.Client.Windows.Common.Models
 
         public string ServerName
         {
-            get
-            {
-                return _displayName;
-            }
+            get => _displayName;
 
-            set
+            init
             {
                 _displayName = value;
                 OnPropertyChanged(nameof(ServerName));
@@ -64,10 +52,7 @@ namespace LightVPN.Client.Windows.Common.Models
 
         public string Status
         {
-            get
-            {
-                return _status;
-            }
+            get => _status;
 
             set
             {
@@ -78,10 +63,7 @@ namespace LightVPN.Client.Windows.Common.Models
 
         public VpnServerType Type
         {
-            get
-            {
-                return _type;
-            }
+            get => _type;
 
             set
             {
@@ -104,9 +86,7 @@ namespace LightVPN.Client.Windows.Common.Models
 
         private void OnPropertyChanged(string propertyName)
         {
-            if (PropertyChanged is null) return;
-
-            PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
     }
 }

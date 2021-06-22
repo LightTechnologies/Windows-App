@@ -13,6 +13,10 @@
         <Copyright>Copyright 2021 (C) Light Technologies, LLC</Copyright>
         <PackageProjectUrl>https://github.com/LightTechnologies</PackageProjectUrl>
         <NeutralLanguage>en-US</NeutralLanguage>
+        <ApplicationManifest>app.manifest</ApplicationManifest>
+        <PackageIcon>lightvpn-purple.png</PackageIcon>
+        <PackageIconUrl />
+        <ApplicationIcon>Resources\Images\lightvpn.ico</ApplicationIcon>
     </PropertyGroup>
 
     <ItemGroup>
@@ -309,7 +313,13 @@
       <None Remove="Resources\Images\lightvpn-purple-20.png" />
       <None Remove="Resources\Images\lightvpn-purple-title.png" />
       <None Remove="Resources\Images\lightvpn-purple.png" />
+      <None Remove="Resources\Images\lightvpn-white.png" />
       <None Remove="Resources\Images\lightvpn.ico" />
+      <None Remove="Resources\Images\ui-glyph.png" />
+      <None Include="..\..\..\..\Downloads\Windows-App-main\Windows-App-main\LightVPN\Resources\lightvpn-purple.png">
+        <Pack>True</Pack>
+        <PackagePath></PackagePath>
+      </None>
     </ItemGroup>
 
     <ItemGroup>
@@ -317,6 +327,15 @@
       <PackageReference Include="MaterialDesignThemes" Version="4.1.0" />
       <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="5.0.1" />
       <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="5.0.0" />
+      <PackageReference Include="Microsoft.NETCore.Platforms" Version="5.0.2" />
+      <PackageReference Include="Microsoft.NETCore.Targets" Version="5.0.0" />
+      <PackageReference Include="Microsoft.Win32.Registry" Version="5.0.0" />
+      <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
+      <PackageReference Include="System.CodeDom" Version="5.0.0" />
+      <PackageReference Include="System.ComponentModel" Version="4.3.0" />
+      <PackageReference Include="System.Runtime" Version="4.3.1" />
+      <PackageReference Include="System.Security.AccessControl" Version="5.0.0" />
+      <PackageReference Include="System.Security.Principal.Windows" Version="5.0.0" />
       <PackageReference Include="System.Windows.Interactivity.WPF" Version="2.0.20525" />
     </ItemGroup>
 
@@ -326,6 +345,7 @@
 
     <ItemGroup>
       <ProjectReference Include="..\LightVPN.Client.Auth\LightVPN.Client.Auth.csproj" />
+      <ProjectReference Include="..\LightVPN.Client.Discord\LightVPN.Client.Discord.csproj" />
       <ProjectReference Include="..\LightVPN.Client.OpenVPN\LightVPN.Client.OpenVPN.csproj" />
       <ProjectReference Include="..\LightVPN.Client.Windows.Configuration\LightVPN.Client.Windows.Configuration.csproj" />
       <ProjectReference Include="..\LightVPN.Client.Windows.Services\LightVPN.Client.Windows.Services.csproj" />
@@ -625,7 +645,9 @@
       <Resource Include="Resources\Images\lightvpn-purple-20.png" />
       <Resource Include="Resources\Images\lightvpn-purple-title.png" />
       <Resource Include="Resources\Images\lightvpn-purple.png" />
+      <Resource Include="Resources\Images\lightvpn-white.png" />
       <Resource Include="Resources\Images\lightvpn.ico" />
+      <Resource Include="Resources\Images\ui-glyph.png" />
     </ItemGroup>
 
 </Project>

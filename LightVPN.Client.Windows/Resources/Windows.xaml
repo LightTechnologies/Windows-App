@@ -10,9 +10,16 @@
 
     <converters:WindowStateToPackIconConverter x:Key="PackIconConverter" />
 
+    <Style x:Key="LightView" TargetType="{x:Type Page}">
+        <Setter Property="FontFamily" Value="{StaticResource Inter}" />
+        <Setter Property="TextOptions.TextFormattingMode" Value="Ideal" />
+        <Setter Property="TextOptions.TextRenderingMode" Value="Aliased" />
+        <Setter Property="TextOptions.TextHintingMode" Value="Fixed" />
+        <Setter Property="Foreground" Value="{DynamicResource MaterialDesignBody}" />
+        <Setter Property="FontSize" Value="13" />
+    </Style>
+
     <Style x:Key="LightWindow" TargetType="{x:Type Window}">
-        <Setter Property="FontFamily" Value="{StaticResource Inter}"/>
-        <Setter Property="FontSize" Value="14"></Setter>
         <Setter Property="WindowChrome.WindowChrome">
             <Setter.Value>
                 <WindowChrome CaptionHeight="35"
@@ -23,6 +30,13 @@
                               UseAeroCaptionButtons="False" />
             </Setter.Value>
         </Setter>
+        <Setter Property="FontFamily" Value="{StaticResource Inter}" />
+        <Setter Property="Foreground" Value="{DynamicResource MaterialDesignBody}" />
+        <Setter Property="TextOptions.TextFormattingMode" Value="Ideal" />
+        <Setter Property="TextOptions.TextRenderingMode" Value="Aliased" />
+        <Setter Property="TextOptions.TextHintingMode" Value="Fixed" />
+        <Setter Property="FontSize" Value="13" />
+        <Setter Property="Icon" Value="/Resources/Images/lightvpn.ico" />
 
         <Setter Property="Template">
             <Setter.Value>
@@ -41,6 +55,7 @@
                                 </Grid.ColumnDefinitions>
                                 <Image Source="Images/lightvpn-purple-title.png" Width="22" Height="22"
                                        Margin="7,0,0,0" Grid.Column="0"
+                                       ToolTip="HarryTq was here"
                                        VerticalAlignment="Center" HorizontalAlignment="Left" />
                                 <StackPanel Orientation="Horizontal"
                                             VerticalAlignment="Stretch"
@@ -50,6 +65,7 @@
                                     <Button x:Name="btnMinimize"
                                             Command="{Binding MinimizeCommand}"
                                             FontFamily="{StaticResource Inter}"
+                                            ToolTip="Minimize"
                                             Style="{StaticResource CaptionButton}">
                                         <materialDesign:PackIcon Kind="WindowMinimize" />
                                     </Button>
@@ -57,6 +73,7 @@
                                     <Button x:Name="btnRestore"
                                             FontFamily="{StaticResource Inter}"
                                             Command="{Binding ToggleMaxCommand}"
+                                            ToolTip="Maximize/restore"
                                             Style="{StaticResource CaptionButton}">
                                         <materialDesign:PackIcon
                                             Kind="{Binding WindowState, Converter={StaticResource PackIconConverter}}" />
@@ -65,6 +82,7 @@
                                     <Button x:Name="btnClose"
                                             Command="{Binding CloseCommand}"
                                             FontFamily="{StaticResource Inter}"
+                                            ToolTip="Close"
                                             Style="{StaticResource CaptionButton}">
                                         <materialDesign:PackIcon Kind="WindowClose" />
                                     </Button>
@@ -76,8 +94,6 @@
                             </AdornerDecorator>
                         </Grid>
                     </Border>
-
-
                 </ControlTemplate>
             </Setter.Value>
         </Setter>

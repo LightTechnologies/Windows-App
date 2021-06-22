@@ -7,12 +7,22 @@
     <ItemGroup>
       <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="5.0.1" />
       <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="5.0.0" />
+      <PackageReference Include="Microsoft.NETCore.Platforms" Version="5.0.2" />
+      <PackageReference Include="Microsoft.NETCore.Targets" Version="5.0.0" />
+      <PackageReference Include="Microsoft.Win32.Registry" Version="5.0.0" />
+      <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
+      <PackageReference Include="System.CodeDom" Version="5.0.0" />
+      <PackageReference Include="System.ComponentModel" Version="4.3.0" />
+      <PackageReference Include="System.Runtime" Version="4.3.1" />
+      <PackageReference Include="System.Security.AccessControl" Version="5.0.0" />
+      <PackageReference Include="System.Security.Principal.Windows" Version="5.0.0" />
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\LightVpn.Client.OpenVpn\LightVpn.Client.OpenVpn.csproj" />
-      <ProjectReference Include="..\LightVPN.Client.OpenVPN\LightVPN.Client.OpenVPN.csproj" />
+      <ProjectReference Include="..\LightVPN.Client.Auth\LightVPN.Client.Auth.csproj" />
+      <ProjectReference Include="..\LightVpn.Client.OpenVPN\LightVpn.Client.OpenVPN.csproj" />
       <ProjectReference Include="..\LightVPN.Client.Windows.Common\LightVPN.Client.Windows.Common.csproj" />
+      <ProjectReference Include="..\LightVPN.Client.Windows.Configuration\LightVPN.Client.Windows.Configuration.csproj" />
     </ItemGroup>
 
 </Project>

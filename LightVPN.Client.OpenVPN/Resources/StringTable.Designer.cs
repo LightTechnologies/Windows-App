@@ -19,7 +19,7 @@ namespace LightVPN.Client.OpenVPN.Resources {
     // class via a tool like ResGen or Visual Studio.
     // To add or remove a member, edit your .ResX file then rerun ResGen
     // with the /str option, or rebuild your VS project.
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "4.0.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "16.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     internal class StringTable {
@@ -61,7 +61,7 @@ namespace LightVPN.Client.OpenVPN.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Authentication to the VPN server has failed..
+        ///   Looks up a localized string similar to Authentication to the VPN server has failed; your plan may have expired, please check your account at the LightVPN website..
         /// </summary>
         internal static string OVPN_AUTH_FAILED {
             get {
@@ -124,7 +124,7 @@ namespace LightVPN.Client.OpenVPN.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Connection to the VPN server has timed out, the server could be down..
+        ///   Looks up a localized string similar to Connection to the VPN server has timed out; the server could be down..
         /// </summary>
         internal static string OVPN_SERVER_TIMEOUT {
             get {
@@ -160,7 +160,7 @@ namespace LightVPN.Client.OpenVPN.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Received an unknown error from OpenVPN..
+        ///   Looks up a localized string similar to Received an unknown error from OpenVPN; the server could be down..
         /// </summary>
         internal static string OVPN_UNKNOWN_ERROR {
             get {

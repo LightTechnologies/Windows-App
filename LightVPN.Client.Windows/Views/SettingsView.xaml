@@ -1,0 +1,177 @@
+﻿<Page x:Class="LightVPN.Client.Windows.Views.SettingsView"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+      xmlns:viewModels="clr-namespace:LightVPN.Client.Windows.ViewModels"
+      xmlns:i="clr-namespace:System.Windows.Interactivity;assembly=System.Windows.Interactivity"
+      xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+      xmlns:converters="clr-namespace:LightVPN.Client.Windows.Converters"
+      Style="{StaticResource LightView}"
+      mc:Ignorable="d"
+      d:DesignHeight="434" d:DesignWidth="350" x:ClassModifier="internal">
+
+    <Page.DataContext>
+        <viewModels:SettingsViewModel />
+    </Page.DataContext>
+
+    <Page.Resources>
+        <converters:InverseBooleanConverter x:Key="InverseBooleanConverter" />
+    </Page.Resources>
+
+    <i:Interaction.Triggers>
+        <i:EventTrigger EventName="Loaded">
+            <i:InvokeCommandAction Command="{Binding LoadCommand}" />
+        </i:EventTrigger>
+    </i:Interaction.Triggers>
+
+
+    <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto">
+
+        <StackPanel>
+
+            <StackPanel Margin="0,15,0,0" VerticalAlignment="Top" HorizontalAlignment="Stretch">
+                <Grid>
+                    <Button
+                        Cursor="Arrow"
+                        Background="Transparent"
+                        BorderBrush="Transparent"
+                        Style="{StaticResource MaterialDesignFloatingActionMiniDarkButton}"
+                        ToolTip="Back"
+                        Command="{Binding BackCommand}"
+                        VerticalAlignment="Top"
+                        HorizontalAlignment="Left"
+                        Foreground="{DynamicResource MaterialDesignBody}"
+                        materialDesign:RippleAssist.Feedback="{DynamicResource MaterialDesignBody}"
+                        Margin="5,5,5,0"
+                        Width="35"
+                        Height="35">
+                        <materialDesign:PackIcon
+                            Kind="ArrowLeft" />
+                    </Button>
+                    <materialDesign:PackIcon Kind="SettingsOutline" Height="35" Width="35" VerticalAlignment="Top"
+                                             HorizontalAlignment="Center" Margin="0,15,0,0" />
+                </Grid>
+                <TextBlock Text="Settings" Style="{StaticResource Title}" VerticalAlignment="Top"
+                           HorizontalAlignment="Center" Margin="0,5,0,0" />
+            </StackPanel>
+
+            <materialDesign:Card Margin="15,25,15,15" VerticalAlignment="Top" HorizontalAlignment="Stretch">
+                <StackPanel VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Margin="15">
+                    <Grid VerticalAlignment="Top" HorizontalAlignment="Stretch">
+                        <TextBlock Text="Auto connect" Opacity="0.7" VerticalAlignment="Center"
+                                   HorizontalAlignment="Left" />
+                        <ToggleButton
+                            ToolTip="Enables/disables connecting to your last server on app launch"
+                            HorizontalAlignment="Right"
+                            VerticalAlignment="Stretch"
+                            Margin="0,6,0,6"
+                            Command="{Binding HandleConfigChanges}"
+                            IsChecked="{Binding AppConfiguration.IsAutoConnectEnabled}"
+                            Style="{DynamicResource MaterialDesignSwitchToggleButton}" />
+                    </Grid>
+                    <Separator Opacity="0.2" Margin="0,15,0,0" />
+                    <Grid VerticalAlignment="Top" HorizontalAlignment="Stretch" Margin="0,15,0,15">
+                        <TextBlock Text="Enable Discord presence" Opacity="0.7" VerticalAlignment="Center"
+                                   HorizontalAlignment="Left" />
+                        <ToggleButton
+                            ToolTip="Enables/disables showing LightVPN on your Discord presence (status)"
+                            HorizontalAlignment="Right"
+                            VerticalAlignment="Stretch"
+                            Margin="0,6,0,6"
+                            Command="{Binding HandleConfigChanges}"
+                            IsChecked="{Binding AppConfiguration.IsDiscordRpcEnabled}"
+                            Style="{DynamicResource MaterialDesignSwitchToggleButton}" />
+                    </Grid>
+                    <Separator Opacity="0.2" />
+                    <Grid VerticalAlignment="Top" HorizontalAlignment="Stretch" Margin="0,15,0,0">
+                        <TextBlock Text="Dark mode" Opacity="0.7" VerticalAlignment="Center" HorizontalAlignment="Left" />
+                        <ToggleButton
+                            ToolTip="Enables/disables the dark app appearance"
+                            HorizontalAlignment="Right"
+                            VerticalAlignment="Stretch"
+                            Margin="0,6,0,6"
+                            Command="{Binding HandleConfigChanges}"
+                            IsChecked="{Binding AppConfiguration.IsDarkModeEnabled}"
+                            Style="{DynamicResource MaterialDesignSwitchToggleButton}" />
+                    </Grid>
+                </StackPanel>
+            </materialDesign:Card>
+
+            <materialDesign:Card Margin="15,15,15,15" VerticalAlignment="Top" HorizontalAlignment="Stretch">
+                <StackPanel VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Margin="15">
+                    <Grid VerticalAlignment="Top" HorizontalAlignment="Stretch">
+                        <TextBlock Text="Reinstall VPN adapter" Opacity="0.7" VerticalAlignment="Center"
+                                   HorizontalAlignment="Left" />
+                        <Button ToolTip="Removes the VPN adapter, and reinstalls it. Can fix a majority of issues"
+                                Command="{Binding ReinstallTapAdapterCommand}"
+                                IsEnabled="{Binding IsReinstallingAdapter, Converter={StaticResource InverseBooleanConverter}}"
+                                materialDesign:ButtonProgressAssist.IsIndeterminate="True"
+                                materialDesign:ButtonProgressAssist.Value="-1"
+                                materialDesign:ButtonProgressAssist.IsIndicatorVisible="{Binding IsReinstallingAdapter}"
+                                Cursor="Arrow" Style="{DynamicResource MaterialDesignRaisedButton}"
+                                VerticalAlignment="Center" HorizontalAlignment="Right">
+                            <StackPanel Orientation="Horizontal">
+                                <materialDesign:PackIcon Kind="RotateLeft" />
+                                <TextBlock Margin="5,0,0,0" Text="REINSTALL" />
+                            </StackPanel>
+                        </Button>
+                    </Grid>
+                    <Separator Opacity="0.2" Margin="0,15,0,0" />
+                    <Grid VerticalAlignment="Top" HorizontalAlignment="Stretch" Margin="0,15,0,0">
+                        <TextBlock Text="Refresh cache" Opacity="0.7" VerticalAlignment="Center"
+                                   HorizontalAlignment="Left" />
+                        <Button ToolTip="Clears the application cache and fetches a fresh cache from LightVPN"
+                                Cursor="Arrow" Style="{DynamicResource MaterialDesignRaisedButton}"
+                                IsEnabled="{Binding IsRefreshingCache, Converter={StaticResource InverseBooleanConverter}}"
+                                materialDesign:ButtonProgressAssist.IsIndeterminate="True"
+                                materialDesign:ButtonProgressAssist.Value="-1"
+                                materialDesign:ButtonProgressAssist.IsIndicatorVisible="{Binding IsRefreshingCache}"
+                                Command="{Binding RefreshCacheCommand}"
+                                VerticalAlignment="Center" HorizontalAlignment="Right">
+                            <StackPanel Orientation="Horizontal">
+                                <materialDesign:PackIcon Kind="RotateLeft" />
+                                <TextBlock Margin="5,0,0,0" Text="REFRESH" />
+                            </StackPanel>
+                        </Button>
+                    </Grid>
+                </StackPanel>
+            </materialDesign:Card>
+
+            <materialDesign:Card Margin="15,15,15,15" VerticalAlignment="Top" HorizontalAlignment="Stretch">
+                <StackPanel VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Margin="15">
+                    <Grid VerticalAlignment="Top" HorizontalAlignment="Stretch">
+                        <TextBlock Text="View VPN logs" Opacity="0.7" VerticalAlignment="Center"
+                                   HorizontalAlignment="Left" />
+                        <Button
+                            ToolTip="View the VPN logs, they contain VPN connection events. Support may ask for this in a ticket."
+                            Cursor="Arrow" Style="{DynamicResource MaterialDesignRaisedButton}"
+                            VerticalAlignment="Center" HorizontalAlignment="Right">
+                            <StackPanel Orientation="Horizontal">
+                                <materialDesign:PackIcon Kind="ExternalLink" />
+                                <TextBlock Margin="5,0,0,0" Text="VIEW" />
+                            </StackPanel>
+                        </Button>
+                    </Grid>
+                    <Separator Opacity="0.2" Margin="0,15,0,0" />
+                    <Grid VerticalAlignment="Top" HorizontalAlignment="Stretch" Margin="0,15,0,0">
+                        <TextBlock Text="View app logs" Opacity="0.7" VerticalAlignment="Center"
+                                   HorizontalAlignment="Left" />
+                        <Button
+                            ToolTip="View the app logs, they contain events such as errors. Support may ask for this in a ticket."
+                            Cursor="Arrow" Style="{DynamicResource MaterialDesignRaisedButton}"
+                            VerticalAlignment="Center" HorizontalAlignment="Right">
+                            <StackPanel Orientation="Horizontal">
+                                <materialDesign:PackIcon Kind="ExternalLink" />
+                                <TextBlock Margin="5,0,0,0" Text="VIEW" />
+                            </StackPanel>
+                        </Button>
+                    </Grid>
+                </StackPanel>
+            </materialDesign:Card>
+            <TextBlock FontSize="11" Opacity="0.5"
+                   Foreground="{DynamicResource MaterialDesignBody}" Margin="5" VerticalAlignment="Bottom"
+                   HorizontalAlignment="Center" Text="{Binding VersionString}" Name="VersionText" />
+        </StackPanel>
+    </ScrollViewer>
+</Page>

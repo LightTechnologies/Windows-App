@@ -6,10 +6,22 @@ namespace LightVPN.Client.Windows.ViewModels
 {
     internal class WindowViewModel : BaseViewModel
     {
+        private readonly bool _canMaximize;
+
+        protected WindowViewModel(bool canMaximize = true)
+        {
+            _canMaximize = canMaximize;
+            if (Application.Current.MainWindow != null)
+                Application.Current.MainWindow.StateChanged += (_, _) =>
+                    WindowState = Application.Current.MainWindow.WindowState;
+        }
+
         public WindowViewModel()
         {
+            _canMaximize = true;
             if (Application.Current.MainWindow != null)
-                Application.Current.MainWindow.StateChanged += (sender, args) => WindowState = Application.Current.MainWindow.WindowState;
+                Application.Current.MainWindow.StateChanged += (_, _) =>
+                    WindowState = Application.Current.MainWindow.WindowState;
         }
 
         private WindowState _windowState;
@@ -56,7 +68,8 @@ namespace LightVPN.Client.Windows.ViewModels
                             Application.Current.MainWindow is { WindowState: WindowState.Maximized }
                                 ? WindowState.Normal
                                 : WindowState.Maximized;
-                    }
+                    },
+                    CanExecuteFunc = () => _canMaximize
                 };
             }
         }

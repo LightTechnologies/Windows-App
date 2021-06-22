@@ -5,7 +5,7 @@ namespace LightVPN.Client.Auth.Utils
     internal static class Extensions
     {
         /// <summary>
-        /// Converts a PlatformID enum to a string for the X-Client-Version API header
+        ///     Converts a PlatformID enum to a string for the X-Client-Version API header
         /// </summary>
         /// <param name="platform">The platform ID</param>
         /// <returns>The string for the platform passed in</returns>

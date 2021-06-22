@@ -9,7 +9,7 @@ namespace LightVPN.Client.OpenVPN.Exceptions
     /// </summary>
     internal sealed class UnknownErrorException : Exception
     {
-        public UnknownErrorException(string message) : base(message)
+        internal UnknownErrorException(string message) : base(message)
         {
         }
     }

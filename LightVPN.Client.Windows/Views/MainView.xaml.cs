@@ -15,10 +15,11 @@ using System.Windows.Shapes;
 
 namespace LightVPN.Client.Windows.Views
 {
+    /// <inheritdoc cref="System.Windows.Controls.Page" />
     /// <summary>
     /// Interaction logic for MainView.xaml
     /// </summary>
-    public partial class MainView : Page
+    internal sealed partial class MainView : Page
     {
         public MainView()
         {

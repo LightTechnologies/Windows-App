@@ -28,13 +28,14 @@ namespace LightVPN.Client.Auth.Utils
                 Directory.CreateDirectory(Path.GetDirectoryName(Globals.AuthDataPath) ??
                                           throw new InvalidOperationException());
 
-            if (!File.Exists(Globals.AuthDataPath)) Write(new AuthResponse()
-            {
-                UserId = default,
-                UserName = default,
-                SessionId = default,
-                Email = default
-            });
+            if (!File.Exists(Globals.AuthDataPath))
+                Write(new AuthResponse
+                {
+                    UserId = default,
+                    UserName = default,
+                    SessionId = default,
+                    Email = default
+                });
         }
 
         /// <summary>

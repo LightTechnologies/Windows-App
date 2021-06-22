@@ -15,12 +15,12 @@ namespace LightVPN.Client.OpenVPN.Utils
     ///     Manages the TAP adapter and it's drivers, this class is only functional on Windows
     /// </summary>
     [SupportedOSPlatform("windows")]
-    public class TapManager
+    public sealed class TapManager
     {
         private Process _tapCtlProcess;
         private readonly OpenVpnConfiguration _configuration;
 
-        public TapManager(OpenVpnConfiguration configuration)
+        internal TapManager(OpenVpnConfiguration configuration)
         {
             _configuration = configuration;
 
@@ -59,6 +59,7 @@ namespace LightVPN.Client.OpenVPN.Utils
                 {
                     CreateNoWindow = true,
                     FileName = _configuration.TapCtlPath,
+                    Verb = "runas",
                     WindowStyle = ProcessWindowStyle.Hidden,
                     WorkingDirectory = Path.GetDirectoryName(_configuration.OpenVpnPath) ??
                                        throw new ArgumentNullException(nameof(_configuration)),
@@ -164,7 +165,7 @@ namespace LightVPN.Client.OpenVPN.Utils
         /// </summary>
         /// <param name="cancellationToken">The cancellation token</param>
         /// <returns>True if it is, false otherwise</returns>
-        public async Task<bool> IsAdapterExistent(CancellationToken cancellationToken = default)
+        public async Task<bool> IsAdapterExistantAsync(CancellationToken cancellationToken = default)
         {
             var found = false;
 
@@ -178,6 +179,8 @@ namespace LightVPN.Client.OpenVPN.Utils
             };
 
             _tapCtlProcess.OutputDataReceived += TapCtlProcessOnOutputDataReceived;
+
+            StartProcess();
 
             await BeginTerminatingProcessAsync(cancellationToken);
 

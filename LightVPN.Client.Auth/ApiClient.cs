@@ -25,7 +25,7 @@ namespace LightVPN.Client.Auth
         /// <summary>
         ///     The authentication data for the current user
         /// </summary>
-        public AuthResponse AuthData { get; }
+        private AuthResponse AuthData { get; }
 
         public ApiClient()
         {
@@ -72,7 +72,9 @@ namespace LightVPN.Client.Auth
         /// <returns>If successful, the response deserialized to an object</returns>
         public async Task<T> PostAsync<T>(string url, object body, CancellationToken cancellationToken = default)
         {
-            var resp = await PostAsync(url, new StringContent(JsonSerializer.Serialize(body), Encoding.UTF8, "application/json"), cancellationToken);
+            var resp = await PostAsync(url,
+                new StringContent(JsonSerializer.Serialize(body), Encoding.UTF8, "application/json"),
+                cancellationToken);
             return await CheckResponse<T>(resp, cancellationToken);
         }
 

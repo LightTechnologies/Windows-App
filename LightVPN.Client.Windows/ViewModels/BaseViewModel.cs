@@ -13,7 +13,7 @@ namespace LightVPN.Client.Windows.ViewModels
         protected readonly CancellationTokenSource CancellationTokenSource = new();
 
         [NotifyPropertyChangedInvocator]
-        protected virtual void OnPropertyChanged([CallerMemberName] [CanBeNull] string propertyName = null)
+        protected void OnPropertyChanged([CallerMemberName] [CanBeNull] string propertyName = null)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }

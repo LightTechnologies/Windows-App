@@ -9,20 +9,80 @@
         WindowStartupLocation="CenterScreen"
         FontSize="14"
         Style="{DynamicResource LightWindow}"
-        Foreground="{DynamicResource MaterialDesignBody}"
         Background="{DynamicResource MaterialDesignPaper}"
-        MinHeight="450"
-        MinWidth="350"
+        MinHeight="590"
+        MinWidth="415"
         Title="LightVPN"
-        Height="450"
-        Width="350"
-        
+        Height="590"
+        Width="415"
+
         x:ClassModifier="internal">
+    <Window.Resources>
+        <BeginStoryboard x:Key="LoadView">
+            <Storyboard>
+                <DoubleAnimationUsingKeyFrames Storyboard.TargetName="MainFrame"
+                                               Storyboard.TargetProperty="(UIElement.RenderTransform).(TransformGroup.Children)[3].(TranslateTransform.Y)">
+                    <EasingDoubleKeyFrame KeyTime="00:00:00" Value="20">
+                        <EasingDoubleKeyFrame.EasingFunction>
+                            <QuinticEase EasingMode="EaseInOut" />
+                        </EasingDoubleKeyFrame.EasingFunction>
+                    </EasingDoubleKeyFrame>
+                    <EasingDoubleKeyFrame KeyTime="00:00:00.4000000" Value="0">
+                        <EasingDoubleKeyFrame.EasingFunction>
+                            <QuinticEase EasingMode="EaseInOut" />
+                        </EasingDoubleKeyFrame.EasingFunction>
+                    </EasingDoubleKeyFrame>
+                </DoubleAnimationUsingKeyFrames>
+                <DoubleAnimationUsingKeyFrames Storyboard.TargetName="MainFrame"
+                                               Storyboard.TargetProperty="(UIElement.Opacity)">
+                    <EasingDoubleKeyFrame KeyTime="00:00:00" Value="0">
+                        <EasingDoubleKeyFrame.EasingFunction>
+                            <QuinticEase EasingMode="EaseInOut" />
+                        </EasingDoubleKeyFrame.EasingFunction>
+                    </EasingDoubleKeyFrame>
+                    <EasingDoubleKeyFrame KeyTime="00:00:00.4000000" Value="1">
+                        <EasingDoubleKeyFrame.EasingFunction>
+                            <QuinticEase EasingMode="EaseInOut" />
+                        </EasingDoubleKeyFrame.EasingFunction>
+                    </EasingDoubleKeyFrame>
+                </DoubleAnimationUsingKeyFrames>
+            </Storyboard>
+        </BeginStoryboard>
+        <BeginStoryboard x:Key="UnloadView">
+            <Storyboard Completed="UnloadCompleted">
+                <DoubleAnimationUsingKeyFrames Storyboard.TargetName="MainFrame"
+                                               Storyboard.TargetProperty="(UIElement.RenderTransform).(TransformGroup.Children)[3].(TranslateTransform.Y)">
+                    <EasingDoubleKeyFrame KeyTime="00:00:00.4000000" Value="20">
+                        <EasingDoubleKeyFrame.EasingFunction>
+                            <QuinticEase EasingMode="EaseInOut" />
+                        </EasingDoubleKeyFrame.EasingFunction>
+                    </EasingDoubleKeyFrame>
+                </DoubleAnimationUsingKeyFrames>
+                <DoubleAnimationUsingKeyFrames Storyboard.TargetName="MainFrame"
+                                               Storyboard.TargetProperty="(UIElement.Opacity)">
+                    <EasingDoubleKeyFrame KeyTime="00:00:00.4000000" Value="0">
+                        <EasingDoubleKeyFrame.EasingFunction>
+                            <QuinticEase EasingMode="EaseInOut" />
+                        </EasingDoubleKeyFrame.EasingFunction>
+                    </EasingDoubleKeyFrame>
+                </DoubleAnimationUsingKeyFrames>
+            </Storyboard>
+        </BeginStoryboard>
+    </Window.Resources>
 
     <Window.DataContext>
-        <viewModels:WindowViewModel/>
+        <viewModels:WindowViewModel />
     </Window.DataContext>
 
-    <Frame Name="MainFrame" NavigationUIVisibility="Hidden"/>
+    <Frame Name="MainFrame" NavigationUIVisibility="Hidden" RenderTransformOrigin="0.5,0.5">
+        <Frame.RenderTransform>
+            <TransformGroup>
+                <ScaleTransform />
+                <SkewTransform />
+                <RotateTransform />
+                <TranslateTransform />
+            </TransformGroup>
+        </Frame.RenderTransform>
+    </Frame>
     
 </Window>

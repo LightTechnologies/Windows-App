@@ -7,6 +7,7 @@ namespace LightVPN.Client.Windows.Models
     internal enum ConnectionState
     {
         [Description("Disconnected")] Disconnected,
+        [Description("Disconnecting...")] Disconnecting,
         [Description("Connecting...")] Connecting,
         [Description("Connected!")] Connected
     }

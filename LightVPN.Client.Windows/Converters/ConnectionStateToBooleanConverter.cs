@@ -6,7 +6,7 @@ using LightVPN.Client.Windows.Models;
 namespace LightVPN.Client.Windows.Converters
 {
     [ValueConversion(typeof(ConnectionState), typeof(bool))]
-    public class ConnectionStateToBooleanConverter : IValueConverter
+    internal sealed class ConnectionStateToBooleanConverter : IValueConverter
     {
         /// <inheritdoc />
         /// <summary>
@@ -25,6 +25,7 @@ namespace LightVPN.Client.Windows.Converters
             return connState switch
             {
                 ConnectionState.Connecting => false,
+                ConnectionState.Disconnecting => false,
                 _ => true
             };
         }

@@ -14,6 +14,7 @@
 
     <Style TargetType="TextBlock" BasedOn="{StaticResource BaseTextBlockStyle}" x:Key="Title">
         <Setter Property="FontFamily" Value="{StaticResource UbuntuBold}"/>
+        <Setter Property="TextOptions.TextHintingMode" Value="Animated"/>
         <Setter Property="FontSize" Value="20"/>
     </Style>
 
@@ -26,6 +27,7 @@
 
     <Style TargetType="TextBlock" BasedOn="{StaticResource BaseTextBlockStyle}" x:Key="LightTitle">
         <Setter Property="FontFamily" Value="{StaticResource UbuntuBold}"/>
+        <Setter Property="TextOptions.TextHintingMode" Value="Animated"/>
         <Setter Property="FontSize" Value="20"/>
         <Setter Property="Foreground" Value="{DynamicResource ForegroundLightBrush}"/>
     </Style>
@@ -39,8 +41,16 @@
 
     <Style TargetType="TextBlock" BasedOn="{StaticResource BaseTextBlockStyle}" x:Key="DarkTitle">
         <Setter Property="FontFamily" Value="{StaticResource UbuntuBold}"/>
+        <Setter Property="TextOptions.TextHintingMode" Value="Animated"/>
         <Setter Property="FontSize" Value="20"/>
         <Setter Property="Foreground" Value="{DynamicResource ForegroundDarkBrush}"/>
+    </Style>
+
+    <Style TargetType="Label" BasedOn="{StaticResource BaseStyle}" x:Key="LightSmallLabel">
+        <Setter Property="FontSize" Value="14"/>
+        <Setter Property="FontFamily" Value="{StaticResource InterSemiBold}"/>
+        <Setter Property="Foreground" Value="{StaticResource ForegroundLightBrush}"/>
+        <Setter Property="Opacity" Value="0.5"/>
     </Style>
 
 </ResourceDictionary>

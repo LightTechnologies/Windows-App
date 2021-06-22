@@ -1,25 +1,26 @@
 ﻿using System;
 using System.Windows;
 using System.Windows.Media;
-using LightVPN.Client.Windows.Models;
 using LightVPN.Client.Windows.Configuration.Models;
+using LightVPN.Client.Windows.Models;
 using MaterialDesignThemes.Wpf;
 
 namespace LightVPN.Client.Windows.Utils
 {
     /// <summary>
-    /// Responsible for managing the colors, themes, etc. (dark or light mode, UI colors)
+    ///     Responsible for managing the colors, themes, etc. (dark or light mode, UI colors)
     /// </summary>
     internal static class ThemeManager
     {
         /// <summary>
-        /// Switches the theme by hot-swapping the resource dictionaries
+        ///     Switches the theme by hot-swapping the resource dictionaries
         /// </summary>
         /// <param name="primaryColor">Primary color to set</param>
         /// <param name="backgroundMode">Background color to set (dark or light)</param>
         /// <param name="customColorBrush">Custom color brush to be set for the UI colors</param>
-        /// <exception cref="ArgumentOutOfRangeException">Thrown when <paramref name="backgroundMode"/> is out-of-range</exception>
-        internal static void SwitchTheme(ThemeColor primaryColor, BackgroundMode backgroundMode, Color customColorBrush = default)
+        /// <exception cref="ArgumentOutOfRangeException">Thrown when <paramref name="backgroundMode" /> is out-of-range</exception>
+        internal static void SwitchTheme(ThemeColor primaryColor, BackgroundMode backgroundMode,
+            Color customColorBrush = default)
         {
             try
             {
@@ -43,16 +44,17 @@ namespace LightVPN.Client.Windows.Utils
                         customColorBrush),
                     _ => Theme.Create(baseTheme,
                         (Color)ColorConverter.ConvertFromString(primaryColor.ToString()),
-                        (Color)ColorConverter.ConvertFromString(primaryColor.ToString())),
+                        (Color)ColorConverter.ConvertFromString(primaryColor.ToString()))
                 };
 
                 Application.Current.Resources.SetTheme(theme);
             }
             catch (Exception)
             {
-                MessageBox.Show("Something went wrong when processing theme settings, please report this exception, and the log file to LightVPN support.", "LightVPN", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show(
+                    "Something went wrong when processing theme settings, please report this exception, and the log file to LightVPN support.",
+                    "LightVPN", MessageBoxButton.OK, MessageBoxImage.Error);
                 Application.Current.Shutdown();
-                return;
             }
         }
     }

@@ -1,12 +1,17 @@
 ﻿using System;
+using System.Reflection;
 using System.Windows;
 using LightVPN.Client.Auth;
 using LightVPN.Client.Auth.Interfaces;
 using LightVPN.Client.Auth.Models;
+using LightVPN.Client.Discord;
+using LightVPN.Client.Discord.Interfaces;
+using LightVPN.Client.Discord.Models;
 using LightVPN.Client.OpenVPN;
 using LightVPN.Client.OpenVPN.Interfaces;
 using LightVPN.Client.OpenVPN.Models;
 using LightVPN.Client.Windows.Common;
+using LightVPN.Client.Windows.Common.Utils;
 using LightVPN.Client.Windows.Configuration;
 using LightVPN.Client.Windows.Configuration.Interfaces;
 using LightVPN.Client.Windows.Configuration.Models;
@@ -35,10 +40,16 @@ namespace LightVPN.Client.Windows
                 OpenVpnLogPath = Globals.OpenVpnLogPath,
                 OpenVpnPath = Globals.OpenVpnPath,
                 TapAdapterName = "LightVPN-TAP",
-                TapCtlPath = Globals.OpenVpnPath
+                TapCtlPath = Globals.TapCtlPath
             }));
-            Globals.Container.RegisterInstance<IConfigurationManager>(
-                new ConfigurationManager(Globals.AppSettingsPath));
+            Globals.Container.RegisterInstance<IDiscordRp>(new DiscordRp(new DiscordRpConfiguration()
+            {
+                ClientId = 856714133629829130,
+                LargeImageKey = "lvpn",
+                LargeImageText = $"v{Assembly.GetEntryAssembly()?.GetName().Version} ({HostVersion.GetOsVersion()})"
+            }));
+            Globals.Container.RegisterInstance<IConfigurationManager<AppConfiguration>>(
+                new ConfigurationManager<AppConfiguration>(Globals.AppSettingsPath));
             Globals.Container.RegisterSingleton<IOpenVpnService, OpenVpnService>();
 
             var res = new ResourceDictionary();
@@ -59,7 +70,7 @@ namespace LightVPN.Client.Windows
             Uri fontsUri =
                 new("Resources/Fonts.xaml", UriKind
                     .RelativeOrAbsolute);
-            var typographyUri = new Uri("Resources/Typography.xaml", UriKind
+            Uri typographyUri = new("Resources/Typography.xaml", UriKind
                 .RelativeOrAbsolute);
             Uri buttonsUri =
                 new("Resources/Buttons.xaml", UriKind
@@ -82,18 +93,26 @@ namespace LightVPN.Client.Windows
             res.MergedDictionaries.Add(new ResourceDictionary { Source = buttonsUri });
             res.MergedDictionaries.Add(new ResourceDictionary { Source = windowsUri });
 
-            ThemeManager.SwitchTheme(ThemeColor.Default, BackgroundMode.Light);
-
             try
             {
+                var settings = Globals.Container.GetInstance<IConfigurationManager<AppConfiguration>>().Read();
+                if (settings is not null)
+                    ThemeManager.SwitchTheme(ThemeColor.Default,
+                        settings.IsDarkModeEnabled ? BackgroundMode.Dark : BackgroundMode.Light);
+                else
+                    ThemeManager.SwitchTheme(ThemeColor.Default, BackgroundMode.Light);
+
                 Globals.Container.GetInstance<IApiClient>().GetAsync<GenericResponse>("profile").GetAwaiter()
                     .GetResult();
+
+                if (settings is { IsDiscordRpcEnabled: true }) Globals.Container.GetInstance<IDiscordRp>().Initialize();
 
                 app.StartupUri = new Uri("Windows/MainWindow.xaml", UriKind.RelativeOrAbsolute);
             }
             catch (Exception)
             {
-                // ignored
+                // Apply default theme settings
+                ThemeManager.SwitchTheme(ThemeColor.Default, BackgroundMode.Light);
             }
 
             app.Run();

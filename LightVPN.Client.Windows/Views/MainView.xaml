@@ -9,16 +9,19 @@
       xmlns:converters="clr-namespace:LightVPN.Client.Windows.Converters"
       xmlns:controls="clr-namespace:LightVPN.Client.Windows.Controls"
       mc:Ignorable="d"
+      Style="{StaticResource LightView}"
       d:DesignHeight="434" d:DesignWidth="350"
-      Title="MainView">
+      Title="MainView" x:ClassModifier="internal">
 
     <Page.DataContext>
         <viewModels:MainViewModel />
     </Page.DataContext>
 
+
     <Page.Resources>
         <converters:ConnectionStateToPackIconKindConverter x:Key="ConnectionStateToPackIconConverter" />
         <converters:ConnectionStateToBooleanConverter x:Key="ConnectionStateToBooleanConverter" />
+        <converters:InverseConnectionStateToBooleanConverter x:Key="InverseConnectionStateToBooleanConverter"/>
     </Page.Resources>
 
     <i:Interaction.Triggers>
@@ -38,6 +41,7 @@
                     Cursor="Arrow"
                     Background="Transparent"
                     BorderBrush="Transparent"
+                    Command="{Binding LoadSettingsCommand}"
                     Style="{StaticResource MaterialDesignFloatingActionMiniDarkButton}"
                     ToolTip="Settings..."
                     Foreground="{StaticResource ForegroundLightBrush}"
@@ -52,12 +56,17 @@
                 <TextBlock Text="{Binding ConnectionState}" Style="{DynamicResource LightTitle}"
                            VerticalAlignment="Top"
                            HorizontalAlignment="Center" />
-                <TextBlock Text="Server: Chicago #1" Style="{DynamicResource LightSmall}" VerticalAlignment="Top"
-                           HorizontalAlignment="Center" Margin="0,10,0,0" />
+                <Label Content="{Binding LastServer}" ContentStringFormat="Last server: {0}"
+                       Style="{DynamicResource LightSmallLabel}" VerticalAlignment="Top"
+                       HorizontalAlignment="Center" Margin="0,10,0,0" />
             </StackPanel>
         </Grid>
         <Button Grid.Row="0" Style="{DynamicResource MaterialDesignFloatingActionDarkButton}"
                 Cursor="Arrow"
+                Command="{Binding ToggleConnectCommand}"
+                materialDesign:ButtonProgressAssist.IsIndeterminate="True"
+                                materialDesign:ButtonProgressAssist.Value="-1"
+                                materialDesign:ButtonProgressAssist.IsIndicatorVisible="{Binding ConnectionState, Converter={StaticResource InverseConnectionStateToBooleanConverter}}"
                 IsEnabled="{Binding ConnectionState, Converter={StaticResource ConnectionStateToBooleanConverter}}"
                 VerticalAlignment="Bottom" Margin="0,0,0,3" HorizontalAlignment="Center">
             <materialDesign:PackIcon
@@ -76,12 +85,13 @@
                                     BorderThickness="0"
                                     CanUserResizeRows="False" BeginningEdit="DataGrid_BeginningEdit"
                                     HorizontalAlignment="Stretch" Background="Transparent"
+                                    Foreground="{DynamicResource MaterialDesignBody}"
                                     ItemsSource="{Binding VpnServers}" SelectedItem="{Binding SelectedVpnServer}">
                 <DataGrid.Columns>
                     <DataGridTemplateColumn>
                         <DataGridTemplateColumn.CellTemplate>
                             <DataTemplate>
-                                <Image Source="{Binding Flag}" />
+                                <Image ToolTip="{Binding Country}" Source="{Binding Flag}" />
                             </DataTemplate>
                         </DataGridTemplateColumn.CellTemplate>
                     </DataGridTemplateColumn>
@@ -116,6 +126,22 @@
                         </DataGridTemplateColumn.CellTemplate>
                     </DataGridTemplateColumn>
                 </DataGrid.Columns>
+                <DataGrid.ContextMenu>
+                    <ContextMenu>
+                        <MenuItem
+                            Name="ConnectItem"
+                            Command="{Binding GridConnectCommand}"
+                            CommandParameter="{Binding SelectedVpnServer}"
+                            ToolTip="Connects to this VPN server">
+                            <MenuItem.Icon>
+                                <materialDesign:PackIcon Kind="PowerPlugOutline" />
+                            </MenuItem.Icon>
+                            <MenuItem.Header>
+                                <TextBlock>Connect to this server</TextBlock>
+                            </MenuItem.Header>
+                        </MenuItem>
+                    </ContextMenu>
+                </DataGrid.ContextMenu>
             </controls:LightDataGrid>
         </Grid>
     </Grid>

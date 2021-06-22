@@ -11,6 +11,10 @@ namespace LightVPN.Client.Windows.ViewModels
 {
     internal sealed class LoginViewModel : WindowViewModel
     {
+        public LoginViewModel() : base(false)
+        {
+        }
+
         public string UserName
         {
             get => _userName;

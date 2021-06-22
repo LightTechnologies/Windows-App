@@ -8,7 +8,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using LightVPN.Client.OpenVPN.Resources;
 
-namespace LightVpn.Client.OpenVpn.Utils
+namespace LightVPN.Client.OpenVPN.Utils
 {
     /// <inheritdoc />
     /// <summary>
@@ -40,8 +40,8 @@ namespace LightVpn.Client.OpenVpn.Utils
         /// <param name="cancellationToken">The cancellation token</param>
         public async Task ConnectAsync(CancellationToken cancellationToken = default)
         {
-            _endPoint ??= CreateEndPoint();
-            _socket ??= new Socket(_endPoint.AddressFamily, SocketType.Stream, ProtocolType.Tcp);
+            _endPoint = CreateEndPoint();
+            _socket = new Socket(_endPoint.AddressFamily, SocketType.Stream, ProtocolType.Tcp);
 
             await _socket.ConnectAsync(_endPoint, cancellationToken);
         }
@@ -55,7 +55,7 @@ namespace LightVpn.Client.OpenVpn.Utils
         {
             if (!IsConnected) await ConnectAsync(cancellationToken);
 
-            await _socket.SendAsync(Encoding.UTF8.GetBytes(buffer), SocketFlags.None, cancellationToken);
+            await _socket.SendAsync(Encoding.UTF8.GetBytes(buffer + "\r\n"), SocketFlags.None, cancellationToken);
         }
 
         /// <summary>

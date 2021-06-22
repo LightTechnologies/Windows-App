@@ -6,7 +6,7 @@
     /// </summary>
     public sealed class ConnectedEventArgs : BaseEventArgs
     {
-        internal ConnectedEventArgs(string output) : base(output)
+        internal ConnectedEventArgs()
         {
         }
     }

@@ -14,7 +14,7 @@ namespace LightVPN.Client.Windows.Controls
             DependencyProperty.Register("DoubleClickCommand", typeof(ICommand), typeof(LightDataGrid),
                 new UIPropertyMetadata());
 
-        internal LightDataGrid()
+        public LightDataGrid()
         {
             PreviewMouseDoubleClick += MouseButtonEventHandler;
         }

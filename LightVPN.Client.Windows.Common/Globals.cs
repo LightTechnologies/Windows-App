@@ -26,6 +26,11 @@ namespace LightVPN.Client.Windows.Common
         public static readonly string OpenVpnPath = Path.Combine(AppSettingsDirectory, "OpenVPN");
 
         /// <summary>
+        ///     Path to the TAP utility binary
+        /// </summary>
+        public static readonly string TapCtlPath = Path.Combine(OpenVpnPath, "tapctl.exe");
+
+        /// <summary>
         ///     Path to the OpenVPN TAP drivers
         /// </summary>
         public static readonly string OpenVpnDriversPath = Path.Combine(AppSettingsDirectory, "OpenVPNDrivers");
@@ -45,10 +50,24 @@ namespace LightVPN.Client.Windows.Common
         /// </summary>
         public static readonly string OpenVpnLogPath = Path.Combine(AppSettingsDirectory, "ovpn.log");
 
+        /// <summary>
+        ///     SimpleInjector DI container
+        /// </summary>
         public static readonly Container Container = new();
 
+        /// <summary>
+        ///     Instance of a login window
+        /// </summary>
         public static object LoginWindow;
 
+        /// <summary>
+        ///     Username of the currently signed in user
+        /// </summary>
         public static string UserName;
+
+        /// <summary>
+        ///     True if this build is a beta build, false if it's stable
+        /// </summary>
+        public static bool IsBeta { get; set; } = true;
     }
 }

@@ -9,11 +9,10 @@
         xmlns:converters="clr-namespace:LightVPN.Client.Windows.Converters"
         mc:Ignorable="d"
         ResizeMode="NoResize"
-        Foreground="{DynamicResource MaterialDesignBody}"
+        WindowStartupLocation="CenterScreen"
         Background="{DynamicResource MaterialDesignPaper}"
         Style="{DynamicResource LightWindow}"
-        FontFamily="{StaticResource Inter}"
-        Title="LoginWindow" Height="435" Width="310" x:ClassModifier="internal">
+        Title="LightVPN - Sign in" Height="435" Width="310" x:ClassModifier="internal">
 
     <Window.DataContext>
         <viewModels:LoginViewModel />
@@ -58,7 +57,6 @@
             Margin="20,25,20,0"
             HorizontalAlignment="Stretch"
             VerticalAlignment="Top"
-            x:FieldModifier="public"
             IsEnabled="{Binding IsAuthenticating, Converter={StaticResource InverseBooleanConverter}}"
             Style="{StaticResource MaterialDesignOutlinedPasswordBox}"
             ToolTip="Enter your LightVPN password">

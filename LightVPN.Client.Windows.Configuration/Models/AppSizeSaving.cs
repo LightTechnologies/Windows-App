@@ -1,8 +1,8 @@
 ﻿namespace LightVPN.Client.Windows.Configuration.Models
 {
-    public class AppSizeSaving
+    public sealed class AppSizeSaving
     {
-        public bool IsSavingSizeEnabled { get; set; }
+        public bool IsSavingSizeEnabled { get; set; } = true;
         public uint Width { get; set; }
         public uint Height { get; set; }
     }

@@ -1,9 +1,10 @@
 ﻿namespace LightVPN.Client.Windows
 {
+    /// <inheritdoc />
     /// <summary>
     /// Interaction logic for App.xaml
     /// </summary>
-    public partial class App
+    internal sealed partial class App
     {
     }
 }

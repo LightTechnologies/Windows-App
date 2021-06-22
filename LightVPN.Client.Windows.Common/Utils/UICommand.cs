@@ -6,8 +6,8 @@ namespace LightVPN.Client.Windows.Common.Utils
     /// <inheritdoc />
     public sealed class UiCommand : ICommand
     {
-        public Action<object> CommandAction { get; set; }
-        public Func<bool> CanExecuteFunc { get; set; }
+        public Action<object> CommandAction { get; init; }
+        public Func<bool> CanExecuteFunc { get; init; }
 
         public void Execute(object args)
         {
