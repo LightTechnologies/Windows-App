@@ -4,6 +4,7 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:viewModels="clr-namespace:LightVPN.Client.Windows.ViewModels"
+        xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
         mc:Ignorable="d"
         x:Name="AppWindow"
         WindowStartupLocation="CenterScreen"
@@ -15,8 +16,8 @@
         Title="LightVPN"
         Height="590"
         Width="415"
-
         x:ClassModifier="internal">
+
     <Window.Resources>
         <BeginStoryboard x:Key="LoadView">
             <Storyboard>
@@ -84,5 +85,5 @@
             </TransformGroup>
         </Frame.RenderTransform>
     </Frame>
-    
+
 </Window>

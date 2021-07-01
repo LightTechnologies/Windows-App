@@ -71,7 +71,7 @@
                             Style="{DynamicResource MaterialDesignSwitchToggleButton}" />
                     </Grid>
                     <Separator Opacity="0.2" Margin="0,15,0,0" />
-                    <Grid VerticalAlignment="Top" HorizontalAlignment="Stretch" Margin="0,15,0,15">
+                    <Grid VerticalAlignment="Top" HorizontalAlignment="Stretch" Margin="0,15,0,0">
                         <TextBlock Text="Enable Discord presence" Opacity="0.7" VerticalAlignment="Center"
                                    HorizontalAlignment="Left" />
                         <ToggleButton
@@ -81,6 +81,19 @@
                             Margin="0,6,0,6"
                             Command="{Binding HandleConfigChanges}"
                             IsChecked="{Binding AppConfiguration.IsDiscordRpcEnabled}"
+                            Style="{DynamicResource MaterialDesignSwitchToggleButton}" />
+                    </Grid>
+                    <Separator Opacity="0.2" Margin="0,15,0,0" />
+                    <Grid VerticalAlignment="Top" HorizontalAlignment="Stretch" Margin="0,15,0,15">
+                        <TextBlock Text="Run on device start" Opacity="0.7" VerticalAlignment="Center"
+                                   HorizontalAlignment="Left" />
+                        <ToggleButton
+                            ToolTip="Enables/disables starting LightVPN automatically when your device starts up"
+                            HorizontalAlignment="Right"
+                            VerticalAlignment="Stretch"
+                            Margin="0,6,0,6"
+                            Command="{Binding HandleConfigChanges}"
+                            IsChecked="{Binding IsRunningOnStartup}"
                             Style="{DynamicResource MaterialDesignSwitchToggleButton}" />
                     </Grid>
                     <Separator Opacity="0.2" />
@@ -144,6 +157,8 @@
                         <TextBlock Text="View VPN logs" Opacity="0.7" VerticalAlignment="Center"
                                    HorizontalAlignment="Left" />
                         <Button
+                            IsEnabled="{Binding IsLogProcessOpen, Converter={StaticResource InverseBooleanConverter}}"
+                            Command="{Binding VpnLogsCommand}"
                             ToolTip="View the VPN logs, they contain VPN connection events. Support may ask for this in a ticket."
                             Cursor="Arrow" Style="{DynamicResource MaterialDesignRaisedButton}"
                             VerticalAlignment="Center" HorizontalAlignment="Right">

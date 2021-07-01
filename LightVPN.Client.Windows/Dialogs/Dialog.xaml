@@ -1,0 +1,57 @@
+﻿<UserControl x:Class="LightVPN.Client.Windows.Dialogs.Dialog"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+             mc:Ignorable="d"
+             MaxWidth="300"
+             FontSize="14"
+             d:DesignHeight="300" d:DesignWidth="300">
+
+    <Grid Margin="16">
+        <Grid.RowDefinitions>
+            <RowDefinition />
+            <RowDefinition />
+        </Grid.RowDefinitions>
+        <StackPanel
+            VerticalAlignment="Top"
+            HorizontalAlignment="Center">
+            <materialDesign:PackIcon Kind="{Binding IconKind}"
+                                     Width="35"
+                                     Height="35"
+                                     Margin="0,7,0,0"
+                                     VerticalAlignment="Top"
+                                     HorizontalAlignment="Center" />
+
+            <TextBlock Margin="0,7,0,0"
+                       VerticalAlignment="Top"
+                       HorizontalAlignment="Center"
+                       TextWrapping="WrapWithOverflow"
+                       TextAlignment="Center"
+                       Text="{Binding Title}" />
+
+            <TextBlock Margin="0,7,0,0"
+                       VerticalAlignment="Top"
+                       HorizontalAlignment="Center"
+                       TextWrapping="WrapWithOverflow"
+                       Style="{DynamicResource Small}"
+                       TextAlignment="Center"
+                       Text="{Binding Message}" />
+        </StackPanel>
+        <StackPanel Orientation="Horizontal"
+                    Grid.Row="2"
+                    VerticalAlignment="Top"
+                    HorizontalAlignment="Center"
+                    Margin="0 16 0 0">
+            <Button IsDefault="True"
+                    Style="{DynamicResource MaterialDesignFlatButton}"
+                    VerticalAlignment="Top"
+                    Cursor="Arrow"
+                    HorizontalAlignment="Center"
+                    Command="{x:Static materialDesign:DialogHost.CloseDialogCommand}">
+                DISMISS
+            </Button>
+        </StackPanel>
+    </Grid>
+</UserControl>

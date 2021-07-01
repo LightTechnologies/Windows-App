@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Reflection;
 using System.Windows;
 using System.Windows.Input;
@@ -13,6 +14,7 @@ using LightVPN.Client.Windows.Models;
 using LightVPN.Client.Windows.Services.Interfaces;
 using LightVPN.Client.Windows.Utils;
 using LightVPN.Client.Windows.Views;
+using MaterialDesignThemes.Wpf;
 
 namespace LightVPN.Client.Windows.ViewModels
 {
@@ -30,6 +32,18 @@ namespace LightVPN.Client.Windows.ViewModels
             }
         }
 
+        private bool _isLogProcessOpen;
+
+        public bool IsLogProcessOpen
+        {
+            get => _isLogProcessOpen;
+            set
+            {
+                _isLogProcessOpen = value;
+                OnPropertyChanged(nameof(IsLogProcessOpen));
+            }
+        }
+
         private bool _isReinstallingAdapter;
 
         public bool IsReinstallingAdapter
@@ -39,6 +53,18 @@ namespace LightVPN.Client.Windows.ViewModels
             {
                 _isReinstallingAdapter = value;
                 OnPropertyChanged(nameof(IsReinstallingAdapter));
+            }
+        }
+
+        private bool _isRunningOnStartup;
+
+        public bool IsRunningOnStartup
+        {
+            get => _isRunningOnStartup;
+            set
+            {
+                _isRunningOnStartup = value;
+                OnPropertyChanged(nameof(IsRunningOnStartup));
             }
         }
 
@@ -61,7 +87,7 @@ namespace LightVPN.Client.Windows.ViewModels
         {
             get
             {
-                return new UiCommand()
+                return new UICommand
                 {
                     CommandAction = _ =>
                     {
@@ -74,6 +100,11 @@ namespace LightVPN.Client.Windows.ViewModels
                         else
                             discordClient.Deinitialize();
 
+                        if (IsRunningOnStartup)
+                            StartupHelper.EnableRunOnStartup(Process.GetCurrentProcess().MainModule.FileName);
+                        else
+                            StartupHelper.DisableRunOnStartup();
+
                         ThemeManager.SwitchTheme(ThemeColor.Default,
                             AppConfiguration.IsDarkModeEnabled ? BackgroundMode.Dark : BackgroundMode.Light);
                     }
@@ -85,7 +116,7 @@ namespace LightVPN.Client.Windows.ViewModels
         {
             get
             {
-                return new UiCommand
+                return new UICommand
                 {
                     CommandAction = _ =>
                     {
@@ -93,6 +124,8 @@ namespace LightVPN.Client.Windows.ViewModels
                         AppConfiguration = manager.Read();
 
                         if (AppConfiguration is not null) return;
+
+                        IsRunningOnStartup = StartupHelper.IsRunningOnStartup();
 
                         AppConfiguration = new AppConfiguration();
                         manager.Write(AppConfiguration);
@@ -105,7 +138,7 @@ namespace LightVPN.Client.Windows.ViewModels
         {
             get
             {
-                return new UiCommand
+                return new UICommand
                 {
                     CommandAction = async _ =>
                     {
@@ -113,14 +146,15 @@ namespace LightVPN.Client.Windows.ViewModels
                         {
                             IsRefreshingCache = true;
 
-                            await Globals.Container.GetInstance<IOpenVpnService>().CacheServersAsync(true);
+                            await Globals.Container.GetInstance<ICacheService>().CacheServersAsync(true);
 
-                            MessageBox.Show("Cache has been cleared!", "LightVPN", MessageBoxButton.OK,
-                                MessageBoxImage.Information);
+                            await DialogManager.ShowDialogAsync(PackIconKind.CheckCircleOutline, "Success!",
+                                "Cache has been cleared.");
                         }
                         catch (InvalidResponseException e)
                         {
-                            MessageBox.Show(e.Message, "LightVPN", MessageBoxButton.OK, MessageBoxImage.Information);
+                            await DialogManager.ShowDialogAsync(PackIconKind.ErrorOutline, "Something went wrong...",
+                                e.Message);
                         }
                         finally
                         {
@@ -135,12 +169,44 @@ namespace LightVPN.Client.Windows.ViewModels
         {
             get
             {
-                return new UiCommand()
+                return new UICommand
                 {
                     CommandAction = _ =>
                     {
-                        var mainWindow = (MainWindow)Application.Current.MainWindow;
+                        IsPlayingAnimation = true;
+                        var mainWindow = (MainWindow) Application.Current.MainWindow;
                         mainWindow?.LoadView(new MainView());
+                    },
+                    CanExecuteFunc = () => !IsPlayingAnimation
+                };
+            }
+        }
+
+        public ICommand VpnLogsCommand
+        {
+            get
+            {
+                return new UICommand
+                {
+                    CommandAction = async _ =>
+                    {
+                        var notepadProcess = new Process
+                        {
+                            StartInfo = new ProcessStartInfo
+                            {
+                                FileName = "notepad.exe",
+                                UseShellExecute = true,
+                                Arguments = Globals.OpenVpnLogPath
+                            }
+                        };
+
+                        notepadProcess.Start();
+                        IsLogProcessOpen = true;
+
+                        await notepadProcess.WaitForExitAsync();
+
+                        IsLogProcessOpen = false;
+                        notepadProcess.Dispose();
                     }
                 };
             }
@@ -150,7 +216,7 @@ namespace LightVPN.Client.Windows.ViewModels
         {
             get
             {
-                return new UiCommand
+                return new UICommand
                 {
                     CommandAction = async _ =>
                     {
@@ -159,14 +225,18 @@ namespace LightVPN.Client.Windows.ViewModels
                             IsReinstallingAdapter = true;
 
                             var vpnManager = Globals.Container.GetInstance<IVpnManager>();
-                            if (await vpnManager.TapManager?.IsAdapterExistantAsync())
-                                await vpnManager.TapManager?.RemoveTapAdapterAsync();
+                            if (await vpnManager.TapManager.IsAdapterExistantAsync())
+                                await vpnManager.TapManager.RemoveTapAdapterAsync();
 
-                            await vpnManager.TapManager?.InstallTapAdapterAsync();
+                            await vpnManager.TapManager.InstallTapAdapterAsync();
+
+                            await DialogManager.ShowDialogAsync(PackIconKind.CheckCircleOutline, "Success!",
+                                "The VPN adapter has been reinstalled.");
                         }
                         catch (InvalidOperationException e)
                         {
-                            MessageBox.Show(e.Message, "LightVPN", MessageBoxButton.OK, MessageBoxImage.Information);
+                            await DialogManager.ShowDialogAsync(PackIconKind.ErrorOutline, "Something went wrong...",
+                                e.Message);
                         }
                         finally
                         {

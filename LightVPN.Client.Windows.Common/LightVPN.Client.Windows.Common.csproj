@@ -2,11 +2,22 @@
 
     <PropertyGroup>
         <TargetFramework>net5.0</TargetFramework>
+        <Authors>Light Technologies, LLC.</Authors>
+        <Product>LightVPN Windows Client</Product>
+        <ProductName>LightVPN Windows Client</ProductName>
+        <Version>3.0.0.0</Version>
+        <AssemblyName>lightvpn64-common</AssemblyName>
+        <AssemblyTitle>Common resources for the LightVPN Windows Client</AssemblyTitle>
+        <Copyright>Copyright 2021 (C) Light Technologies, LLC.</Copyright>
+        <PackageProjectUrl>https://github.com/LightTechnologies</PackageProjectUrl>
     </PropertyGroup>
 
     <ItemGroup>
       <Reference Include="PresentationCore, Version=5.0.6.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35">
         <HintPath>..\..\..\..\..\..\Program Files\dotnet\shared\Microsoft.WindowsDesktop.App\5.0.6\PresentationCore.dll</HintPath>
+      </Reference>
+      <Reference Include="PresentationFramework, Version=5.0.6.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35">
+        <HintPath>..\..\..\..\..\..\Program Files\dotnet\shared\Microsoft.WindowsDesktop.App\5.0.7\PresentationFramework.dll</HintPath>
       </Reference>
     </ItemGroup>
 

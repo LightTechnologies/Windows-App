@@ -149,7 +149,7 @@ namespace LightVPN.Client.OpenVPN
         /// <exception cref="FileLoadException">Thrown when OpenVPN rejects a configuration file for whatever reason</exception>
         /// <exception cref="UnknownErrorException">Thrown when OpenVPN spits out 'Unknown error' into stdout</exception>
         /// <exception cref="TimeoutException">Thrown when the connection to a VPN server times out</exception>
-        public async Task ConnectAsync(string configurationPath, CancellationToken cancellationToken = default)
+        public Task ConnectAsync(string configurationPath, CancellationToken cancellationToken = default)
         {
             if (IsConnected || IsConnecting)
                 throw new InvalidOperationException("Already connected to a VPN server");
@@ -172,7 +172,12 @@ namespace LightVPN.Client.OpenVPN
 
             ChildProcessTracker.AddProcess(_ovpnProcess);
 
+            _logDataManager.WriteLine(
+                "---------------------------------------- BEGIN CONNECTING ----------------------------------------");
+
             IsConnecting = true;
+
+            return Task.CompletedTask;
         }
 
         /// <summary>
@@ -200,9 +205,9 @@ namespace LightVPN.Client.OpenVPN
         {
             if (string.IsNullOrWhiteSpace(e.Data)) return;
 
-            OnOutputReceived?.Invoke(this, new OutputReceivedEventArgs());
-
             _logDataManager.WriteLine(e.Data);
+
+            OnOutputReceived?.Invoke(this, new OutputReceivedEventArgs());
 
             switch (e.Data)
             {
@@ -210,6 +215,11 @@ namespace LightVPN.Client.OpenVPN
                     await DisconnectAsync(false);
                     OnErrorReceived?.Invoke(this,
                         new ErrorEventArgs(new AuthenticationException(StringTable.OVPN_AUTH_FAILED)));
+                    break;
+                case { } when e.Data.Contains(StringTable.OVPN_OUT_TLS_ERROR):
+                    await DisconnectAsync(false);
+                    OnErrorReceived?.Invoke(this,
+                        new ErrorEventArgs(new HandshakeFailedException(StringTable.OVPN_TLS_ERROR)));
                     break;
                 case { } when e.Data.Contains(StringTable.OVPN_OUT_CONFIG_ERROR):
                     await DisconnectAsync(false);

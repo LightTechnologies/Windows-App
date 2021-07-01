@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media.Animation;
+using Hardcodet.Wpf.TaskbarNotification;
 using LightVPN.Client.Windows.Common;
 using LightVPN.Client.Windows.Configuration.Interfaces;
 using LightVPN.Client.Windows.Configuration.Models;
@@ -11,7 +12,7 @@ using LightVPN.Client.Windows.Views;
 namespace LightVPN.Client.Windows
 {
     /// <inheritdoc cref="System.Windows.Window" />
-    internal sealed partial class MainWindow : Window
+    internal sealed partial class MainWindow : Window, IDisposable
     {
         // Keep a memory-cached version of MainView so we don't have to reinitialise it all the time
 
@@ -20,6 +21,8 @@ namespace LightVPN.Client.Windows
         private readonly BeginStoryboard _viewLoaded;
 
         private readonly BeginStoryboard _viewUnloaded;
+
+        private readonly TaskbarIcon _taskbarIcon;
 
         public MainWindow()
         {
@@ -47,8 +50,10 @@ namespace LightVPN.Client.Windows
 
             Application.Current.MainWindow = this;
 
+            // Locates resources in the XAML and stores them for use in code-behind
             _viewLoaded = FindResource("LoadView") as BeginStoryboard;
             _viewUnloaded = FindResource("UnloadView") as BeginStoryboard;
+            _taskbarIcon = FindResource("TaskbarIcon") as TaskbarIcon;
 
             _mainView = new MainView();
 
@@ -73,6 +78,11 @@ namespace LightVPN.Client.Windows
 
                 manager.Write(config);
             };
+        }
+
+        public void Dispose()
+        {
+            _taskbarIcon.Dispose();
         }
 
         private void UnloadCompleted(object sender, EventArgs e)

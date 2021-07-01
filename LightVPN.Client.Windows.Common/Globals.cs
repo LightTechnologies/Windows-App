@@ -1,6 +1,7 @@
 ﻿using System;
+using System.ComponentModel;
 using System.IO;
-using SimpleInjector;
+using Container = SimpleInjector.Container;
 
 namespace LightVPN.Client.Windows.Common
 {
@@ -18,7 +19,11 @@ namespace LightVPN.Client.Windows.Common
         /// <summary>
         ///     Path to where server configuration cache is stored
         /// </summary>
-        public static readonly string AppCachePath = Path.Combine(AppSettingsDirectory, "VPNCache");
+        public static readonly string AppCachePath = Path.Combine(AppSettingsDirectory, "Cache");
+
+        public static readonly string AppOpenVpnCachePath = Path.Combine(AppCachePath, "OpenVPN");
+
+        public static readonly string AppServerCachePath = Path.Combine(AppCachePath, "API");
 
         /// <summary>
         ///     Path to the OpenVPN binaries
@@ -69,5 +74,20 @@ namespace LightVPN.Client.Windows.Common
         ///     True if this build is a beta build, false if it's stable
         /// </summary>
         public static bool IsBeta { get; set; } = true;
+
+        /// <summary>
+        /// Instance of a TrayViewModel so we can modify its properties from other ViewModels
+        /// </summary>
+        public static object TrayViewModel { get; set; }
+
+        /// <summary>
+        /// Instance of a MainViewModel so we can modify its properties from other ViewModels
+        /// </summary>
+        public static object MainViewModel { get; set; }
+
+        /// <summary>
+        /// True if the MainWindow is in the tray, false otherwise.
+        /// </summary>
+        public static bool IsInTray { get; set; }
     }
 }

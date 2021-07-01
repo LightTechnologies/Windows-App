@@ -1,8 +1,9 @@
-﻿ using System;
+﻿using System;
 using System.ComponentModel;
 using System.Linq;
 using System.Windows;
 using System.Windows.Input;
+using System.Windows.Threading;
 using LightVPN.Client.Auth.Exceptions;
 using LightVPN.Client.Auth.Interfaces;
 using LightVPN.Client.Auth.Models;
@@ -11,21 +12,24 @@ using LightVPN.Client.OpenVPN.EventArgs;
 using LightVPN.Client.OpenVPN.Interfaces;
 using LightVPN.Client.Windows.Common;
 using LightVPN.Client.Windows.Common.Models;
-using LightVPN.Client.Windows.Common.Utils;
 using LightVPN.Client.Windows.Configuration.Interfaces;
 using LightVPN.Client.Windows.Configuration.Models;
+using LightVPN.Client.Windows.Dialogs;
 using LightVPN.Client.Windows.Models;
 using LightVPN.Client.Windows.Services.Interfaces;
+using LightVPN.Client.Windows.Utils;
 using LightVPN.Client.Windows.Views;
+using MaterialDesignThemes.Wpf;
 
 namespace LightVPN.Client.Windows.ViewModels
 {
     internal sealed class MainViewModel : WindowViewModel
     {
-        public MainViewModel() : base(true)
+        public MainViewModel()
         {
+            Globals.MainViewModel = this;
         }
-        
+
         // Keep a time since the servers were last cached
         private DateTime LastCache { get; set; }
 
@@ -90,7 +94,7 @@ namespace LightVPN.Client.Windows.ViewModels
         {
             get
             {
-                return new UiCommand
+                return new UICommand
                 {
                     CommandAction = async _ =>
                     {
@@ -102,8 +106,14 @@ namespace LightVPN.Client.Windows.ViewModels
                         if (ConnectionState == ConnectionState.Connected)
                         {
                             ConnectionState = ConnectionState.Disconnecting;
+
                             await vpnManagerService.DisconnectAsync();
+
+                            if (Globals.TrayViewModel is TrayViewModel trayViewModel)
+                                trayViewModel.ConnectionState = ConnectionState.Disconnected;
+
                             ConnectionState = ConnectionState.Disconnected;
+
                             return;
                         }
 
@@ -114,6 +124,9 @@ namespace LightVPN.Client.Windows.ViewModels
                             string.IsNullOrWhiteSpace(config.LastServer.PritunlName)) return;
 
                         ConnectionState = ConnectionState.Connecting;
+
+                        if (Globals.TrayViewModel is TrayViewModel trayViewModel1)
+                            trayViewModel1.ConnectionState = ConnectionState.Connecting;
 
                         if (Globals.Container.GetInstance<IConfigurationManager<AppConfiguration>>().Read()
                             .IsDiscordRpcEnabled)
@@ -130,7 +143,7 @@ namespace LightVPN.Client.Windows.ViewModels
         {
             get
             {
-                return new UiCommand
+                return new UICommand
                 {
                     CommandAction = async args =>
                     {
@@ -144,6 +157,9 @@ namespace LightVPN.Client.Windows.ViewModels
                         LastServer = server.ServerName;
 
                         ConnectionState = ConnectionState.Connecting;
+
+                        if (Globals.TrayViewModel is TrayViewModel trayViewModel)
+                            trayViewModel.ConnectionState = ConnectionState.Connecting;
 
                         if (Globals.Container.GetInstance<IConfigurationManager<AppConfiguration>>().Read()
                             .IsDiscordRpcEnabled)
@@ -160,13 +176,15 @@ namespace LightVPN.Client.Windows.ViewModels
         {
             get
             {
-                return new UiCommand
+                return new UICommand
                 {
                     CommandAction = _ =>
                     {
-                        var mainWindow = (MainWindow)Application.Current.MainWindow;
+                        IsPlayingAnimation = true;
+                        var mainWindow = (MainWindow) Application.Current.MainWindow;
                         mainWindow?.LoadView(new SettingsView());
-                    }
+                    },
+                    CanExecuteFunc = () => !IsPlayingAnimation
                 };
             }
         }
@@ -175,12 +193,13 @@ namespace LightVPN.Client.Windows.ViewModels
         {
             get
             {
-                return new UiCommand
+                return new UICommand
                 {
                     CommandAction = async _ =>
                     {
                         try
                         {
+                            IsPlayingAnimation = false;
                             VpnServers ??= new BindingList<DisplayVpnServer>();
 
                             SelectedVpnServer = null;
@@ -210,21 +229,22 @@ namespace LightVPN.Client.Windows.ViewModels
                                     Country = item.CountryName,
                                     Status = item.Status ? "Check" : "Close",
                                     Flag =
-                                        $"pack://application:,,,/LightVPN.Client.Windows;Component/Resources/Flags/{item.CountryName.Replace(' ', '-')}.png"
+                                        $"pack://application:,,,/Resources/Flags/{item.CountryName.Replace(' ', '-')}.png"
                                 });
 
                             LastCache = DateTime.Now;
                         }
                         catch (InvalidResponseException e)
                         {
-                            MessageBox.Show(e.Message, "LightVPN", MessageBoxButton.OK, MessageBoxImage.Error);
+                            await DialogManager.ShowDialogAsync(PackIconKind.ErrorOutline, "Something went wrong...",
+                                e.Message);
                         }
                     }
                 };
             }
         }
 
-        private void OnErrorReceived(object sender, ErrorEventArgs e)
+        private async void OnErrorReceived(object sender, ErrorEventArgs e)
         {
             if (Globals.Container.GetInstance<IConfigurationManager<AppConfiguration>>().Read()
                 .IsDiscordRpcEnabled)
@@ -233,7 +253,15 @@ namespace LightVPN.Client.Windows.ViewModels
 
             ConnectionState = ConnectionState.Disconnected;
 
-            MessageBox.Show(e.Exception.Message, "LightVPN", MessageBoxButton.OK, MessageBoxImage.Error);
+            if (Globals.TrayViewModel is TrayViewModel trayViewModel)
+                trayViewModel.ConnectionState = ConnectionState.Disconnected;
+
+            // Since the DialogHost requires STAThread, we must invoke this method using the dispatcher.
+            await Application.Current.Dispatcher.InvokeAsync(async () =>
+            {
+                await DialogManager.ShowDialogAsync(PackIconKind.ErrorOutline, "Something went wrong...",
+                    e.Exception.Message);
+            });
         }
 
         private void OnConnected(object sender, ConnectedEventArgs e)
@@ -242,6 +270,10 @@ namespace LightVPN.Client.Windows.ViewModels
                 .IsDiscordRpcEnabled)
                 Globals.Container.GetInstance<IDiscordRp>()
                     .UpdateState("Connected!");
+
+            if (Globals.TrayViewModel is TrayViewModel trayViewModel)
+                trayViewModel.ConnectionState = ConnectionState.Connected;
+
             ConnectionState = ConnectionState.Connected;
         }
     }

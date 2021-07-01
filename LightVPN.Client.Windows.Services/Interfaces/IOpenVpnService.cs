@@ -28,13 +28,5 @@ namespace LightVPN.Client.Windows.Services.Interfaces
         /// <exception cref="TimeoutException">Thrown when the connection to a VPN server times out</exception>
         /// <returns></returns>
         Task ConnectAsync(string id, string location, CancellationToken cancellationToken = default);
-
-        /// <summary>
-        ///     Caches VPN server files
-        /// </summary>
-        /// <param name="force"></param>
-        /// <param name="cancellationToken"></param>
-        /// <returns></returns>
-        Task CacheServersAsync(bool force = false, CancellationToken cancellationToken = default);
     }
 }

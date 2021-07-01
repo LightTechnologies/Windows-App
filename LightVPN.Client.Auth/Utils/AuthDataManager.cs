@@ -67,7 +67,7 @@ namespace LightVPN.Client.Auth.Utils
 
                 return JsonSerializer.Deserialize<AuthResponse>(decryptedContent);
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 throw new AuthDecryptionException(
                     "Failed to decrypt authentication data, it is most likely corrupt. It has been cleared, you will have to sign in again.");

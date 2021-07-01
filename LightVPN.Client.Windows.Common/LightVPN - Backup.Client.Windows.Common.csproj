@@ -2,24 +2,24 @@
 
     <PropertyGroup>
         <TargetFramework>net5.0</TargetFramework>
-        <Authors>Light Technologies, LLC.</Authors>
-        <Product>LightVPN Windows Client</Product>
-        <ProductName>LightVPN Windows Client</ProductName>
-        <AssemblyName>lightvpn64-discord</AssemblyName>
-        <Version>3.0.0.0</Version>
-        <AssemblyTitle>Discord rich presence manager for the LightVPN Windows Client</AssemblyTitle>
-        <Copyright>Copyright 2021 (C) Light Technologies, LLC.</Copyright>
-        <PackageProjectUrl>https://github.com/LightTechnologies</PackageProjectUrl>
     </PropertyGroup>
 
     <ItemGroup>
-      <PackageReference Include="DiscordRichPresence" Version="1.0.175" />
+      <Reference Include="PresentationCore, Version=5.0.6.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35">
+        <HintPath>..\..\..\..\..\..\Program Files\dotnet\shared\Microsoft.WindowsDesktop.App\5.0.6\PresentationCore.dll</HintPath>
+      </Reference>
+    </ItemGroup>
+
+    <ItemGroup>
       <PackageReference Include="Microsoft.NETCore.Platforms" Version="5.0.2" />
       <PackageReference Include="Microsoft.NETCore.Targets" Version="5.0.0" />
       <PackageReference Include="Microsoft.Win32.Registry" Version="5.0.0" />
       <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
+      <PackageReference Include="NotificationsExtensions.Win10" Version="14332.0.2" />
+      <PackageReference Include="SimpleInjector" Version="5.3.1" />
       <PackageReference Include="System.CodeDom" Version="5.0.0" />
       <PackageReference Include="System.ComponentModel" Version="4.3.0" />
+      <PackageReference Include="System.Management" Version="5.0.0" />
       <PackageReference Include="System.Runtime" Version="4.3.1" />
       <PackageReference Include="System.Security.AccessControl" Version="5.0.0" />
       <PackageReference Include="System.Security.Principal.Windows" Version="5.0.0" />

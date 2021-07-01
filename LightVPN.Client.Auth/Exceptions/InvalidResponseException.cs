@@ -15,6 +15,12 @@ namespace LightVPN.Client.Auth.Exceptions
 
         internal InvalidResponseException(string message, string responseString, HttpStatusCode code) : base(message)
         {
+            ResponseString = responseString;
+            StatusCode = code;
         }
+
+        public string ResponseString { get; }
+
+        public HttpStatusCode StatusCode { get; }
     }
 }

@@ -95,12 +95,6 @@ namespace LightVPN.Client.OpenVPN.Utils
 
     internal enum JobObjectInfoType
     {
-        AssociateCompletionPortInformation = 7,
-        BasicLimitInformation = 2,
-        BasicUiRestrictions = 4,
-        EndOfJobTimeInformation = 6,
-        ExtendedLimitInformation = 9,
-        SecurityLimitInformation = 5,
-        GroupInformation = 11
+        ExtendedLimitInformation = 9
     }
 }

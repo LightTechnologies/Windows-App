@@ -7,14 +7,18 @@
         <StartupObject>LightVPN.Client.Windows.Startup</StartupObject>
         <RunPostBuildEvent>Always</RunPostBuildEvent>
         <Version>3.0.0.0</Version>
-        <Authors>Light Technologies, LLC</Authors>
-        <Product>LightVPN Desktop Client</Product>
-        <Description>The LightVPN desktop client provides an inclusive method of connecting to LightVPN on Windows devices, making the connection process as simple as one click.</Description>
-        <Copyright>Copyright 2021 (C) Light Technologies, LLC</Copyright>
+        <Authors>Light Technologies, LLC.</Authors>
+        <Product>LightVPN Windows Client</Product>
+      <ProductName>LightVPN Windows Client</ProductName>
+        <AssemblyName>lightvpn64</AssemblyName>
+      <AssemblyTitle>LightVPN Windows Client</AssemblyTitle>
+        <Description>The LightVPN Windows client provides an inclusive method of connecting to LightVPN on Windows devices, making the connection process as simple as one click.</Description>
+        <Copyright>Copyright 2021 (C) Light Technologies, LLC.</Copyright>
         <PackageProjectUrl>https://github.com/LightTechnologies</PackageProjectUrl>
         <NeutralLanguage>en-US</NeutralLanguage>
         <ApplicationManifest>app.manifest</ApplicationManifest>
         <PackageIcon>lightvpn-purple.png</PackageIcon>
+        <PackageId>LightVPN Windows Client</PackageId>
         <PackageIconUrl />
         <ApplicationIcon>Resources\Images\lightvpn.ico</ApplicationIcon>
     </PropertyGroup>
@@ -323,6 +327,7 @@
     </ItemGroup>
 
     <ItemGroup>
+      <PackageReference Include="Hardcodet.NotifyIcon.Wpf" Version="1.1.0" />
       <PackageReference Include="MaterialDesignColors" Version="2.0.1" />
       <PackageReference Include="MaterialDesignThemes" Version="4.1.0" />
       <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="5.0.1" />
@@ -648,6 +653,29 @@
       <Resource Include="Resources\Images\lightvpn-white.png" />
       <Resource Include="Resources\Images\lightvpn.ico" />
       <Resource Include="Resources\Images\ui-glyph.png" />
+      <None Remove="Resources\Images\lightvpn-success.ico" />
+      <Resource Include="Resources\Images\lightvpn-success.ico" />
+      <None Remove="Resources\Images\lightvpn-danger.ico" />
+      <Resource Include="Resources\Images\lightvpn-danger.ico" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <EmbeddedResource Update="Resources\StringTable.resx">
+        <Generator>ResXFileCodeGenerator</Generator>
+        <LastGenOutput>StringTable.Designer.cs</LastGenOutput>
+      </EmbeddedResource>
+    </ItemGroup>
+
+    <ItemGroup>
+      <Compile Update="Resources\StringTable.Designer.cs">
+        <DesignTime>True</DesignTime>
+        <AutoGen>True</AutoGen>
+        <DependentUpon>StringTable.resx</DependentUpon>
+      </Compile>
+    </ItemGroup>
+
+    <ItemGroup>
+      <Reference Include="System.Runtime" />
     </ItemGroup>
 
 </Project>

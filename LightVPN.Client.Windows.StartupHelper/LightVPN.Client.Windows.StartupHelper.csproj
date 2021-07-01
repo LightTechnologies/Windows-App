@@ -1,0 +1,19 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <OutputType>Exe</OutputType>
+        <TargetFramework>net5.0</TargetFramework>
+        <Authors>Light Technologies, LLC.</Authors>
+        <Description>Helps the LightVPN Windows client startup on device boot    </Description>
+        <Product>LightVPN Windows client</Product>
+        <ProductName>LightVPN Startup Helper</ProductName>
+        <AssemblyName>startupHelper</AssemblyName>
+        <Version>1.0.0.1</Version>
+        <AssemblyTitle>LightVPN Startup Helper</AssemblyTitle>
+        <PackageId>LightVPN Startup Helper</PackageId>
+        <NeutralLanguage>en</NeutralLanguage>
+        <Copyright>Copyright 2021 (C) Light Technologies, LLC.</Copyright>
+        <PackageProjectUrl>https://github.com/LightTechnologies</PackageProjectUrl>
+    </PropertyGroup>
+
+</Project>

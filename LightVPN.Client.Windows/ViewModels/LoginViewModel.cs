@@ -1,4 +1,5 @@
-﻿using System.Windows;
+﻿using System.IO;
+using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using LightVPN.Client.Auth.Exceptions;
@@ -6,6 +7,9 @@ using LightVPN.Client.Auth.Interfaces;
 using LightVPN.Client.Auth.Models;
 using LightVPN.Client.Windows.Common;
 using LightVPN.Client.Windows.Common.Utils;
+using LightVPN.Client.Windows.Services.Interfaces;
+using LightVPN.Client.Windows.Utils;
+using MaterialDesignThemes.Wpf;
 
 namespace LightVPN.Client.Windows.ViewModels
 {
@@ -93,7 +97,7 @@ namespace LightVPN.Client.Windows.ViewModels
         }
 
         public ICommand PasswordChangedCommand =>
-            new UiCommand
+            new UICommand
             {
                 CommandAction = ExecChangePassword
             };
@@ -108,7 +112,7 @@ namespace LightVPN.Client.Windows.ViewModels
         {
             get
             {
-                return new UiCommand
+                return new UICommand
                 {
                     CommandAction = async _ =>
                     {
@@ -128,6 +132,8 @@ namespace LightVPN.Client.Windows.ViewModels
                                 password = Password
                             }, CancellationTokenSource.Token);
 
+                            await Globals.Container.GetInstance<ICacheService>().CacheOpenVpnBinariesAsync();
+
                             var loginWindow = (LoginWindow)Globals.LoginWindow;
 
                             var mainWindow = new MainWindow();
@@ -137,11 +143,13 @@ namespace LightVPN.Client.Windows.ViewModels
                         }
                         catch (UpdateRequiredException e)
                         {
-                            MessageBox.Show(e.Message, "LightVPN", MessageBoxButton.OK, MessageBoxImage.Error);
+                            await DialogManager.ShowDialogAsync(PackIconKind.Update, "An update is required!",
+                                e.Message);
                         }
                         catch (InvalidResponseException e)
                         {
-                            MessageBox.Show(e.Message, "LightVPN", MessageBoxButton.OK, MessageBoxImage.Error);
+                            await DialogManager.ShowDialogAsync(PackIconKind.ErrorOutline, "Something went wrong...",
+                                e.Message);
                         }
                         finally
                         {

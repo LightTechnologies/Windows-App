@@ -1,15 +1,10 @@
-﻿using LightVPN.Client.Windows.Common;
-using LightVPN.Client.Windows.Common.Utils;
+﻿using System.Windows;
+using System.Windows.Input;
+using LightVPN.Client.Windows.Common;
 using LightVPN.Client.Windows.Configuration.Interfaces;
 using LightVPN.Client.Windows.Configuration.Models;
+using LightVPN.Client.Windows.Utils;
 using LightVPN.Client.Windows.Views;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows;
-using System.Windows.Input;
 
 namespace LightVPN.Client.Windows.ViewModels
 {
@@ -19,7 +14,7 @@ namespace LightVPN.Client.Windows.ViewModels
         {
             get
             {
-                return new UiCommand()
+                return new UICommand
                 {
                     CommandAction = _ =>
                     {
@@ -31,7 +26,7 @@ namespace LightVPN.Client.Windows.ViewModels
 
                         manager.Write(config);
 
-                        var mainWindow = (MainWindow)Application.Current.MainWindow;
+                        var mainWindow = (MainWindow) Application.Current.MainWindow;
                         mainWindow?.LoadView(new MainView());
                     }
                 };

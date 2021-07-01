@@ -41,59 +41,65 @@
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="{x:Type Window}">
-                    <Border Style="{StaticResource WindowBorder}">
-                        <Grid Background="{DynamicResource MaterialDesignPaper}" VerticalAlignment="Stretch"
-                              HorizontalAlignment="Stretch">
-                            <Grid.RowDefinitions>
-                                <RowDefinition Height="35" />
-                                <RowDefinition Height="*" />
-                            </Grid.RowDefinitions>
-                            <Grid Grid.Row="0" VerticalAlignment="Top" HorizontalAlignment="Stretch">
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="*" />
-                                    <ColumnDefinition Width="*" />
-                                </Grid.ColumnDefinitions>
-                                <Image Source="Images/lightvpn-purple-title.png" Width="22" Height="22"
-                                       Margin="7,0,0,0" Grid.Column="0"
-                                       ToolTip="HarryTq was here"
-                                       VerticalAlignment="Center" HorizontalAlignment="Left" />
-                                <StackPanel Orientation="Horizontal"
-                                            VerticalAlignment="Stretch"
-                                            HorizontalAlignment="Right"
-                                            Grid.Column="1">
+                    <materialDesign:DialogHost
+                        Identifier="RootDialog"
+                        DialogTheme="Inherit"
+                        SnackbarMessageQueue="{Binding ElementName=MainSnackbar, Path=MessageQueue}">
+                        <Border Style="{StaticResource WindowBorder}">
+                            <Grid Background="{DynamicResource MaterialDesignPaper}" VerticalAlignment="Stretch"
+                                  HorizontalAlignment="Stretch">
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="35" />
+                                    <RowDefinition Height="*" />
+                                </Grid.RowDefinitions>
+                                <Grid Grid.Row="0" VerticalAlignment="Top" HorizontalAlignment="Stretch">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*" />
+                                        <ColumnDefinition Width="*" />
+                                    </Grid.ColumnDefinitions>
+                                    <Image Source="Images/lightvpn-purple-title.png" Width="22" Height="22"
+                                           Margin="7,0,0,0" Grid.Column="0"
+                                           ToolTip="HarryTq was here"
+                                           VerticalAlignment="Center" HorizontalAlignment="Left" />
+                                    <StackPanel Orientation="Horizontal"
+                                                VerticalAlignment="Stretch"
+                                                HorizontalAlignment="Right"
+                                                Grid.Column="1">
 
-                                    <Button x:Name="btnMinimize"
-                                            Command="{Binding MinimizeCommand}"
-                                            FontFamily="{StaticResource Inter}"
-                                            ToolTip="Minimize"
-                                            Style="{StaticResource CaptionButton}">
-                                        <materialDesign:PackIcon Kind="WindowMinimize" />
-                                    </Button>
+                                        <Button x:Name="btnMinimize"
+                                                Command="{Binding MinimizeCommand}"
+                                                FontFamily="{StaticResource Inter}"
+                                                ToolTip="Minimize"
+                                                Style="{StaticResource CaptionButton}">
+                                            <materialDesign:PackIcon Kind="WindowMinimize" />
+                                        </Button>
 
-                                    <Button x:Name="btnRestore"
-                                            FontFamily="{StaticResource Inter}"
-                                            Command="{Binding ToggleMaxCommand}"
-                                            ToolTip="Maximize/restore"
-                                            Style="{StaticResource CaptionButton}">
-                                        <materialDesign:PackIcon
-                                            Kind="{Binding WindowState, Converter={StaticResource PackIconConverter}}" />
-                                    </Button>
+                                        <Button x:Name="btnRestore"
+                                                FontFamily="{StaticResource Inter}"
+                                                Command="{Binding ToggleMaxCommand}"
+                                                ToolTip="Maximize/restore"
+                                                Style="{StaticResource CaptionButton}">
+                                            <materialDesign:PackIcon
+                                                Kind="{Binding WindowState, Converter={StaticResource PackIconConverter}}" />
+                                        </Button>
 
-                                    <Button x:Name="btnClose"
-                                            Command="{Binding CloseCommand}"
-                                            FontFamily="{StaticResource Inter}"
-                                            ToolTip="Close"
-                                            Style="{StaticResource CaptionButton}">
-                                        <materialDesign:PackIcon Kind="WindowClose" />
-                                    </Button>
-                                </StackPanel>
+                                        <Button x:Name="btnClose"
+                                                Command="{Binding CloseCommand}"
+                                                FontFamily="{StaticResource Inter}"
+                                                ToolTip="Close"
+                                                Style="{StaticResource CaptionButton}">
+                                            <materialDesign:PackIcon Kind="WindowClose" />
+                                        </Button>
+                                    </StackPanel>
+                                </Grid>
+
+                                <AdornerDecorator Grid.Row="1" VerticalAlignment="Stretch"
+                                                  HorizontalAlignment="Stretch">
+                                    <ContentPresenter />
+                                </AdornerDecorator>
                             </Grid>
-
-                            <AdornerDecorator Grid.Row="1" VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
-                                <ContentPresenter />
-                            </AdornerDecorator>
-                        </Grid>
-                    </Border>
+                        </Border>
+                    </materialDesign:DialogHost>
                 </ControlTemplate>
             </Setter.Value>
         </Setter>

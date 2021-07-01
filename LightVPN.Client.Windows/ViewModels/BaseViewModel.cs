@@ -18,8 +18,21 @@ namespace LightVPN.Client.Windows.ViewModels
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
 
+        private bool _isPlayingAnimation;
+
+        public bool IsPlayingAnimation
+        {
+            get => _isPlayingAnimation;
+            set
+            {
+                _isPlayingAnimation = value;
+                OnPropertyChanged(nameof(IsPlayingAnimation));
+            }
+        }
+
         public void Dispose()
         {
+            IsPlayingAnimation = false;
             CancellationTokenSource.Cancel();
         }
     }

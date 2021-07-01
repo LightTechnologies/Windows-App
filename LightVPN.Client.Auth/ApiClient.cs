@@ -101,18 +101,32 @@ namespace LightVPN.Client.Auth
         private async Task<T> CheckResponse<T>(HttpResponseMessage responseMessage,
             CancellationToken cancellationToken = default)
         {
+            var responseString = await responseMessage.Content.ReadAsStringAsync(cancellationToken);
+
             if (!responseMessage.IsSuccessStatusCode)
             {
-                var genericResponse =
-                    await JsonSerializer.DeserializeAsync<GenericResponse>(
-                        await responseMessage.Content.ReadAsStreamAsync(cancellationToken),
-                        cancellationToken: cancellationToken);
+                try
+                {
+                    var genericResponse =
+                        await JsonSerializer.DeserializeAsync<GenericResponse>(
+                            await responseMessage.Content.ReadAsStreamAsync(cancellationToken),
+                            cancellationToken: cancellationToken);
 
-                if (responseMessage.StatusCode == HttpStatusCode.UpgradeRequired)
-                    throw new UpdateRequiredException("You need to update your client version!");
+                    if (responseMessage.StatusCode == HttpStatusCode.UpgradeRequired)
+                        throw new UpdateRequiredException("You need to update your client version!");
+
+                    if (!string.IsNullOrWhiteSpace(genericResponse.Message))
+                    {
+                        throw new InvalidResponseException(genericResponse.Message, responseString, responseMessage.StatusCode);
+                    }
+                }
+                catch (JsonException)
+                {
+                    // ignored.
+                }
+
+
             }
-
-            var responseString = await responseMessage.Content.ReadAsStringAsync(cancellationToken);
 
             switch (responseMessage.StatusCode)
             {
@@ -161,6 +175,12 @@ namespace LightVPN.Client.Auth
 
             try
             {
+                if (typeof(T) == typeof(byte[]))
+                {
+                    object respByteArray = await responseMessage.Content.ReadAsByteArrayAsync(cancellationToken);
+                    return (T)respByteArray;
+                }
+
                 object respJson = await JsonSerializer.DeserializeAsync<T>(
                     await responseMessage.Content.ReadAsStreamAsync(cancellationToken),
                     cancellationToken: cancellationToken);

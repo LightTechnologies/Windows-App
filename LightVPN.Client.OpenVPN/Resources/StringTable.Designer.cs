@@ -115,6 +115,15 @@ namespace LightVPN.Client.OpenVPN.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to TLS handshake failed.
+        /// </summary>
+        internal static string OVPN_OUT_TLS_ERROR {
+            get {
+                return ResourceManager.GetString("OVPN_OUT_TLS_ERROR", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Unknown error.
         /// </summary>
         internal static string OVPN_OUT_UNKNOWN_ERROR {
@@ -160,7 +169,16 @@ namespace LightVPN.Client.OpenVPN.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Received an unknown error from OpenVPN; the server could be down..
+        ///   Looks up a localized string similar to TLS handshake with the VPN server has failed, please make sure you&apos;re able to connect to the internet..
+        /// </summary>
+        internal static string OVPN_TLS_ERROR {
+            get {
+                return ResourceManager.GetString("OVPN_TLS_ERROR", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Received an unknown error from OpenVPN; the server could be down or you could have reached the concurrent connection limit for your account..
         /// </summary>
         internal static string OVPN_UNKNOWN_ERROR {
             get {

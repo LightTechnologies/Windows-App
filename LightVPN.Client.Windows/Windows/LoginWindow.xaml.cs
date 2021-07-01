@@ -9,7 +9,7 @@ namespace LightVPN.Client.Windows
     /// <inheritdoc cref="System.Windows.Window" />
     internal sealed partial class LoginWindow : Window
     {
-        internal LoginWindow()
+        public LoginWindow()
         {
             InitializeComponent();
 

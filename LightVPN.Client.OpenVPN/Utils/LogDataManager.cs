@@ -23,7 +23,7 @@ namespace LightVPN.Client.OpenVPN.Utils
         /// <param name="value">The value to write to the file</param>
         internal void WriteLine(object value)
         {
-            File.WriteAllText(_logDataPath, value.ToString());
+            File.AppendAllText(_logDataPath, value + "\n");
         }
     }
 }

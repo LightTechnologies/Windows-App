@@ -1,0 +1,60 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:viewModels="clr-namespace:LightVPN.Client.Windows.ViewModels"
+                    xmlns:trayIcon="http://www.hardcodet.net/taskbar"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes">
+
+    <ContextMenu x:Key="TrayMenu">
+        <MenuItem Command="{Binding ShowCommand}">
+            <MenuItem.Icon>
+                <materialDesign:PackIcon Kind="ExternalLink" />
+            </MenuItem.Icon>
+            <MenuItem.Header>
+                <TextBlock Text="Show" />
+            </MenuItem.Header>
+        </MenuItem>
+        <MenuItem Command="{Binding HideCommand}">
+            <MenuItem.Icon>
+                <materialDesign:PackIcon Kind="Close" />
+            </MenuItem.Icon>
+            <MenuItem.Header>
+                <TextBlock Text="Hide" />
+            </MenuItem.Header>
+        </MenuItem>
+        <Separator />
+        <MenuItem Command="{Binding ConnectCommand}">
+            <MenuItem.Icon>
+                <materialDesign:PackIcon Kind="PowerPlugOutline" />
+            </MenuItem.Icon>
+            <MenuItem.Header>
+                <TextBlock Text="Connect to last server" />
+            </MenuItem.Header>
+        </MenuItem>
+        <MenuItem Command="{Binding DisconnectCommand}">
+            <MenuItem.Icon>
+                <materialDesign:PackIcon Kind="PowerPlugOffOutline" />
+            </MenuItem.Icon>
+            <MenuItem.Header>
+                <TextBlock Text="Disconnect" />
+            </MenuItem.Header>
+        </MenuItem>
+        <Separator/>
+        <MenuItem>
+            <MenuItem.Icon>
+                <materialDesign:PackIcon Kind="ExitRun" />
+            </MenuItem.Icon>
+            <MenuItem.Header>
+                <TextBlock Text="Exit"></TextBlock>
+            </MenuItem.Header>
+        </MenuItem>
+    </ContextMenu>
+
+    <trayIcon:TaskbarIcon x:Key="TaskbarIcon" ContextMenu="{StaticResource TrayMenu}"
+                          IconSource="{Binding TrayIconSource}">
+
+        <trayIcon:TaskbarIcon.DataContext>
+            <viewModels:TrayViewModel />
+        </trayIcon:TaskbarIcon.DataContext>
+    </trayIcon:TaskbarIcon>
+
+</ResourceDictionary>

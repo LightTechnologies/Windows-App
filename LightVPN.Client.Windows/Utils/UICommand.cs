@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Windows.Input;
 
-namespace LightVPN.Client.Windows.Common.Utils
+namespace LightVPN.Client.Windows.Utils
 {
     /// <inheritdoc />
-    public sealed class UiCommand : ICommand
+    public sealed class UICommand : ICommand
     {
         public Action<object> CommandAction { get; init; }
         public Func<bool> CanExecuteFunc { get; init; }

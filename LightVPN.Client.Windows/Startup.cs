@@ -35,6 +35,7 @@ namespace LightVPN.Client.Windows
         internal static void Main()
         {
             Globals.Container.RegisterSingleton<IApiClient, ApiClient>();
+            Globals.Container.RegisterSingleton<ICacheService, CacheService>();
             Globals.Container.RegisterInstance<IVpnManager>(new VpnManager(new OpenVpnConfiguration
             {
                 OpenVpnLogPath = Globals.OpenVpnLogPath,
@@ -53,6 +54,7 @@ namespace LightVPN.Client.Windows
             Globals.Container.RegisterSingleton<IOpenVpnService, OpenVpnService>();
 
             var res = new ResourceDictionary();
+            res.MergedDictionaries.Clear();
 
             var app = new Startup
             {
@@ -60,24 +62,38 @@ namespace LightVPN.Client.Windows
                 StartupUri = new Uri("Windows/LoginWindow.xaml", UriKind.RelativeOrAbsolute)
             };
 
-            // Clears merged dictionaries
-            res.MergedDictionaries.Clear();
-
             // Adds all the required resource dictionaries
+
+            // Resource dictionary containing all of the color schemes
             Uri colorsUri =
                 new("Resources/Colors.xaml", UriKind
                     .RelativeOrAbsolute);
+
+            // Resource dictionary containing all FontFamilys
             Uri fontsUri =
                 new("Resources/Fonts.xaml", UriKind
                     .RelativeOrAbsolute);
+
+            // Resource dictionary containing all styles of text (title, subtitle, etc.)
             Uri typographyUri = new("Resources/Typography.xaml", UriKind
                 .RelativeOrAbsolute);
+
+            // Resource dictionary containing styles for buttons
             Uri buttonsUri =
                 new("Resources/Buttons.xaml", UriKind
                     .RelativeOrAbsolute);
+
+            // Resource dictionary containing window/view specific styles
             Uri windowsUri =
                 new("Resources/Windows.xaml", UriKind
                     .RelativeOrAbsolute);
+
+            // Resource dictionary to do with the tray icon
+            Uri trayUri =
+                new("Resources/Tray.xaml", UriKind
+                    .RelativeOrAbsolute);
+
+            // Material design in XAML toolkit resource dictionaries
             Uri mdUri =
                 new("pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesignTheme.Defaults.xaml"
                     , UriKind.RelativeOrAbsolute);
@@ -92,6 +108,7 @@ namespace LightVPN.Client.Windows
             res.MergedDictionaries.Add(new ResourceDictionary { Source = typographyUri });
             res.MergedDictionaries.Add(new ResourceDictionary { Source = buttonsUri });
             res.MergedDictionaries.Add(new ResourceDictionary { Source = windowsUri });
+            res.MergedDictionaries.Add(new ResourceDictionary { Source = trayUri });
 
             try
             {
@@ -114,6 +131,8 @@ namespace LightVPN.Client.Windows
                 // Apply default theme settings
                 ThemeManager.SwitchTheme(ThemeColor.Default, BackgroundMode.Light);
             }
+
+            Globals.Container.GetInstance<ICacheService>().CacheOpenVpnBinariesAsync();
 
             app.Run();
         }

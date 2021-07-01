@@ -1,6 +1,6 @@
 ﻿using System.Windows;
 using System.Windows.Input;
-using LightVPN.Client.Windows.Common.Utils;
+using LightVPN.Client.Windows.Utils;
 
 namespace LightVPN.Client.Windows.ViewModels
 {
@@ -40,7 +40,7 @@ namespace LightVPN.Client.Windows.ViewModels
         {
             get
             {
-                return new UiCommand
+                return new UICommand
                 {
                     CommandAction = _ =>
                     {
@@ -57,7 +57,7 @@ namespace LightVPN.Client.Windows.ViewModels
         {
             get
             {
-                return new UiCommand
+                return new UICommand
                 {
                     CommandAction = _ =>
                     {
@@ -78,7 +78,7 @@ namespace LightVPN.Client.Windows.ViewModels
         {
             get
             {
-                return new UiCommand
+                return new UICommand
                 {
                     CommandAction = _ => Application.Current.MainWindow?.Close()
                 };

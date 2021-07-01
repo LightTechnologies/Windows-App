@@ -139,7 +139,7 @@
     <value>Failed to open the configuration file specified.</value>
   </data>
   <data name="OVPN_UNKNOWN_ERROR" xml:space="preserve">
-    <value>Received an unknown error from OpenVPN; the server could be down.</value>
+    <value>Received an unknown error from OpenVPN; the server could be down or you could have reached the concurrent connection limit for your account.</value>
   </data>
   <data name="OVPN_SERVER_TIMEOUT" xml:space="preserve">
     <value>Connection to the VPN server has timed out; the server could be down.</value>
@@ -152,5 +152,11 @@
   </data>
   <data name="OVPN_TAP_NO_EXISTS" xml:space="preserve">
     <value>"{0}" adapter not found.</value>
+  </data>
+  <data name="OVPN_OUT_TLS_ERROR" xml:space="preserve">
+    <value>TLS handshake failed</value>
+  </data>
+  <data name="OVPN_TLS_ERROR" xml:space="preserve">
+    <value>TLS handshake with the VPN server has failed, please make sure you're able to connect to the internet.</value>
   </data>
 </root>
