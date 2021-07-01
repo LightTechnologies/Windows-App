@@ -79,6 +79,15 @@ namespace LightVPN.Client.OpenVPN.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Couldn&apos;t detect any VPN adapters on your device. Your OpenVPN drivers could be corrupt. Please head over to https://openvpn.net/community-downloads/ and download the latest OpenVPN installer.
+        /// </summary>
+        internal static string OVPN_NO_ADAPTERS {
+            get {
+                return ResourceManager.GetString("OVPN_NO_ADAPTERS", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Received control message: AUTH_FAILED.
         /// </summary>
         internal static string OVPN_OUT_AUTH_FAILED {
@@ -106,6 +115,15 @@ namespace LightVPN.Client.OpenVPN.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to There are no TAP-Windows nor Wintun adapters on this system.  You should be able to create an adapter by using tapctl.exe utility..
+        /// </summary>
+        internal static string OVPN_OUT_NO_ADAPTERS {
+            get {
+                return ResourceManager.GetString("OVPN_OUT_NO_ADAPTERS", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Server poll timeout.
         /// </summary>
         internal static string OVPN_OUT_SERVER_TIMEOUT {
@@ -120,6 +138,15 @@ namespace LightVPN.Client.OpenVPN.Resources {
         internal static string OVPN_OUT_TLS_ERROR {
             get {
                 return ResourceManager.GetString("OVPN_OUT_TLS_ERROR", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Exiting due to fatal error.
+        /// </summary>
+        internal static string OVPN_OUT_UNEXPECTED_EXIT {
+            get {
+                return ResourceManager.GetString("OVPN_OUT_UNEXPECTED_EXIT", resourceCulture);
             }
         }
         
@@ -174,6 +201,15 @@ namespace LightVPN.Client.OpenVPN.Resources {
         internal static string OVPN_TLS_ERROR {
             get {
                 return ResourceManager.GetString("OVPN_TLS_ERROR", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to .
+        /// </summary>
+        internal static string OVPN_UNEXPECTED_EXIT {
+            get {
+                return ResourceManager.GetString("OVPN_UNEXPECTED_EXIT", resourceCulture);
             }
         }
         

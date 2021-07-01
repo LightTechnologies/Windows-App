@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Windows;
 using System.Windows.Media;
+using LightVPN.Client.Debug;
 using LightVPN.Client.Windows.Configuration.Models;
 using LightVPN.Client.Windows.Models;
 using MaterialDesignThemes.Wpf;
@@ -49,8 +50,9 @@ namespace LightVPN.Client.Windows.Utils
 
                 Application.Current.Resources.SetTheme(theme);
             }
-            catch (Exception)
+            catch (Exception e)
             {
+                DebugLogger.Write("lvpn-client-win-thememan", $"wtf?!?! {e}");
                 MessageBox.Show(
                     "Something went wrong when processing theme settings, please report this exception, and the log file to LightVPN support.",
                     "LightVPN", MessageBoxButton.OK, MessageBoxImage.Error);

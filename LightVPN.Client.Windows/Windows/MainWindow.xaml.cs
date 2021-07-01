@@ -28,10 +28,10 @@ namespace LightVPN.Client.Windows
         {
             InitializeComponent();
 
-            if (Globals.IsBeta)
+            /* if (Globals.IsBeta)
                 MessageBox.Show(
                     "This is a pre-release (beta) build of the LightVPN client, compiled on the 22nd of June 2021 (3:14 BST). This build is intended for use with intention of feedback on any issues or suggestions. Please make sure you keep up-to-date with the release cycles. This build should not be used to replace your stable build of LightVPN, and should be kept in a separate folder.",
-                    "LightVPN beta notice", MessageBoxButton.OK, MessageBoxImage.Exclamation);
+                    "LightVPN beta notice", MessageBoxButton.OK, MessageBoxImage.Exclamation); */
 
             var settings = Globals.Container.GetInstance<IConfigurationManager<AppConfiguration>>().Read();
 
@@ -47,8 +47,6 @@ namespace LightVPN.Client.Windows
                 Width = settings.SizeSaving.Width;
                 Height = settings.SizeSaving.Height;
             }
-
-            Application.Current.MainWindow = this;
 
             // Locates resources in the XAML and stores them for use in code-behind
             _viewLoaded = FindResource("LoadView") as BeginStoryboard;
@@ -78,6 +76,11 @@ namespace LightVPN.Client.Windows
 
                 manager.Write(config);
             };
+
+            if (!Globals.IsStartingMinimised) return;
+
+            Globals.IsInTray = true;
+            Application.Current.MainWindow?.Hide();
         }
 
         public void Dispose()

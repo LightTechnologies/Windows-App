@@ -24,4 +24,8 @@
       <PackageReference Include="System.Security.Principal.Windows" Version="5.0.0" />
     </ItemGroup>
 
+    <ItemGroup>
+      <ProjectReference Include="..\LightVPN.Client.Debug\LightVPN.Client.Debug.csproj" />
+    </ItemGroup>
+
 </Project>

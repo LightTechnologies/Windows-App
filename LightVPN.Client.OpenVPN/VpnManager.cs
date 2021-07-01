@@ -5,6 +5,7 @@ using System.Linq;
 using System.Security.Authentication;
 using System.Threading;
 using System.Threading.Tasks;
+using LightVPN.Client.Debug;
 using LightVPN.Client.OpenVPN.EventArgs;
 using LightVPN.Client.OpenVPN.Exceptions;
 using LightVPN.Client.OpenVPN.Interfaces;
@@ -98,6 +99,7 @@ namespace LightVPN.Client.OpenVPN
         {
             try
             {
+                DebugLogger.Write("lvpn-client-ovpn", $"killing other inferior openvpn processes >:)");
                 Process.GetProcessesByName("openvpn").ToList().ForEach(x => x.Kill());
             }
             catch
@@ -211,6 +213,16 @@ namespace LightVPN.Client.OpenVPN
 
             switch (e.Data)
             {
+                case { } when e.Data.Contains(StringTable.OVPN_OUT_NO_ADAPTERS):
+                    await DisconnectAsync(false);
+                    OnErrorReceived?.Invoke(this,
+                        new ErrorEventArgs(new TapException(StringTable.OVPN_NO_ADAPTERS)));
+                    break;
+                case { } when e.Data.Contains(StringTable.OVPN_OUT_UNEXPECTED_EXIT):
+                    await DisconnectAsync(false);
+                    OnErrorReceived?.Invoke(this,
+                        new ErrorEventArgs(new UnknownErrorException(StringTable.OVPN_UNEXPECTED_EXIT)));
+                    break;
                 case { } when e.Data.Contains(StringTable.OVPN_OUT_AUTH_FAILED):
                     await DisconnectAsync(false);
                     OnErrorReceived?.Invoke(this,
@@ -249,6 +261,8 @@ namespace LightVPN.Client.OpenVPN
         /// </summary>
         public async ValueTask DisposeAsync()
         {
+            DebugLogger.Write("lvpn-client-ovpn", $"async dispose has been called");
+
             if (IsConnected || IsConnecting) await DisconnectAsync();
 
             _ovpnProcess?.Dispose();

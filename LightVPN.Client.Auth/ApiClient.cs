@@ -12,6 +12,7 @@ using LightVPN.Client.Auth.Interfaces;
 using LightVPN.Client.Auth.Models;
 using LightVPN.Client.Auth.Resources;
 using LightVPN.Client.Auth.Utils;
+using LightVPN.Client.Debug;
 using LightVPN.Client.Windows.Common;
 
 namespace LightVPN.Client.Auth
@@ -29,6 +30,8 @@ namespace LightVPN.Client.Auth
 
         public ApiClient()
         {
+            DebugLogger.Write("lvpn-client-auth-apiclient", $"ctor called");
+
             DefaultRequestHeaders.UserAgent.Add(new ProductInfoHeaderValue("LightVPN", "3.0"));
             DefaultRequestHeaders.TryAddWithoutValidation("X-Client-Version",
                 $"{Environment.OSVersion.Platform.ConvertPlatformToString()} {Assembly.GetEntryAssembly()?.GetName().Version}");
@@ -85,6 +88,8 @@ namespace LightVPN.Client.Auth
         /// <param name="sessionId">ID pointing to an active session for the specified user</param>
         private void AssignSessionHeader(string userName, string sessionId)
         {
+            DebugLogger.Write("lvpn-client-auth-apiclient", $"assigned sess header");
+
             DefaultRequestHeaders.Remove("Authorization");
             DefaultRequestHeaders.TryAddWithoutValidation("Authorization", $"{userName} {sessionId}");
         }

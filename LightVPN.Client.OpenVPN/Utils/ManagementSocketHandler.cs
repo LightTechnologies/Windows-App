@@ -6,6 +6,7 @@ using System.Net.Sockets;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using LightVPN.Client.Debug;
 using LightVPN.Client.OpenVPN.Resources;
 
 namespace LightVPN.Client.OpenVPN.Utils
@@ -43,7 +44,11 @@ namespace LightVPN.Client.OpenVPN.Utils
             _endPoint = CreateEndPoint();
             _socket = new Socket(_endPoint.AddressFamily, SocketType.Stream, ProtocolType.Tcp);
 
+            DebugLogger.Write("lvpn-client-ovpn-mgmtsock", $"attempting to establish connection to mgmt sock");
+
             await _socket.ConnectAsync(_endPoint, cancellationToken);
+
+            DebugLogger.Write("lvpn-client-ovpn-mgmtsock", $"awaiting task has completed, result: {IsConnected}");
         }
 
         /// <summary>
@@ -55,6 +60,7 @@ namespace LightVPN.Client.OpenVPN.Utils
         {
             if (!IsConnected) await ConnectAsync(cancellationToken);
 
+            DebugLogger.Write("lvpn-client-ovpn-mgmtsock", $"we're gonna send a buffer boys, sockflags = none, buff-len = {buffer.Length}");
             await _socket.SendAsync(Encoding.UTF8.GetBytes(buffer + "\r\n"), SocketFlags.None, cancellationToken);
         }
 
@@ -64,6 +70,7 @@ namespace LightVPN.Client.OpenVPN.Utils
         /// <param name="cancellationToken">The cancellation token</param>
         public async Task SendShutdownSignalAsync(CancellationToken cancellationToken = default)
         {
+            DebugLogger.Write("lvpn-client-ovpn-mgmtsock", $"sending sigterm");
             await SendDataAsync(StringTable.OVPN_SHUTDOWN_SIG, cancellationToken);
 
             Dispose();

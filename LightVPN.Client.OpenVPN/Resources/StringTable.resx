@@ -159,4 +159,16 @@
   <data name="OVPN_TLS_ERROR" xml:space="preserve">
     <value>TLS handshake with the VPN server has failed, please make sure you're able to connect to the internet.</value>
   </data>
+  <data name="OVPN_OUT_NO_ADAPTERS" xml:space="preserve">
+    <value>There are no TAP-Windows nor Wintun adapters on this system.  You should be able to create an adapter by using tapctl.exe utility.</value>
+  </data>
+  <data name="OVPN_NO_ADAPTERS" xml:space="preserve">
+    <value>Couldn't detect any VPN adapters on your device. Your OpenVPN drivers could be corrupt. Please head over to https://openvpn.net/community-downloads/ and download the latest OpenVPN installer</value>
+  </data>
+  <data name="OVPN_OUT_UNEXPECTED_EXIT" xml:space="preserve">
+    <value>Exiting due to fatal error</value>
+  </data>
+  <data name="OVPN_UNEXPECTED_EXIT" xml:space="preserve">
+    <value />
+  </data>
 </root>

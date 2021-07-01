@@ -35,6 +35,7 @@ namespace LightVPN.Client.Windows.StartupHelper
                         FileName = args.First(),
                         WorkingDirectory = Path.GetDirectoryName(args.First()),
                         Verb = "runas",
+                        Arguments = "--minimised",
                         UseShellExecute = true
                     }
                 };

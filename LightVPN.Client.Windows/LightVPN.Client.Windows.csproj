@@ -350,6 +350,7 @@
 
     <ItemGroup>
       <ProjectReference Include="..\LightVPN.Client.Auth\LightVPN.Client.Auth.csproj" />
+      <ProjectReference Include="..\LightVPN.Client.Debug\LightVPN.Client.Debug.csproj" />
       <ProjectReference Include="..\LightVPN.Client.Discord\LightVPN.Client.Discord.csproj" />
       <ProjectReference Include="..\LightVPN.Client.OpenVPN\LightVPN.Client.OpenVPN.csproj" />
       <ProjectReference Include="..\LightVPN.Client.Windows.Configuration\LightVPN.Client.Windows.Configuration.csproj" />

@@ -1,15 +1,18 @@
 ﻿using System;
+using System.Linq;
 using System.Reflection;
 using System.Windows;
 using LightVPN.Client.Auth;
 using LightVPN.Client.Auth.Interfaces;
 using LightVPN.Client.Auth.Models;
+using LightVPN.Client.Debug;
 using LightVPN.Client.Discord;
 using LightVPN.Client.Discord.Interfaces;
 using LightVPN.Client.Discord.Models;
 using LightVPN.Client.OpenVPN;
 using LightVPN.Client.OpenVPN.Interfaces;
 using LightVPN.Client.OpenVPN.Models;
+using LightVPN.Client.OpenVPN.Utils;
 using LightVPN.Client.Windows.Common;
 using LightVPN.Client.Windows.Common.Utils;
 using LightVPN.Client.Windows.Configuration;
@@ -32,17 +35,38 @@ namespace LightVPN.Client.Windows
         ///     Creates a new service collection and configures all the services (this does not startup the WPF UI)
         /// </summary>
         [STAThread]
-        internal static void Main()
+        internal static void Main(string[] args)
         {
-            Globals.Container.RegisterSingleton<IApiClient, ApiClient>();
-            Globals.Container.RegisterSingleton<ICacheService, CacheService>();
-            Globals.Container.RegisterInstance<IVpnManager>(new VpnManager(new OpenVpnConfiguration
+            DebugLogger.Write("lvpn-client-win-ep", $"app: {Assembly.GetEntryAssembly().GetName().Version}, host os: {HostVersion.GetOsVersion()}");
+
+            DebugLogger.Write("lvpn-client-win-ep", $"args len: {args.Length}");
+
+            if (args.Length != 0)
+            {
+                DebugLogger.Write("lvpn-client-win-ep", $"parsing args");
+                switch (args.FirstOrDefault())
+                {
+                    case "--minimised":
+                        Globals.IsStartingMinimised = true;
+                        DebugLogger.Write("lvpn-client-win-ep", $"min arg, 1");
+                        break;
+                    default:
+                        DebugLogger.Write("lvpn-client-win-ep", $"unrecognised args, ignoring...");
+                        break;
+                }
+            }
+
+            var ovpnConf = new OpenVpnConfiguration
             {
                 OpenVpnLogPath = Globals.OpenVpnLogPath,
                 OpenVpnPath = Globals.OpenVpnPath,
                 TapAdapterName = "LightVPN-TAP",
                 TapCtlPath = Globals.TapCtlPath
-            }));
+            };
+
+            Globals.Container.RegisterSingleton<IApiClient, ApiClient>();
+            Globals.Container.RegisterSingleton<ICacheService, CacheService>();
+            Globals.Container.RegisterInstance<IVpnManager>(new VpnManager(ovpnConf));
             Globals.Container.RegisterInstance<IDiscordRp>(new DiscordRp(new DiscordRpConfiguration()
             {
                 ClientId = 856714133629829130,
@@ -52,6 +76,8 @@ namespace LightVPN.Client.Windows
             Globals.Container.RegisterInstance<IConfigurationManager<AppConfiguration>>(
                 new ConfigurationManager<AppConfiguration>(Globals.AppSettingsPath));
             Globals.Container.RegisterSingleton<IOpenVpnService, OpenVpnService>();
+
+            DebugLogger.Write("lvpn-client-win-ep", "registered service instances");
 
             var res = new ResourceDictionary();
             res.MergedDictionaries.Clear();
@@ -110,6 +136,8 @@ namespace LightVPN.Client.Windows
             res.MergedDictionaries.Add(new ResourceDictionary { Source = windowsUri });
             res.MergedDictionaries.Add(new ResourceDictionary { Source = trayUri });
 
+            DebugLogger.Write("lvpn-client-win-ep", "attempting to authenticate...");
+
             try
             {
                 var settings = Globals.Container.GetInstance<IConfigurationManager<AppConfiguration>>().Read();
@@ -124,15 +152,20 @@ namespace LightVPN.Client.Windows
 
                 if (settings is { IsDiscordRpcEnabled: true }) Globals.Container.GetInstance<IDiscordRp>().Initialize();
 
+                DebugLogger.Write("lvpn-client-win-ep", "auth success");
                 app.StartupUri = new Uri("Windows/MainWindow.xaml", UriKind.RelativeOrAbsolute);
             }
             catch (Exception)
             {
+                DebugLogger.Write("lvpn-client-win-ep", "auth failed");
                 // Apply default theme settings
                 ThemeManager.SwitchTheme(ThemeColor.Default, BackgroundMode.Light);
             }
 
+            DebugLogger.Write("lvpn-client-win-ep", "attempt cache ovpn");
             Globals.Container.GetInstance<ICacheService>().CacheOpenVpnBinariesAsync();
+
+            DebugLogger.Write("lvpn-client-win-ep", "starting app instance");
 
             app.Run();
         }

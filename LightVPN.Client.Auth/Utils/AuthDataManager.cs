@@ -4,6 +4,7 @@ using System.Text.Json;
 using LightVPN.Client.Auth.Exceptions;
 using LightVPN.Client.Auth.Models;
 using LightVPN.Client.Cryptography;
+using LightVPN.Client.Debug;
 using LightVPN.Client.Windows.Common;
 
 namespace LightVPN.Client.Auth.Utils
@@ -67,8 +68,10 @@ namespace LightVPN.Client.Auth.Utils
 
                 return JsonSerializer.Deserialize<AuthResponse>(decryptedContent);
             }
-            catch (Exception)
+            catch (Exception e)
             {
+                DebugLogger.Write("lvpn-client-auth-dataman", $"auth decrypt failed: {e}");
+
                 throw new AuthDecryptionException(
                     "Failed to decrypt authentication data, it is most likely corrupt. It has been cleared, you will have to sign in again.");
             }

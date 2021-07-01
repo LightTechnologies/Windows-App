@@ -1,5 +1,5 @@
 ﻿using System;
-using System.Collections;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
 using System.IO.Compression;
@@ -9,6 +9,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using LightVPN.Client.Auth.Interfaces;
 using LightVPN.Client.Auth.Models;
+using LightVPN.Client.Debug;
 using LightVPN.Client.Windows.Common;
 using LightVPN.Client.Windows.Common.Models;
 using LightVPN.Client.Windows.Common.Utils;
@@ -37,14 +38,38 @@ namespace LightVPN.Client.Windows.Services
                 await File.WriteAllBytesAsync(ovpnArchive, ovpnResponse, cancellationToken);
                 ZipFile.ExtractToDirectory(ovpnArchive, Globals.OpenVpnPath);
                 File.Delete(ovpnArchive);
+                return;
             }
+
+            DebugLogger.Write("lvpn-client-services-cacheman",
+                "cache call has been ignored for ovpn binaries");
         }
 
         private static void VerifyCacheIntegrity()
         {
+            DebugLogger.Write("lvpn-client-services-cacheman",
+                "verifying cache integrity");
+
             DirectoryUtils.DirectoryNotExistsCreate(Globals.AppCachePath);
             DirectoryUtils.DirectoryNotExistsCreate(Globals.AppOpenVpnCachePath);
             DirectoryUtils.DirectoryNotExistsCreate(Globals.AppServerCachePath);
+        }
+
+        public async Task<BindingList<DisplayVpnServer>> GetCachedApiServerResponseAsync(
+            CancellationToken cancellationToken = default)
+        {
+            VerifyCacheIntegrity();
+
+            var fileLocation = Path.Combine(Globals.AppServerCachePath, "cache.json");
+
+            if (!File.Exists(fileLocation)) return null;
+
+            var serverCache =
+                JsonSerializer.Deserialize<ServerCache>(
+                    await File.ReadAllTextAsync(fileLocation, cancellationToken));
+
+            // Cache has expired, return null to get the ViewModel to re-cache
+            return DateTime.Now < serverCache.LastCache.AddHours(12) ? serverCache.Servers : null;
         }
 
         public async Task CacheApiServerResponseAsync(BindingList<DisplayVpnServer> servers, bool force = false,
@@ -52,17 +77,24 @@ namespace LightVPN.Client.Windows.Services
         {
             VerifyCacheIntegrity();
 
-            var fileLocation = Path.Combine(Globals.AppServerCachePath, "cache.json"));
+            var fileLocation = Path.Combine(Globals.AppServerCachePath, "cache.json");
 
             if (File.Exists(fileLocation) && !force)
             {
+                DebugLogger.Write("lvpn-client-services-cacheman",
+                    "checking last server cache time");
+
                 var serverCache =
-                    JsonSerializer.Deserialize<ServerCache>(await File.ReadAllTextAsync(fileLocation, cancellationToken));
+                    JsonSerializer.Deserialize<ServerCache>(
+                        await File.ReadAllTextAsync(fileLocation, cancellationToken));
 
                 if (DateTime.Now < serverCache.LastCache.AddHours(12)) return;
             }
 
-            var o = new ServerCache()
+            DebugLogger.Write("lvpn-client-services-cacheman",
+                "caching new list of servers");
+
+            var o = new ServerCache
             {
                 Servers = servers,
                 LastCache = DateTime.Now
@@ -88,37 +120,71 @@ namespace LightVPN.Client.Windows.Services
                 await File.WriteAllBytesAsync(driverArchive, driverResponse, cancellationToken);
                 ZipFile.ExtractToDirectory(driverArchive, Globals.OpenVpnDriversPath);
                 File.Delete(driverArchive);
+
+                return;
             }
+
+            DebugLogger.Write("lvpn-client-services-cacheman",
+                "cache call has been ignored for ovpn drivers");
         }
 
         public async Task CacheServersAsync(bool force = false, CancellationToken cancellationToken = default)
         {
-            if (!Directory.Exists(Globals.AppCachePath) || force)
+            if (!Directory.Exists(Globals.AppOpenVpnCachePath) || force)
             {
                 var apiClient = Globals.Container.GetInstance<IApiClient>();
 
-                if (Directory.Exists(Globals.AppCachePath)) Directory.Delete(Globals.AppCachePath, true);
+                VerifyCacheIntegrity();
 
-                Directory.CreateDirectory(Globals.AppCachePath);
+                if (Directory.Exists(Globals.AppOpenVpnCachePath)) Directory.Delete(Globals.AppOpenVpnCachePath, true);
 
-                var archive = Path.Combine(Globals.AppCachePath, "tmp.zip");
+                Directory.CreateDirectory(Globals.AppOpenVpnCachePath);
+
+                var archive = Path.Combine(Globals.AppOpenVpnCachePath, "tmp.zip");
                 var configResponse = await apiClient.GetAsync<VpnConfigResponse>("configs", cancellationToken);
 
                 await File.WriteAllBytesAsync(archive, Convert.FromBase64String(configResponse.ArchiveBase64),
                     cancellationToken);
-                ZipFile.ExtractToDirectory(archive, Globals.AppCachePath);
+                ZipFile.ExtractToDirectory(archive, Globals.AppOpenVpnCachePath);
 
-                foreach (var file in Directory.GetFiles(Globals.AppCachePath))
+                foreach (var file in Directory.GetFiles(Globals.AppOpenVpnCachePath))
                 {
+                    // Here we're going to tweak the configuration files a little bit to reduce size and increase OpenVPNs speed.
                     var lines = await File.ReadAllLinesAsync(file, cancellationToken);
 
-                    var newLines = lines.Where(line => !line.Contains("udp6") && !line.StartsWith('#')).ToList();
+                    // Make sure that no comments or anything containing udp6 or max-routes are included, this should increase speed and decrease config size
+                    var tmpLines = lines.Where(line =>
+                        !line.Contains("udp6") && !line.StartsWith('#') && !line.StartsWith("max-routes")).ToList();
 
+                    // Renames the ciphers directive to data-ciphers, the tradeoff is incompatibility with OpenVPN versions below 2.5 but increases speed and performance.
+                    tmpLines = tmpLines.Select(newLine => newLine.Replace("cipher", "data-ciphers")).ToList();
+
+                    var newLines = new List<string>();
+
+                    // Adds the cipher fallback to whatever is specified in the configuration
+                    // We're not hard coding the cipher in here as that will break compatibility if we
+                    // Choose to change cipher suite. (as of writing it's AES-128-CBC)
+                    foreach (var line in tmpLines)
+                    {
+                        var array = line.Split(' ');
+                        if (array.First() == "data-ciphers")
+                        {
+                            newLines.Add($"data-ciphers-fallback {array.Last()}");
+                        }
+                        newLines.Add(line);
+                    }
+
+                    // Writes the updated configuration.
                     await File.WriteAllLinesAsync(file, newLines, cancellationToken);
                 }
 
                 File.Delete(archive);
+
+                return;
             }
+
+            DebugLogger.Write("lvpn-client-services-cacheman",
+                "cache call has been ignored for ovpn configs");
         }
     }
 }

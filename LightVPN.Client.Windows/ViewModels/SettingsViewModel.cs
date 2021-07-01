@@ -5,7 +5,9 @@ using System.Windows;
 using System.Windows.Input;
 using LightVPN.Client.Auth.Exceptions;
 using LightVPN.Client.Discord.Interfaces;
+using LightVPN.Client.OpenVPN.EventArgs;
 using LightVPN.Client.OpenVPN.Interfaces;
+using LightVPN.Client.OpenVPN.Utils;
 using LightVPN.Client.Windows.Common;
 using LightVPN.Client.Windows.Common.Utils;
 using LightVPN.Client.Windows.Configuration.Interfaces;
@@ -20,6 +22,27 @@ namespace LightVPN.Client.Windows.ViewModels
 {
     internal sealed class SettingsViewModel : BaseViewModel
     {
+        public SettingsViewModel()
+        {
+            Globals.Container.GetInstance<IVpnManager>().TapManager.OnErrorReceived += async (_, args) =>
+            {
+                await Application.Current.Dispatcher.InvokeAsync(async () =>
+                {
+                    await DialogManager.ShowDialogAsync(PackIconKind.ErrorOutline, "Something went wrong...",
+                        args.Exception.Message);
+                });
+            };
+
+            Globals.Container.GetInstance<IVpnManager>().TapManager.OnSuccess += async (_) =>
+            {
+                await Application.Current.Dispatcher.InvokeAsync(async () =>
+                {
+                    await DialogManager.ShowDialogAsync(PackIconKind.CheckCircleOutline, "Success!",
+                        "The VPN adapter has been reinstalled.");
+                });
+            };
+        }
+
         private AppConfiguration _appConfiguration;
 
         public AppConfiguration AppConfiguration
@@ -56,7 +79,7 @@ namespace LightVPN.Client.Windows.ViewModels
             }
         }
 
-        private bool _isRunningOnStartup;
+        private bool _isRunningOnStartup = StartupHelper.IsRunningOnStartup();
 
         public bool IsRunningOnStartup
         {
@@ -81,7 +104,7 @@ namespace LightVPN.Client.Windows.ViewModels
         }
 
         public string VersionString { get; set; } =
-            $"{(Globals.IsBeta ? "beta" : "stable")} {Assembly.GetEntryAssembly()?.GetName().Version} {HostVersion.GetOsVersion()}";
+            $"{"preview 2"/*(Globals.IsBeta ? "beta" : "stable")*/} {Assembly.GetEntryAssembly()?.GetName().Version} {HostVersion.GetOsVersion()}";
 
         public ICommand HandleConfigChanges
         {
@@ -225,13 +248,10 @@ namespace LightVPN.Client.Windows.ViewModels
                             IsReinstallingAdapter = true;
 
                             var vpnManager = Globals.Container.GetInstance<IVpnManager>();
-                            if (await vpnManager.TapManager.IsAdapterExistantAsync())
+                            if (await vpnManager.TapManager.IsAdapterExistentAsync())
                                 await vpnManager.TapManager.RemoveTapAdapterAsync();
 
                             await vpnManager.TapManager.InstallTapAdapterAsync();
-
-                            await DialogManager.ShowDialogAsync(PackIconKind.CheckCircleOutline, "Success!",
-                                "The VPN adapter has been reinstalled.");
                         }
                         catch (InvalidOperationException e)
                         {

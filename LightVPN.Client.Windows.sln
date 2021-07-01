@@ -18,6 +18,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LightVPN.Client.Discord", "
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LightVPN.Client.Windows.StartupHelper", "LightVPN.Client.Windows.StartupHelper\LightVPN.Client.Windows.StartupHelper.csproj", "{5EC4DD70-A2E6-4318-AF81-9E92472BF533}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LightVPN.Client.Debug", "LightVPN.Client.Debug\LightVPN.Client.Debug.csproj", "{F141C8AB-D520-42A1-A292-0A0B125A43CE}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -60,5 +62,9 @@ Global
 		{5EC4DD70-A2E6-4318-AF81-9E92472BF533}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5EC4DD70-A2E6-4318-AF81-9E92472BF533}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{5EC4DD70-A2E6-4318-AF81-9E92472BF533}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F141C8AB-D520-42A1-A292-0A0B125A43CE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F141C8AB-D520-42A1-A292-0A0B125A43CE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F141C8AB-D520-42A1-A292-0A0B125A43CE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F141C8AB-D520-42A1-A292-0A0B125A43CE}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

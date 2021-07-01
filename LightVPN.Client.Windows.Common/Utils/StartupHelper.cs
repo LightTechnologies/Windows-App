@@ -4,6 +4,7 @@ using System.IO;
 using System.Reflection;
 using System.Runtime.Versioning;
 using System.Windows;
+using LightVPN.Client.Debug;
 using Microsoft.Win32;
 
 namespace LightVPN.Client.Windows.Common.Utils
@@ -42,7 +43,11 @@ namespace LightVPN.Client.Windows.Common.Utils
         public static bool IsRunningOnStartup()
         {
             var regKey = Registry.CurrentUser.OpenSubKey(@"SOFTWARE\Microsoft\Windows\CurrentVersion\Run", true);
-            return regKey?.GetValue("LightVPN") is not null;
+            var result = regKey?.GetValue("LightVPN") is not null;
+
+            DebugLogger.Write("lvpn-client-win-common-startuphelper", $"conditional result for reg-key: {result}");
+
+            return result;
         }
     }
 }

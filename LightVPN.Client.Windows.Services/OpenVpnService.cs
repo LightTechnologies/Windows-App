@@ -1,10 +1,10 @@
 ﻿using System;
-using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Security.Authentication;
 using System.Threading;
 using System.Threading.Tasks;
+using LightVPN.Client.Debug;
 using LightVPN.Client.OpenVPN.Exceptions;
 using LightVPN.Client.OpenVPN.Interfaces;
 using LightVPN.Client.Windows.Common;
@@ -18,7 +18,7 @@ namespace LightVPN.Client.Windows.Services
     /// <summary>
     ///     Essentially a Windows only wrapper for the OpenVPN manager class
     /// </summary>
-    public sealed partial class OpenVpnService : IOpenVpnService
+    public sealed class OpenVpnService : IOpenVpnService
     {
         /// <inheritdoc />
         /// <summary>
@@ -40,23 +40,21 @@ namespace LightVPN.Client.Windows.Services
         {
             var vpnManager = Globals.Container.GetInstance<IVpnManager>();
 
-            var files = Directory.GetFiles(Globals.AppCachePath);
+            var files = Directory.GetFiles(Globals.AppOpenVpnCachePath);
 
             if (files.Length == 0 || !files.Any(x => x.Contains(id)))
             {
-                // Config not found! This here makes the OpenVPN manager's check a race condition.
-#if DEBUG
-                Debug.WriteLine("Configuration file not found in cache, this is preventing a race condition.");
-#endif
-                return;
+                DebugLogger.Write("lvpn-client-services-ovpnwrapper",
+                    "oh shit!?! looks like the system cannot locate the config, what now!??! that's right sir, we throw a phat exception");
+                throw new InvalidOperationException(
+                    "Cannot fetch the server configuration, you may need to refresh your cache, you can do so in settings.");
             }
 
             var configFileName = files.FirstOrDefault(x => x.Contains(id));
             if (string.IsNullOrWhiteSpace(configFileName))
             {
-#if DEBUG
-                Debug.WriteLine("Configuration filename is null/ws this is really odd.");
-#endif
+                DebugLogger.Write("lvpn-client-services-ovpnwrapper",
+                    "looks like this system has done some sorcery and the filename found is null or whitespaces, wtf!?!?!?!");
 
                 return;
             }

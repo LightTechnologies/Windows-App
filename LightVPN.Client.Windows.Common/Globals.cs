@@ -89,5 +89,7 @@ namespace LightVPN.Client.Windows.Common
         /// True if the MainWindow is in the tray, false otherwise.
         /// </summary>
         public static bool IsInTray { get; set; }
+
+        public static bool IsStartingMinimised { get; set; }
     }
 }

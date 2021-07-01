@@ -5,6 +5,7 @@ using System.Management;
 using System.Runtime.Versioning;
 using System.Threading;
 using System.Threading.Tasks;
+using LightVPN.Client.Debug;
 using LightVPN.Client.OpenVPN.Models;
 using LightVPN.Client.OpenVPN.Resources;
 using LightVPN.Client.Windows.Common;
@@ -20,7 +21,12 @@ namespace LightVPN.Client.OpenVPN.Utils
         private Process _tapCtlProcess;
         private readonly OpenVpnConfiguration _configuration;
 
-        internal TapManager(OpenVpnConfiguration configuration)
+        public delegate void ErrorReceived(object sender, LightVPN.Client.OpenVPN.EventArgs.ErrorEventArgs e);
+        public delegate void Success(object sender);
+        public event Success OnSuccess;
+        public event ErrorReceived OnErrorReceived;
+
+        public TapManager(OpenVpnConfiguration configuration)
         {
             _configuration = configuration;
 
@@ -41,7 +47,7 @@ namespace LightVPN.Client.OpenVPN.Utils
         /// <summary>
         ///     Configures the process for TAP driver installation
         /// </summary>
-        private void ConfigureTapDriverInstallation()
+        public void ConfigureTapDriverInstallation()
         {
             _tapCtlProcess.StartInfo.WorkingDirectory = Globals.OpenVpnDriversPath;
             _tapCtlProcess.StartInfo.FileName = Path.Combine(Globals.OpenVpnDriversPath, "tapinstall.exe");
@@ -165,7 +171,7 @@ namespace LightVPN.Client.OpenVPN.Utils
         /// </summary>
         /// <param name="cancellationToken">The cancellation token</param>
         /// <returns>True if it is, false otherwise</returns>
-        public async Task<bool> IsAdapterExistantAsync(CancellationToken cancellationToken = default)
+        public async Task<bool> IsAdapterExistentAsync(CancellationToken cancellationToken = default)
         {
             var found = false;
 
@@ -193,11 +199,16 @@ namespace LightVPN.Client.OpenVPN.Utils
         /// <param name="sender"></param>
         /// <param name="e"></param>
         /// <exception cref="InvalidOperationException">Thrown when TAP creation has failed</exception>
-        private static void TapCtlProcessOnErrorDataReceived(object sender, DataReceivedEventArgs e)
+        private void TapCtlProcessOnErrorDataReceived(object sender, DataReceivedEventArgs e)
         {
             if (string.IsNullOrWhiteSpace(e.Data)) return;
 
-            throw new InvalidOperationException($"Failed to create TAP: {e.Data}");
+            DebugLogger.Write("lvpn-client-ovpn-tapman", $"create_vpn_adap failed: {e.Data}");
+
+            _tapCtlProcess.Kill();
+
+            OnErrorReceived?.Invoke(this,
+                new LightVPN.Client.OpenVPN.EventArgs.ErrorEventArgs(new InvalidOperationException("Failed to create VPN adapter. Your OpenVPN drivers are most likely corrupt.")));
         }
 
         /// <summary>
@@ -215,14 +226,17 @@ namespace LightVPN.Client.OpenVPN.Utils
                 case var str
                     when str.Contains(string.Format(StringTable.OVPN_TAP_ALREADY_EXISTS,
                         _configuration.TapAdapterName)):
-                    throw new InvalidOperationException("TAP adapter already exists!");
+                    OnErrorReceived?.Invoke(this,
+                        new LightVPN.Client.OpenVPN.EventArgs.ErrorEventArgs(new InvalidOperationException("TAP adapter already exists!")));
+                    break;
                 case var str
                     when str.Contains(string.Format(StringTable.OVPN_TAP_NO_EXISTS, _configuration.TapAdapterName)):
-                    throw new InvalidOperationException("TAP adapter doesn't exist!");
+                    OnErrorReceived?.Invoke(this,
+                        new LightVPN.Client.OpenVPN.EventArgs.ErrorEventArgs(new InvalidOperationException("TAP adapter doesn't exist!")));
+                    break;
                 case var guid when Guid.TryParse(guid, out var adapterId):
-#if DEBUG
-                    Debug.WriteLine($"Created TAP adapter ({adapterId})");
-#endif
+                    DebugLogger.Write("lvpn-client-ovpn-tapman", $"tapctl exited, tap created it seems.");
+                    OnSuccess?.Invoke(this);
                     break;
             }
         }

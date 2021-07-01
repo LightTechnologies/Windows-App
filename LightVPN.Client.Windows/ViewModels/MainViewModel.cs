@@ -1,9 +1,7 @@
-﻿using System;
-using System.ComponentModel;
+﻿using System.ComponentModel;
 using System.Linq;
 using System.Windows;
 using System.Windows.Input;
-using System.Windows.Threading;
 using LightVPN.Client.Auth.Exceptions;
 using LightVPN.Client.Auth.Interfaces;
 using LightVPN.Client.Auth.Models;
@@ -14,7 +12,6 @@ using LightVPN.Client.Windows.Common;
 using LightVPN.Client.Windows.Common.Models;
 using LightVPN.Client.Windows.Configuration.Interfaces;
 using LightVPN.Client.Windows.Configuration.Models;
-using LightVPN.Client.Windows.Dialogs;
 using LightVPN.Client.Windows.Models;
 using LightVPN.Client.Windows.Services.Interfaces;
 using LightVPN.Client.Windows.Utils;
@@ -29,10 +26,6 @@ namespace LightVPN.Client.Windows.ViewModels
         {
             Globals.MainViewModel = this;
         }
-
-        // Keep a time since the servers were last cached
-        private DateTime LastCache { get; set; }
-
 
         private ConnectionState _connectionState;
 
@@ -200,22 +193,30 @@ namespace LightVPN.Client.Windows.ViewModels
                         try
                         {
                             IsPlayingAnimation = false;
+
                             VpnServers ??= new BindingList<DisplayVpnServer>();
-
                             SelectedVpnServer = null;
-
-                            if (DateTime.Now < LastCache.AddHours(1)) return;
 
                             var config = Globals.Container.GetInstance<IConfigurationManager<AppConfiguration>>()
                                 .Read();
-                            LastServer = config.LastServer is null ? "N/A" : config.LastServer.Location;
 
-                            var apiClient = Globals.Container.GetInstance<IApiClient>();
-                            var servers = await apiClient.GetAsync<BindingList<VpnServer>>("servers");
+                            LastServer = config.LastServer is null ? "N/A" : config.LastServer.Location;
 
                             var vpnService = Globals.Container.GetInstance<IVpnManager>();
                             vpnService.OnConnected += OnConnected;
                             vpnService.OnErrorReceived += OnErrorReceived;
+
+                            var cacheService = Globals.Container.GetInstance<ICacheService>();
+
+                            var cachedVpnServers = await cacheService.GetCachedApiServerResponseAsync();
+                            if (cachedVpnServers is not null)
+                            {
+                                VpnServers = cachedVpnServers;
+                                return;
+                            }
+
+                            var apiClient = Globals.Container.GetInstance<IApiClient>();
+                            var servers = await apiClient.GetAsync<BindingList<VpnServer>>("servers");
 
                             VpnServers.Clear();
 
@@ -232,7 +233,7 @@ namespace LightVPN.Client.Windows.ViewModels
                                         $"pack://application:,,,/Resources/Flags/{item.CountryName.Replace(' ', '-')}.png"
                                 });
 
-                            LastCache = DateTime.Now;
+                            await cacheService.CacheApiServerResponseAsync(VpnServers);
                         }
                         catch (InvalidResponseException e)
                         {

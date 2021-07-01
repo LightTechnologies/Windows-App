@@ -1,5 +1,6 @@
 ﻿using System.Windows;
 using System.Windows.Input;
+using LightVPN.Client.Debug;
 using LightVPN.Client.Windows.Utils;
 
 namespace LightVPN.Client.Windows.ViewModels
@@ -62,6 +63,8 @@ namespace LightVPN.Client.Windows.ViewModels
                     CommandAction = _ =>
                     {
                         if (Application.Current.MainWindow == null) return;
+
+                        DebugLogger.Write("lvpn-client-win-chrome-mvvm", $"running this monstrosity of a conditional to determine how to toggle max");
 
                         WindowState = Application.Current.MainWindow.WindowState;
                         Application.Current.MainWindow.WindowState =

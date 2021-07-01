@@ -8,7 +8,7 @@
         <Product>LightVPN Windows client</Product>
         <ProductName>LightVPN Startup Helper</ProductName>
         <AssemblyName>startupHelper</AssemblyName>
-        <Version>1.0.0.1</Version>
+        <Version>1.0.0.2</Version>
         <AssemblyTitle>LightVPN Startup Helper</AssemblyTitle>
         <PackageId>LightVPN Startup Helper</PackageId>
         <NeutralLanguage>en</NeutralLanguage>
