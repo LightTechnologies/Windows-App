@@ -6,7 +6,7 @@
         <Product>LightVPN Windows Client</Product>
         <ProductName>LightVPN Windows Client</ProductName>
         <AssemblyName>lightvpn64-api</AssemblyName>
-        <Version>3.0.0.0</Version>
+        <Version>3.0.0.1</Version>
         <AssemblyTitle>API wrapper for the LightVPN Windows Client</AssemblyTitle>
         <Copyright>Copyright 2021 (C) Light Technologies, LLC.</Copyright>
         <PackageProjectUrl>https://github.com/LightTechnologies</PackageProjectUrl>
