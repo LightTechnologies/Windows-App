@@ -1,11 +1,11 @@
-﻿using System;
-using DiscordRPC;
-using DiscordRPC.Logging;
-using LightVPN.Client.Discord.Interfaces;
-using LightVPN.Client.Discord.Models;
-
-namespace LightVPN.Client.Discord
+﻿namespace LightVPN.Client.Discord
 {
+    using System;
+    using DiscordRPC;
+    using DiscordRPC.Logging;
+    using Interfaces;
+    using Models;
+
     public sealed class DiscordRp : IDiscordRp
     {
         private readonly DiscordRpConfiguration _configuration;
@@ -15,17 +15,18 @@ namespace LightVPN.Client.Discord
 
         public DiscordRp(DiscordRpConfiguration configuration)
         {
-            _configuration = configuration;
+            this._configuration = configuration;
 
-            CreateInstance();
+            this.CreateInstance();
         }
 
         private void CreateInstance()
         {
-            _client = new DiscordRpcClient(_configuration.ClientId.ToString(), logger: new FileLogger("discord.log"));
+            this._client = new DiscordRpcClient(this._configuration.ClientId.ToString(),
+                logger: new FileLogger("discord.log"));
 
-            Presence = GetRichPresence();
-            _client.SetPresence(Presence);
+            this.Presence = this.GetRichPresence();
+            this._client.SetPresence(this.Presence);
         }
 
         /// <inheritdoc />
@@ -35,7 +36,7 @@ namespace LightVPN.Client.Discord
         /// <returns>The newly generated presence object</returns>
         public RichPresence GetRichPresence()
         {
-            return new RichPresence
+            return new()
             {
                 State = "Disconnected",
                 Buttons = new[]
@@ -43,14 +44,14 @@ namespace LightVPN.Client.Discord
                     new Button
                     {
                         Label = "Visit us",
-                        Url = "https://lightvpn.org"
-                    }
+                        Url = "https://lightvpn.org",
+                    },
                 },
                 Assets = new Assets
                 {
-                    LargeImageKey = _configuration.LargeImageKey,
-                    LargeImageText = _configuration.LargeImageText
-                }
+                    LargeImageKey = this._configuration.LargeImageKey,
+                    LargeImageText = this._configuration.LargeImageText,
+                },
             };
         }
 
@@ -60,7 +61,7 @@ namespace LightVPN.Client.Discord
         /// </summary>
         public void ResetPresence()
         {
-            Presence = GetRichPresence();
+            this.Presence = this.GetRichPresence();
         }
 
         /// <inheritdoc cref="IDisposable.Dispose" />
@@ -69,9 +70,9 @@ namespace LightVPN.Client.Discord
         /// </summary>
         public void Dispose()
         {
-            ClearPresence();
-            Deinitialize();
-            _client.Dispose();
+            this.ClearPresence();
+            this.Deinitialise();
+            this._client.Dispose();
         }
 
         /// <inheritdoc />
@@ -80,19 +81,19 @@ namespace LightVPN.Client.Discord
         /// </summary>
         public void ClearPresence()
         {
-            _client.ClearPresence();
+            this._client.ClearPresence();
         }
 
         /// <inheritdoc />
         /// <summary>
-        ///     Deinitializes the DiscordRpc client
+        ///     De-initialises the DiscordRpc client
         /// </summary>
-        public void Deinitialize()
+        public void Deinitialise()
         {
-            if (!_client.IsInitialized) return;
+            if (!this._client.IsInitialized) return;
 
-            _client.Deinitialize();
-            _client.Dispose();
+            this._client.Deinitialize();
+            this._client.Dispose();
         }
 
         /// <inheritdoc />
@@ -101,13 +102,13 @@ namespace LightVPN.Client.Discord
         /// </summary>
         public void Initialize()
         {
-            if (!_client.IsInitialized || _client.IsDisposed)
+            if (!this._client.IsInitialized || this._client.IsDisposed)
             {
-                CreateInstance();
-                _client.Initialize();
+                this.CreateInstance();
+                this._client.Initialize();
             }
 
-            SetPresence();
+            this.SetPresence();
         }
 
         /// <inheritdoc />
@@ -116,9 +117,9 @@ namespace LightVPN.Client.Discord
         /// </summary>
         public void ResetTimestamps()
         {
-            Presence.WithTimestamps(null);
+            this.Presence.WithTimestamps(null);
 
-            SetPresence();
+            this.SetPresence();
         }
 
         /// <inheritdoc />
@@ -128,9 +129,9 @@ namespace LightVPN.Client.Discord
         /// <param name="details">The new details you wish to put on the presence</param>
         public void UpdateDetails(string details)
         {
-            Presence.WithDetails(details);
+            this.Presence.WithDetails(details);
 
-            SetPresence();
+            this.SetPresence();
         }
 
         /// <inheritdoc />
@@ -140,9 +141,9 @@ namespace LightVPN.Client.Discord
         /// <param name="state">The new state you wish to put on the presence</param>
         public void UpdateState(string state)
         {
-            Presence.WithState(state);
+            this.Presence.WithState(state);
 
-            SetPresence();
+            this.SetPresence();
         }
 
         /// <inheritdoc />
@@ -151,9 +152,9 @@ namespace LightVPN.Client.Discord
         /// </summary>
         public void UpdateTimestamps()
         {
-            Presence.WithTimestamps(new Timestamps(DateTime.UtcNow));
+            this.Presence.WithTimestamps(new Timestamps(DateTime.UtcNow));
 
-            SetPresence();
+            this.SetPresence();
         }
 
         /// <inheritdoc />
@@ -162,10 +163,10 @@ namespace LightVPN.Client.Discord
         /// </summary>
         public void SetPresence()
         {
-            if (!_client.IsInitialized) return;
+            if (!this._client.IsInitialized) return;
 
-            _client.SetPresence(Presence);
-            _client.Invoke();
+            this._client.SetPresence(this.Presence);
+            this._client.Invoke();
         }
     }
 }

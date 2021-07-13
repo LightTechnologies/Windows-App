@@ -1,7 +1,7 @@
-﻿using System.IO;
-
-namespace LightVPN.Client.OpenVPN.Utils
+﻿namespace LightVPN.Client.OpenVPN.Utils
 {
+    using System.IO;
+
     /// <summary>
     ///     Handles writing data to the OpenVPN log
     /// </summary>
@@ -14,7 +14,7 @@ namespace LightVPN.Client.OpenVPN.Utils
 
         internal LogDataManager(string logDataPath)
         {
-            _logDataPath = logDataPath;
+            this._logDataPath = logDataPath;
         }
 
         /// <summary>
@@ -23,7 +23,7 @@ namespace LightVPN.Client.OpenVPN.Utils
         /// <param name="value">The value to write to the file</param>
         internal void WriteLine(object value)
         {
-            File.AppendAllText(_logDataPath, value + "\n");
+            File.AppendAllText(this._logDataPath, value + "\n");
         }
     }
 }

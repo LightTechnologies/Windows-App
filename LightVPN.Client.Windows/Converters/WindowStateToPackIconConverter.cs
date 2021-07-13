@@ -1,11 +1,11 @@
-﻿using System;
-using System.Globalization;
-using System.Windows;
-using System.Windows.Data;
-using MaterialDesignThemes.Wpf;
-
-namespace LightVPN.Client.Windows.Converters
+﻿namespace LightVPN.Client.Windows.Converters
 {
+    using System;
+    using System.Globalization;
+    using System.Windows;
+    using System.Windows.Data;
+    using MaterialDesignThemes.Wpf;
+
     [ValueConversion(typeof(WindowState), typeof(PackIconKind))]
     internal sealed class WindowStateToPackIconConverter : IValueConverter
     {
@@ -16,7 +16,7 @@ namespace LightVPN.Client.Windows.Converters
             return state switch
             {
                 WindowState.Maximized => PackIconKind.WindowRestore,
-                _ => PackIconKind.WindowMaximize
+                _ => PackIconKind.WindowMaximize,
             };
         }
 

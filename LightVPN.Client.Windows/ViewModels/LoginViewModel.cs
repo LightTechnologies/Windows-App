@@ -1,18 +1,15 @@
-﻿using System.IO;
-using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Input;
-using LightVPN.Client.Auth.Exceptions;
-using LightVPN.Client.Auth.Interfaces;
-using LightVPN.Client.Auth.Models;
-using LightVPN.Client.Windows.Common;
-using LightVPN.Client.Windows.Common.Utils;
-using LightVPN.Client.Windows.Services.Interfaces;
-using LightVPN.Client.Windows.Utils;
-using MaterialDesignThemes.Wpf;
-
-namespace LightVPN.Client.Windows.ViewModels
+﻿namespace LightVPN.Client.Windows.ViewModels
 {
+    using System.Windows.Controls;
+    using System.Windows.Input;
+    using Auth.Exceptions;
+    using Auth.Interfaces;
+    using Auth.Models;
+    using Common;
+    using MaterialDesignThemes.Wpf;
+    using Services.Interfaces;
+    using Utils;
+
     internal sealed class LoginViewModel : WindowViewModel
     {
         public LoginViewModel() : base(false)
@@ -21,11 +18,11 @@ namespace LightVPN.Client.Windows.ViewModels
 
         public string UserName
         {
-            get => _userName;
+            get => this._userName;
             set
             {
-                _userName = value;
-                OnPropertyChanged(nameof(UserName));
+                this._userName = value;
+                this.OnPropertyChanged(nameof(LoginViewModel.UserName));
             }
         }
 
@@ -33,11 +30,11 @@ namespace LightVPN.Client.Windows.ViewModels
 
         public bool IsAuthenticating
         {
-            get => _isAuthenticating;
+            get => this._isAuthenticating;
             set
             {
-                _isAuthenticating = value;
-                OnPropertyChanged(nameof(IsAuthenticating));
+                this._isAuthenticating = value;
+                this.OnPropertyChanged(nameof(LoginViewModel.IsAuthenticating));
             }
         }
 
@@ -48,12 +45,12 @@ namespace LightVPN.Client.Windows.ViewModels
 
         public int ProgressInt
         {
-            get => _progressInt;
+            get => this._progressInt;
 
             set
             {
-                _progressInt = value;
-                OnPropertyChanged(nameof(ProgressInt));
+                this._progressInt = value;
+                this.OnPropertyChanged(nameof(LoginViewModel.ProgressInt));
             }
         }
 
@@ -61,12 +58,12 @@ namespace LightVPN.Client.Windows.ViewModels
 
         public string StatusText
         {
-            get => _statusText;
+            get => this._statusText;
 
             set
             {
-                _statusText = value.ToUpper();
-                OnPropertyChanged(nameof(StatusText));
+                this._statusText = value.ToUpper();
+                this.OnPropertyChanged(nameof(LoginViewModel.StatusText));
             }
         }
 
@@ -74,12 +71,12 @@ namespace LightVPN.Client.Windows.ViewModels
 
         public bool IsIndeterminate
         {
-            get => _isIndeterminate;
+            get => this._isIndeterminate;
 
             set
             {
-                _isIndeterminate = value;
-                OnPropertyChanged(nameof(IsIndeterminate));
+                this._isIndeterminate = value;
+                this.OnPropertyChanged(nameof(LoginViewModel.IsIndeterminate));
             }
         }
 
@@ -87,24 +84,24 @@ namespace LightVPN.Client.Windows.ViewModels
 
         public string Password
         {
-            get => _password;
+            get => this._password;
 
             set
             {
-                _password = value;
-                OnPropertyChanged(nameof(Password));
+                this._password = value;
+                this.OnPropertyChanged(nameof(LoginViewModel.Password));
             }
         }
 
         public ICommand PasswordChangedCommand =>
             new UICommand
             {
-                CommandAction = ExecChangePassword
+                CommandAction = this.ExecChangePassword,
             };
 
         private void ExecChangePassword(object obj)
         {
-            Password = ((PasswordBox)obj).Password;
+            this.Password = ((PasswordBox) obj).Password;
         }
 
         [NotNull]
@@ -118,23 +115,27 @@ namespace LightVPN.Client.Windows.ViewModels
                     {
                         try
                         {
-                            if (string.IsNullOrWhiteSpace(UserName)) return;
+                            if (string.IsNullOrWhiteSpace(this.UserName)) return;
 
-                            IsAuthenticating = true;
+                            this.IsAuthenticating = true;
 
                             var apiClient = Globals.Container.GetInstance<IApiClient>();
 
-                            Globals.UserName = UserName;
+                            Globals.UserName = this.UserName;
 
                             await apiClient.PostAsync<AuthResponse>("auth", new
                             {
-                                username = UserName,
-                                password = Password
-                            }, CancellationTokenSource.Token);
+                                username = this.UserName,
+                                password = this.Password,
+                            }, this.CancellationTokenSource.Token);
 
+                            // Cache OVPN binaries
                             await Globals.Container.GetInstance<ICacheService>().CacheOpenVpnBinariesAsync();
 
-                            var loginWindow = (LoginWindow)Globals.LoginWindow;
+                            // Cache OVPN configs
+                            await Globals.Container.GetInstance<ICacheService>().CacheServersAsync();
+
+                            var loginWindow = (LoginWindow) Globals.LoginWindow;
 
                             var mainWindow = new MainWindow();
                             mainWindow.Show();
@@ -153,10 +154,10 @@ namespace LightVPN.Client.Windows.ViewModels
                         }
                         finally
                         {
-                            IsAuthenticating = false;
+                            this.IsAuthenticating = false;
                         }
                     },
-                    CanExecuteFunc = () => !IsAuthenticating
+                    CanExecuteFunc = () => !this.IsAuthenticating,
                 };
             }
         }

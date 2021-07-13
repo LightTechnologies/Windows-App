@@ -1,7 +1,7 @@
-﻿using System;
-
-namespace LightVPN.Client.Auth.Utils
+﻿namespace LightVPN.Client.Auth.Utils
 {
+    using System;
+
     internal static class Extensions
     {
         /// <summary>
@@ -22,7 +22,7 @@ namespace LightVPN.Client.Auth.Utils
                 PlatformID.Xbox => "Xbox",
                 PlatformID.MacOSX => "macOS",
                 PlatformID.Other => "Other",
-                _ => throw new ArgumentOutOfRangeException(nameof(platform), platform, null)
+                _ => throw new ArgumentOutOfRangeException(nameof(platform), platform, null),
             };
         }
     }

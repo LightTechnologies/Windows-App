@@ -1,9 +1,8 @@
-﻿using System;
-using System.Runtime.InteropServices;
-using LightVPN.Client.OpenVPN.Utils;
-
-namespace LightVPN.Client.OpenVPN.Models
+﻿namespace LightVPN.Client.OpenVPN.Models
 {
+    using System;
+    using System.Runtime.InteropServices;
+
     [StructLayout(LayoutKind.Sequential)]
     internal struct JobobjectExtendedLimitInformation
     {

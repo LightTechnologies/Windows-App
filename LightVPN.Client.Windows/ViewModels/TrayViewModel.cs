@@ -1,16 +1,16 @@
-﻿using System.Windows;
-using System.Windows.Input;
-using LightVPN.Client.Discord.Interfaces;
-using LightVPN.Client.OpenVPN.Interfaces;
-using LightVPN.Client.Windows.Common;
-using LightVPN.Client.Windows.Configuration.Interfaces;
-using LightVPN.Client.Windows.Configuration.Models;
-using LightVPN.Client.Windows.Models;
-using LightVPN.Client.Windows.Services.Interfaces;
-using LightVPN.Client.Windows.Utils;
-
-namespace LightVPN.Client.Windows.ViewModels
+﻿namespace LightVPN.Client.Windows.ViewModels
 {
+    using System.Windows;
+    using System.Windows.Input;
+    using Common;
+    using Configuration.Interfaces;
+    using Configuration.Models;
+    using Discord.Interfaces;
+    using Models;
+    using OpenVPN.Interfaces;
+    using Services.Interfaces;
+    using Utils;
+
     internal sealed class TrayViewModel : BaseViewModel
     {
         public TrayViewModel()
@@ -29,7 +29,7 @@ namespace LightVPN.Client.Windows.ViewModels
                         Globals.IsInTray = true;
                         Application.Current.MainWindow?.Hide();
                     },
-                    CanExecuteFunc = () => !Globals.IsInTray
+                    CanExecuteFunc = () => !Globals.IsInTray,
                 };
             }
         }
@@ -45,7 +45,7 @@ namespace LightVPN.Client.Windows.ViewModels
                         Globals.IsInTray = false;
                         Application.Current.MainWindow?.Show();
                     },
-                    CanExecuteFunc = () => Globals.IsInTray
+                    CanExecuteFunc = () => Globals.IsInTray,
                 };
             }
         }
@@ -56,10 +56,10 @@ namespace LightVPN.Client.Windows.ViewModels
             {
                 return new UICommand
                 {
-                    CanExecuteFunc = () => ConnectionState == ConnectionState.Disconnected,
+                    CanExecuteFunc = () => this.ConnectionState == ConnectionState.Disconnected,
                     CommandAction = async _ =>
                     {
-                        if (ConnectionState is ConnectionState.Connecting or ConnectionState.Disconnecting or
+                        if (this.ConnectionState is ConnectionState.Connecting or ConnectionState.Disconnecting or
                             ConnectionState.Connected) return;
 
                         var vpnService = Globals.Container.GetInstance<IOpenVpnService>();
@@ -69,7 +69,7 @@ namespace LightVPN.Client.Windows.ViewModels
 
                         if (lastServer?.Location == null || lastServer?.PritunlName == null) return;
 
-                        ConnectionState = ConnectionState.Connecting;
+                        this.ConnectionState = ConnectionState.Connecting;
 
                         if (Globals.MainViewModel is MainViewModel mainViewModel)
                             mainViewModel.ConnectionState = ConnectionState.Connecting;
@@ -80,7 +80,7 @@ namespace LightVPN.Client.Windows.ViewModels
                                 .UpdateState($"Connecting to {lastServer.Location}...");
 
                         await vpnService.ConnectAsync(lastServer.PritunlName, lastServer.Location);
-                    }
+                    },
                 };
             }
         }
@@ -91,22 +91,22 @@ namespace LightVPN.Client.Windows.ViewModels
             {
                 return new UICommand
                 {
-                    CanExecuteFunc = () => ConnectionState == ConnectionState.Connected,
+                    CanExecuteFunc = () => this.ConnectionState == ConnectionState.Connected,
                     CommandAction = async _ =>
                     {
-                        if (ConnectionState != ConnectionState.Connected) return;
+                        if (this.ConnectionState != ConnectionState.Connected) return;
 
                         var vpnManagerService = Globals.Container.GetInstance<IVpnManager>();
 
-                        ConnectionState = ConnectionState.Disconnecting;
+                        this.ConnectionState = ConnectionState.Disconnecting;
 
                         await vpnManagerService.DisconnectAsync();
 
                         if (Globals.MainViewModel is MainViewModel mainViewModel)
                             mainViewModel.ConnectionState = ConnectionState.Disconnected;
 
-                        ConnectionState = ConnectionState.Disconnected;
-                    }
+                        this.ConnectionState = ConnectionState.Disconnected;
+                    },
                 };
             }
         }
@@ -118,17 +118,17 @@ namespace LightVPN.Client.Windows.ViewModels
             get
             {
                 if (Globals.Container.GetInstance<IVpnManager>().IsConnected)
-                    _connectionState = ConnectionState.Connected;
-                else if (_connectionState != ConnectionState.Connecting)
-                    _connectionState = ConnectionState.Disconnected;
+                    this._connectionState = ConnectionState.Connected;
+                else if (this._connectionState != ConnectionState.Connecting)
+                    this._connectionState = ConnectionState.Disconnected;
 
-                return _connectionState;
+                return this._connectionState;
             }
             set
             {
-                _connectionState = value;
-                OnPropertyChanged(nameof(ConnectionState));
-                OnPropertyChanged(nameof(TrayIconSource));
+                this._connectionState = value;
+                this.OnPropertyChanged(nameof(TrayViewModel.ConnectionState));
+                this.OnPropertyChanged(nameof(TrayViewModel.TrayIconSource));
             }
         }
 
@@ -136,19 +136,19 @@ namespace LightVPN.Client.Windows.ViewModels
 
         public string TrayIconToolTip
         {
-            get => _trayIconToolTip;
+            get => this._trayIconToolTip;
             set
             {
-                _trayIconToolTip = value;
-                OnPropertyChanged(nameof(TrayIconToolTip));
+                this._trayIconToolTip = value;
+                this.OnPropertyChanged(nameof(TrayViewModel.TrayIconToolTip));
             }
         }
 
         public string TrayIconSource =>
-            ConnectionState switch
+            this.ConnectionState switch
             {
                 ConnectionState.Connected => "Resources/Images/lightvpn-success.ico",
-                _ => "Resources/Images/lightvpn-danger.ico"
+                _ => "Resources/Images/lightvpn-danger.ico",
             };
     }
 }

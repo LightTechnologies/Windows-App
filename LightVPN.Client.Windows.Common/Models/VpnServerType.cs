@@ -8,6 +8,6 @@
 
         Privacy,
 
-        Game
+        Game,
     }
 }

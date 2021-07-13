@@ -1,11 +1,11 @@
-﻿using System;
-using System.ComponentModel;
-using System.Diagnostics;
-using System.Runtime.InteropServices;
-using LightVPN.Client.OpenVPN.Models;
-
-namespace LightVPN.Client.OpenVPN.Utils
+﻿namespace LightVPN.Client.OpenVPN.Utils
 {
+    using System;
+    using System.ComponentModel;
+    using System.Diagnostics;
+    using System.Runtime.InteropServices;
+    using Models;
+
     /// <summary>
     ///     Allows processes to be automatically killed if this parent process unexpectedly quits.
     ///     This feature requires Windows 8 or greater. On Windows 7, nothing is done.
@@ -25,9 +25,9 @@ namespace LightVPN.Client.OpenVPN.Utils
         /// <param name="process"></param>
         public static void AddProcess(Process process)
         {
-            if (SJobHandle == IntPtr.Zero) return;
+            if (ChildProcessTracker.SJobHandle == IntPtr.Zero) return;
 
-            var success = AssignProcessToJobObject(SJobHandle, process.Handle);
+            var success = ChildProcessTracker.AssignProcessToJobObject(ChildProcessTracker.SJobHandle, process.Handle);
             if (!success && !process.HasExited)
                 throw new Win32Exception();
         }
@@ -46,19 +46,19 @@ namespace LightVPN.Client.OpenVPN.Utils
             //  If it's not null, it has to be unique. Use SysInternals' Handle command-line
             //  utility: handle -a ChildProcessTracker
             var jobName = "ChildProcessTracker" + Environment.ProcessId;
-            SJobHandle = CreateJobObject(IntPtr.Zero, jobName);
+            ChildProcessTracker.SJobHandle = ChildProcessTracker.CreateJobObject(IntPtr.Zero, jobName);
 
             var info = new JobobjectBasicLimitInformation
             {
                 // This is the key flag. When our process is killed, Windows will automatically
                 //  close the job handle, and when that happens, we want the child processes to
                 //  be killed, too.
-                LimitFlags = Jobobjectlimit.JobObjectLimitKillOnJobClose
+                LimitFlags = Jobobjectlimit.JobObjectLimitKillOnJobClose,
             };
 
             var extendedInfo = new JobobjectExtendedLimitInformation
             {
-                BasicLimitInformation = info
+                BasicLimitInformation = info,
             };
 
             var length = Marshal.SizeOf(typeof(JobobjectExtendedLimitInformation));
@@ -67,8 +67,9 @@ namespace LightVPN.Client.OpenVPN.Utils
             {
                 Marshal.StructureToPtr(extendedInfo, extendedInfoPtr, false);
 
-                if (!SetInformationJobObject(SJobHandle, JobObjectInfoType.ExtendedLimitInformation,
-                    extendedInfoPtr, (uint)length))
+                if (!ChildProcessTracker.SetInformationJobObject(ChildProcessTracker.SJobHandle,
+                    JobObjectInfoType.ExtendedLimitInformation,
+                    extendedInfoPtr, (uint) length))
                     throw new Win32Exception();
             }
             finally
@@ -95,6 +96,6 @@ namespace LightVPN.Client.OpenVPN.Utils
 
     internal enum JobObjectInfoType
     {
-        ExtendedLimitInformation = 9
+        ExtendedLimitInformation = 9,
     }
 }

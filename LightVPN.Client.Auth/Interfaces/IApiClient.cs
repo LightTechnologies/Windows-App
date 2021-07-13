@@ -1,10 +1,10 @@
-﻿using System.Threading;
-using System.Threading.Tasks;
-
-namespace LightVPN.Client.Auth.Interfaces
+﻿namespace LightVPN.Client.Auth.Interfaces
 {
+    using System.Threading;
+    using System.Threading.Tasks;
+
     /// <summary>
-    /// Interface for the HttpClient implementation
+    ///     Interface for the HttpClient implementation
     /// </summary>
     public interface IApiClient
     {

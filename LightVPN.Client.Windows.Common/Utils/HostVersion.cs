@@ -1,9 +1,9 @@
-﻿using System.Linq;
-using System.Management;
-using System.Runtime.Versioning;
-
-namespace LightVPN.Client.Windows.Common.Utils
+﻿namespace LightVPN.Client.Windows.Common.Utils
 {
+    using System.Linq;
+    using System.Management;
+    using System.Runtime.Versioning;
+
     [SupportedOSPlatform("windows")]
     public static class HostVersion
     {

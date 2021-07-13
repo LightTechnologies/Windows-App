@@ -1,17 +1,14 @@
-﻿using System.Windows;
-using LightVPN.Client.Auth;
-using LightVPN.Client.Auth.Interfaces;
-using LightVPN.Client.Windows.Common;
-using LightVPN.Client.Windows.ViewModels;
-
-namespace LightVPN.Client.Windows
+﻿namespace LightVPN.Client.Windows
 {
+    using System.Windows;
+    using Common;
+
     /// <inheritdoc cref="System.Windows.Window" />
     internal sealed partial class LoginWindow : Window
     {
         public LoginWindow()
         {
-            InitializeComponent();
+            this.InitializeComponent();
 
             Globals.LoginWindow = this;
 

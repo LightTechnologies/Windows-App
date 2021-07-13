@@ -1,25 +1,27 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.IO;
-using System.IO.Compression;
-using System.Linq;
-using System.Text.Json;
-using System.Threading;
-using System.Threading.Tasks;
-using LightVPN.Client.Auth.Interfaces;
-using LightVPN.Client.Auth.Models;
-using LightVPN.Client.Debug;
-using LightVPN.Client.Windows.Common;
-using LightVPN.Client.Windows.Common.Models;
-using LightVPN.Client.Windows.Common.Utils;
-using LightVPN.Client.Windows.Services.Interfaces;
-using LightVPN.Client.Windows.Services.Models;
-
-namespace LightVPN.Client.Windows.Services
+﻿namespace LightVPN.Client.Windows.Services
 {
+    using System;
+    using System.Collections.Generic;
+    using System.ComponentModel;
+    using System.IO;
+    using System.IO.Compression;
+    using System.Linq;
+    using System.Text;
+    using System.Text.Json;
+    using System.Threading;
+    using System.Threading.Tasks;
+    using Auth.Interfaces;
+    using Auth.Models;
+    using Common;
+    using Common.Models;
+    using Common.Utils;
+    using Cryptography;
+    using Debug;
+    using Interfaces;
+    using Models;
+
     /// <inheritdoc />
-    public class CacheService : ICacheService
+    public sealed class CacheService : ICacheService
     {
         public async Task CacheOpenVpnBinariesAsync(bool force = false, CancellationToken cancellationToken = default)
         {
@@ -58,50 +60,65 @@ namespace LightVPN.Client.Windows.Services
         public async Task<BindingList<DisplayVpnServer>> GetCachedApiServerResponseAsync(
             CancellationToken cancellationToken = default)
         {
-            VerifyCacheIntegrity();
-
-            var fileLocation = Path.Combine(Globals.AppServerCachePath, "cache.json");
-
-            if (!File.Exists(fileLocation)) return null;
-
-            var serverCache =
-                JsonSerializer.Deserialize<ServerCache>(
-                    await File.ReadAllTextAsync(fileLocation, cancellationToken));
-
-            // Cache has expired, return null to get the ViewModel to re-cache
-            return DateTime.Now < serverCache.LastCache.AddHours(12) ? serverCache.Servers : null;
-        }
-
-        public async Task CacheApiServerResponseAsync(BindingList<DisplayVpnServer> servers, bool force = false,
-            CancellationToken cancellationToken = default)
-        {
-            VerifyCacheIntegrity();
-
-            var fileLocation = Path.Combine(Globals.AppServerCachePath, "cache.json");
-
-            if (File.Exists(fileLocation) && !force)
+            try
             {
-                DebugLogger.Write("lvpn-client-services-cacheman",
-                    "checking last server cache time");
+                CacheService.VerifyCacheIntegrity();
+
+                var fileLocation = Path.Combine(Globals.AppServerCachePath, "cache.json");
+
+                if (!File.Exists(fileLocation)) return null;
 
                 var serverCache =
                     JsonSerializer.Deserialize<ServerCache>(
                         await File.ReadAllTextAsync(fileLocation, cancellationToken));
 
-                if (DateTime.Now < serverCache.LastCache.AddHours(12)) return;
+                // Cache has expired, return null to get the ViewModel to re-cache
+                return DateTime.Now < serverCache?.LastCache.AddHours(12) ? serverCache.Servers : null;
             }
-
-            DebugLogger.Write("lvpn-client-services-cacheman",
-                "caching new list of servers");
-
-            var o = new ServerCache
+            catch (Exception e)
             {
-                Servers = servers,
-                LastCache = DateTime.Now
-            };
+                DebugLogger.Write("lvpn-client-services-cacheman", $"api fetch from file cache exception: {e}");
+                return null;
+            }
+        }
 
-            var json = JsonSerializer.Serialize(o);
-            await File.WriteAllTextAsync(fileLocation, json, cancellationToken);
+        public async Task CacheApiServerResponseAsync(BindingList<DisplayVpnServer> servers, bool force = false,
+            CancellationToken cancellationToken = default)
+        {
+            try
+            {
+                CacheService.VerifyCacheIntegrity();
+
+                var fileLocation = Path.Combine(Globals.AppServerCachePath, "cache.json");
+
+                if (File.Exists(fileLocation) && !force)
+                {
+                    DebugLogger.Write("lvpn-client-services-cacheman",
+                        "checking last server cache time");
+
+                    var serverCache =
+                        JsonSerializer.Deserialize<ServerCache>(
+                            await File.ReadAllTextAsync(fileLocation, cancellationToken));
+
+                    if (DateTime.Now < serverCache?.LastCache.AddHours(12)) return;
+                }
+
+                DebugLogger.Write("lvpn-client-services-cacheman",
+                    "caching new list of servers");
+
+                var o = new ServerCache
+                {
+                    Servers = servers,
+                    LastCache = DateTime.Now,
+                };
+
+                var json = JsonSerializer.Serialize(o);
+                await File.WriteAllTextAsync(fileLocation, json, cancellationToken);
+            }
+            catch (Exception e)
+            {
+                DebugLogger.Write("lvpn-client-services-cacheman", $"api write cache exception: {e}");
+            }
         }
 
         public async Task CacheOpenVpnDriversAsync(bool force = false, CancellationToken cancellationToken = default)
@@ -134,7 +151,7 @@ namespace LightVPN.Client.Windows.Services
             {
                 var apiClient = Globals.Container.GetInstance<IApiClient>();
 
-                VerifyCacheIntegrity();
+                CacheService.VerifyCacheIntegrity();
 
                 if (Directory.Exists(Globals.AppOpenVpnCachePath)) Directory.Delete(Globals.AppOpenVpnCachePath, true);
 
@@ -167,10 +184,8 @@ namespace LightVPN.Client.Windows.Services
                     foreach (var line in tmpLines)
                     {
                         var array = line.Split(' ');
-                        if (array.First() == "data-ciphers")
-                        {
-                            newLines.Add($"data-ciphers-fallback {array.Last()}");
-                        }
+                        if (array.First() == "data-ciphers") newLines.Add($"data-ciphers-fallback {array.Last()}");
+
                         newLines.Add(line);
                     }
 

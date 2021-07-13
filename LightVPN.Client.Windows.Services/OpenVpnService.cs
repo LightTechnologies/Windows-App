@@ -1,19 +1,19 @@
-﻿using System;
-using System.IO;
-using System.Linq;
-using System.Security.Authentication;
-using System.Threading;
-using System.Threading.Tasks;
-using LightVPN.Client.Debug;
-using LightVPN.Client.OpenVPN.Exceptions;
-using LightVPN.Client.OpenVPN.Interfaces;
-using LightVPN.Client.Windows.Common;
-using LightVPN.Client.Windows.Configuration.Interfaces;
-using LightVPN.Client.Windows.Configuration.Models;
-using LightVPN.Client.Windows.Services.Interfaces;
-
-namespace LightVPN.Client.Windows.Services
+﻿namespace LightVPN.Client.Windows.Services
 {
+    using System;
+    using System.IO;
+    using System.Linq;
+    using System.Security.Authentication;
+    using System.Threading;
+    using System.Threading.Tasks;
+    using Common;
+    using Configuration.Interfaces;
+    using Configuration.Models;
+    using Debug;
+    using Interfaces;
+    using OpenVPN.Exceptions;
+    using OpenVPN.Interfaces;
+
     /// <inheritdoc />
     /// <summary>
     ///     Essentially a Windows only wrapper for the OpenVPN manager class
@@ -65,7 +65,7 @@ namespace LightVPN.Client.Windows.Services
             currentConfig.LastServer = new AppLastServer
             {
                 Location = location,
-                PritunlName = id
+                PritunlName = id,
             };
 
             await manager.WriteAsync(currentConfig, cancellationToken);

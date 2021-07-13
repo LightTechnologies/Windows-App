@@ -2,6 +2,9 @@
 
 namespace LightVPN.Client.Windows.Configuration.Models
 {
+    using System;
+    using System.Reflection;
+
     public sealed class AppConfiguration : INotifyPropertyChanged
     {
         public event PropertyChangedEventHandler PropertyChanged;
@@ -10,11 +13,11 @@ namespace LightVPN.Client.Windows.Configuration.Models
 
         public AppLastServer LastServer
         {
-            get => _lastServer;
+            get => this._lastServer;
             set
             {
-                _lastServer = value;
-                OnPropertyChanged(nameof(LastServer));
+                this._lastServer = value;
+                this.OnPropertyChanged(nameof(AppConfiguration.LastServer));
             }
         }
 
@@ -22,11 +25,11 @@ namespace LightVPN.Client.Windows.Configuration.Models
 
         public ThemeColor Theme
         {
-            get => _theme;
+            get => this._theme;
             set
             {
-                _theme = value;
-                OnPropertyChanged(nameof(Theme));
+                this._theme = value;
+                this.OnPropertyChanged(nameof(AppConfiguration.Theme));
             }
         }
 
@@ -34,11 +37,11 @@ namespace LightVPN.Client.Windows.Configuration.Models
 
         public bool IsAutoConnectEnabled
         {
-            get => _isAutoConnectEnabled;
+            get => this._isAutoConnectEnabled;
             set
             {
-                _isAutoConnectEnabled = value;
-                OnPropertyChanged(nameof(IsAutoConnectEnabled));
+                this._isAutoConnectEnabled = value;
+                this.OnPropertyChanged(nameof(AppConfiguration.IsAutoConnectEnabled));
             }
         }
 
@@ -46,11 +49,11 @@ namespace LightVPN.Client.Windows.Configuration.Models
 
         public bool IsDiscordRpcEnabled
         {
-            get => _isDiscordRpcEnabled;
+            get => this._isDiscordRpcEnabled;
             set
             {
-                _isDiscordRpcEnabled = value;
-                OnPropertyChanged(nameof(IsDiscordRpcEnabled));
+                this._isDiscordRpcEnabled = value;
+                this.OnPropertyChanged(nameof(AppConfiguration.IsDiscordRpcEnabled));
             }
         }
 
@@ -58,11 +61,11 @@ namespace LightVPN.Client.Windows.Configuration.Models
 
         public bool IsKillSwitchEnabled
         {
-            get => _isKillSwitchEnabled;
+            get => this._isKillSwitchEnabled;
             set
             {
-                _isKillSwitchEnabled = value;
-                OnPropertyChanged(nameof(IsKillSwitchEnabled));
+                this._isKillSwitchEnabled = value;
+                this.OnPropertyChanged(nameof(AppConfiguration.IsKillSwitchEnabled));
             }
         }
 
@@ -70,11 +73,11 @@ namespace LightVPN.Client.Windows.Configuration.Models
 
         public bool IsDarkModeEnabled
         {
-            get => _isDarkModeEnabled;
+            get => this._isDarkModeEnabled;
             set
             {
-                _isDarkModeEnabled = value;
-                OnPropertyChanged(nameof(IsDarkModeEnabled));
+                this._isDarkModeEnabled = value;
+                this.OnPropertyChanged(nameof(AppConfiguration.IsDarkModeEnabled));
             }
         }
 
@@ -82,19 +85,21 @@ namespace LightVPN.Client.Windows.Configuration.Models
 
         public AppSizeSaving SizeSaving
         {
-            get => _sizeSaving;
+            get => this._sizeSaving;
             set
             {
-                _sizeSaving = value;
-                OnPropertyChanged(nameof(SizeSaving));
+                this._sizeSaving = value;
+                this.OnPropertyChanged(nameof(AppConfiguration.SizeSaving));
             }
         }
 
         public bool IsFirstRun { get; set; } = true;
 
+        public Version ConfigVersion { get; set; } = Assembly.GetEntryAssembly()?.GetName().Version;
+
         private void OnPropertyChanged(string propertyName)
         {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+            this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
     }
 }

@@ -1,9 +1,9 @@
-﻿using System;
-using System.Globalization;
-using System.Windows.Data;
-
-namespace LightVPN.Client.Windows.Converters
+﻿namespace LightVPN.Client.Windows.Converters
 {
+    using System;
+    using System.Globalization;
+    using System.Windows.Data;
+
     [ValueConversion(typeof(bool), typeof(bool))]
     internal sealed class InverseBooleanConverter : IValueConverter
     {
@@ -22,7 +22,7 @@ namespace LightVPN.Client.Windows.Converters
             if (targetType != typeof(bool))
                 throw new InvalidOperationException("The target must be a boolean");
 
-            return (bool?)value == false;
+            return (bool?) value == false;
         }
 
         /// <inheritdoc />

@@ -1,21 +1,21 @@
-﻿using System;
-using System.Diagnostics;
-using System.IO;
-using System.Linq;
-using System.Security.Authentication;
-using System.Threading;
-using System.Threading.Tasks;
-using LightVPN.Client.Debug;
-using LightVPN.Client.OpenVPN.EventArgs;
-using LightVPN.Client.OpenVPN.Exceptions;
-using LightVPN.Client.OpenVPN.Interfaces;
-using LightVPN.Client.OpenVPN.Models;
-using LightVPN.Client.OpenVPN.Resources;
-using LightVPN.Client.OpenVPN.Utils;
-using ErrorEventArgs = LightVPN.Client.OpenVPN.EventArgs.ErrorEventArgs;
-
-namespace LightVPN.Client.OpenVPN
+﻿namespace LightVPN.Client.OpenVPN
 {
+    using System;
+    using System.Diagnostics;
+    using System.IO;
+    using System.Linq;
+    using System.Security.Authentication;
+    using System.Threading;
+    using System.Threading.Tasks;
+    using Debug;
+    using EventArgs;
+    using Exceptions;
+    using Interfaces;
+    using Models;
+    using Resources;
+    using Utils;
+    using ErrorEventArgs = EventArgs.ErrorEventArgs;
+
     /// <inheritdoc cref="System.IAsyncDisposable" />
     /// <summary>
     ///     Cross-platform class for managing the connection to a OpenVPN server.
@@ -66,30 +66,30 @@ namespace LightVPN.Client.OpenVPN
 
         public VpnManager(OpenVpnConfiguration configuration)
         {
-            TerminateExistingProcesses();
+            VpnManager.TerminateExistingProcesses();
 
-            _configuration = configuration;
-            _logDataManager = new LogDataManager(configuration.OpenVpnLogPath);
+            this._configuration = configuration;
+            this._logDataManager = new LogDataManager(configuration.OpenVpnLogPath);
 
-            _ovpnProcess = new Process
+            this._ovpnProcess = new Process
             {
                 StartInfo = new ProcessStartInfo
                 {
                     CreateNoWindow = true,
-                    FileName = Path.Combine(_configuration.OpenVpnPath, "openvpn.exe"),
+                    FileName = Path.Combine(this._configuration.OpenVpnPath, "openvpn.exe"),
                     WindowStyle = ProcessWindowStyle.Hidden,
-                    WorkingDirectory = Path.GetDirectoryName(_configuration.OpenVpnPath) ??
+                    WorkingDirectory = Path.GetDirectoryName(this._configuration.OpenVpnPath) ??
                                        throw new ArgumentNullException(nameof(configuration)),
                     RedirectStandardOutput = true,
                     RedirectStandardError = true,
-                    UseShellExecute = false
-                }
+                    UseShellExecute = false,
+                },
             };
 
-            _ovpnProcess.OutputDataReceived += OVpnProcessOnOutputDataReceived;
-            _ovpnProcess.ErrorDataReceived += OVpnProcessOnErrorDataReceived;
+            this._ovpnProcess.OutputDataReceived += this.OVpnProcessOnOutputDataReceived;
+            this._ovpnProcess.ErrorDataReceived += this.OVpnProcessOnErrorDataReceived;
 
-            if (OperatingSystem.IsWindows()) TapManager = new TapManager(configuration);
+            if (OperatingSystem.IsWindows()) this.TapManager = new TapManager(configuration);
         }
 
         /// <summary>
@@ -99,7 +99,7 @@ namespace LightVPN.Client.OpenVPN
         {
             try
             {
-                DebugLogger.Write("lvpn-client-ovpn", $"killing other inferior openvpn processes >:)");
+                DebugLogger.Write("lvpn-client-ovpn", "killing other inferior openvpn processes >:)");
                 Process.GetProcessesByName("openvpn").ToList().ForEach(x => x.Kill());
             }
             catch
@@ -116,25 +116,25 @@ namespace LightVPN.Client.OpenVPN
         /// <exception cref="InvalidOperationException">Thrown when a connection hasn't been established or is being established</exception>
         public async Task DisconnectAsync(bool gracefulExit = true, CancellationToken cancellationToken = default)
         {
-            _ovpnProcess.CancelErrorRead();
-            _ovpnProcess.CancelOutputRead();
+            this._ovpnProcess.CancelErrorRead();
+            this._ovpnProcess.CancelOutputRead();
 
             if (gracefulExit)
             {
-                if (!IsConnecting && !IsConnected)
+                if (!this.IsConnecting && !this.IsConnected)
                     throw new InvalidOperationException("Not connected or connecting to a VPN server");
 
-                await _managementSocketHandler.SendShutdownSignalAsync(cancellationToken);
+                await this._managementSocketHandler.SendShutdownSignalAsync(cancellationToken);
             }
             else
             {
-                TerminateExistingProcesses();
+                VpnManager.TerminateExistingProcesses();
             }
 
-            await _ovpnProcess.WaitForExitAsync(cancellationToken);
+            await this._ovpnProcess.WaitForExitAsync(cancellationToken);
 
-            IsConnected = false;
-            IsConnecting = false;
+            this.IsConnected = false;
+            this.IsConnecting = false;
         }
 
         /// <inheritdoc />
@@ -153,31 +153,32 @@ namespace LightVPN.Client.OpenVPN
         /// <exception cref="TimeoutException">Thrown when the connection to a VPN server times out</exception>
         public Task ConnectAsync(string configurationPath, CancellationToken cancellationToken = default)
         {
-            if (IsConnected || IsConnecting)
+            if (this.IsConnected || this.IsConnecting)
                 throw new InvalidOperationException("Already connected to a VPN server");
 
             if (!File.Exists(configurationPath))
                 throw new InvalidOperationException("The configuration file doesn't exist");
 
-            _managementSocketHandler = new ManagementSocketHandler(ManagementSocketHandler.GetAvailablePort(45555));
+            this._managementSocketHandler =
+                new ManagementSocketHandler(ManagementSocketHandler.GetAvailablePort(45555));
 
             // Set the process args
-            _ovpnProcess.StartInfo.Arguments =
-                $"--config {configurationPath} --register-dns --dev-node {_configuration.TapAdapterName} --management 127.0.0.1 {_managementSocketHandler.Port}";
+            this._ovpnProcess.StartInfo.Arguments =
+                $"--config {configurationPath} --register-dns --dev-node {this._configuration.TapAdapterName} --management 127.0.0.1 {this._managementSocketHandler.Port}";
 
-            ConfigurationPath = configurationPath;
+            this.ConfigurationPath = configurationPath;
 
-            _ovpnProcess.Start();
+            this._ovpnProcess.Start();
 
-            _ovpnProcess.BeginErrorReadLine();
-            _ovpnProcess.BeginOutputReadLine();
+            this._ovpnProcess.BeginErrorReadLine();
+            this._ovpnProcess.BeginOutputReadLine();
 
-            ChildProcessTracker.AddProcess(_ovpnProcess);
+            ChildProcessTracker.AddProcess(this._ovpnProcess);
 
-            _logDataManager.WriteLine(
+            this._logDataManager.WriteLine(
                 "---------------------------------------- BEGIN CONNECTING ----------------------------------------");
 
-            IsConnecting = true;
+            this.IsConnecting = true;
 
             return Task.CompletedTask;
         }
@@ -191,7 +192,7 @@ namespace LightVPN.Client.OpenVPN
         {
             if (string.IsNullOrWhiteSpace(e.Data)) return;
 
-            OnOutputReceived?.Invoke(this, new OutputReceivedEventArgs());
+            this.OnOutputReceived?.Invoke(this, new OutputReceivedEventArgs());
         }
 
         /// <summary>
@@ -207,50 +208,50 @@ namespace LightVPN.Client.OpenVPN
         {
             if (string.IsNullOrWhiteSpace(e.Data)) return;
 
-            _logDataManager.WriteLine(e.Data);
+            this._logDataManager.WriteLine(e.Data);
 
-            OnOutputReceived?.Invoke(this, new OutputReceivedEventArgs());
+            this.OnOutputReceived?.Invoke(this, new OutputReceivedEventArgs());
 
             switch (e.Data)
             {
                 case { } when e.Data.Contains(StringTable.OVPN_OUT_NO_ADAPTERS):
-                    await DisconnectAsync(false);
-                    OnErrorReceived?.Invoke(this,
+                    await this.DisconnectAsync(false);
+                    this.OnErrorReceived?.Invoke(this,
                         new ErrorEventArgs(new TapException(StringTable.OVPN_NO_ADAPTERS)));
                     break;
                 case { } when e.Data.Contains(StringTable.OVPN_OUT_UNEXPECTED_EXIT):
-                    await DisconnectAsync(false);
-                    OnErrorReceived?.Invoke(this,
+                    await this.DisconnectAsync(false);
+                    this.OnErrorReceived?.Invoke(this,
                         new ErrorEventArgs(new UnknownErrorException(StringTable.OVPN_UNEXPECTED_EXIT)));
                     break;
                 case { } when e.Data.Contains(StringTable.OVPN_OUT_AUTH_FAILED):
-                    await DisconnectAsync(false);
-                    OnErrorReceived?.Invoke(this,
+                    await this.DisconnectAsync(false);
+                    this.OnErrorReceived?.Invoke(this,
                         new ErrorEventArgs(new AuthenticationException(StringTable.OVPN_AUTH_FAILED)));
                     break;
                 case { } when e.Data.Contains(StringTable.OVPN_OUT_TLS_ERROR):
-                    await DisconnectAsync(false);
-                    OnErrorReceived?.Invoke(this,
+                    await this.DisconnectAsync(false);
+                    this.OnErrorReceived?.Invoke(this,
                         new ErrorEventArgs(new HandshakeFailedException(StringTable.OVPN_TLS_ERROR)));
                     break;
                 case { } when e.Data.Contains(StringTable.OVPN_OUT_CONFIG_ERROR):
-                    await DisconnectAsync(false);
-                    OnErrorReceived?.Invoke(this,
+                    await this.DisconnectAsync(false);
+                    this.OnErrorReceived?.Invoke(this,
                         new ErrorEventArgs(new FileLoadException(StringTable.OVPN_CONFIG_ERROR)));
                     break;
                 case { } when e.Data.Contains(StringTable.OVPN_OUT_UNKNOWN_ERROR):
-                    await DisconnectAsync(false);
-                    OnErrorReceived?.Invoke(this,
+                    await this.DisconnectAsync(false);
+                    this.OnErrorReceived?.Invoke(this,
                         new ErrorEventArgs(new UnknownErrorException(StringTable.OVPN_UNKNOWN_ERROR)));
                     break;
                 case { } when e.Data.Contains(StringTable.OVPN_OUT_SERVER_TIMEOUT):
-                    await DisconnectAsync(false);
-                    OnErrorReceived?.Invoke(this,
+                    await this.DisconnectAsync(false);
+                    this.OnErrorReceived?.Invoke(this,
                         new ErrorEventArgs(new TimeoutException(StringTable.OVPN_SERVER_TIMEOUT)));
                     break;
                 case { } when e.Data.Contains(StringTable.OVPN_OUT_INIT_COMPLETE):
-                    IsConnected = true;
-                    OnConnected?.Invoke(this, new ConnectedEventArgs());
+                    this.IsConnected = true;
+                    this.OnConnected?.Invoke(this, new ConnectedEventArgs());
                     break;
             }
         }
@@ -261,13 +262,13 @@ namespace LightVPN.Client.OpenVPN
         /// </summary>
         public async ValueTask DisposeAsync()
         {
-            DebugLogger.Write("lvpn-client-ovpn", $"async dispose has been called");
+            DebugLogger.Write("lvpn-client-ovpn", "async dispose has been called");
 
-            if (IsConnected || IsConnecting) await DisconnectAsync();
+            if (this.IsConnected || this.IsConnecting) await this.DisconnectAsync();
 
-            _ovpnProcess?.Dispose();
+            this._ovpnProcess?.Dispose();
 
-            IsDisposed = true;
+            this.IsDisposed = true;
         }
     }
 }

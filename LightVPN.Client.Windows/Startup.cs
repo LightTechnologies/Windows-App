@@ -1,30 +1,29 @@
-﻿using System;
-using System.Linq;
-using System.Reflection;
-using System.Windows;
-using LightVPN.Client.Auth;
-using LightVPN.Client.Auth.Interfaces;
-using LightVPN.Client.Auth.Models;
-using LightVPN.Client.Debug;
-using LightVPN.Client.Discord;
-using LightVPN.Client.Discord.Interfaces;
-using LightVPN.Client.Discord.Models;
-using LightVPN.Client.OpenVPN;
-using LightVPN.Client.OpenVPN.Interfaces;
-using LightVPN.Client.OpenVPN.Models;
-using LightVPN.Client.OpenVPN.Utils;
-using LightVPN.Client.Windows.Common;
-using LightVPN.Client.Windows.Common.Utils;
-using LightVPN.Client.Windows.Configuration;
-using LightVPN.Client.Windows.Configuration.Interfaces;
-using LightVPN.Client.Windows.Configuration.Models;
-using LightVPN.Client.Windows.Models;
-using LightVPN.Client.Windows.Services;
-using LightVPN.Client.Windows.Services.Interfaces;
-using LightVPN.Client.Windows.Utils;
-
-namespace LightVPN.Client.Windows
+﻿namespace LightVPN.Client.Windows
 {
+    using System;
+    using System.Linq;
+    using System.Reflection;
+    using System.Windows;
+    using Auth;
+    using Auth.Interfaces;
+    using Auth.Models;
+    using Common;
+    using Common.Utils;
+    using Configuration;
+    using Configuration.Interfaces;
+    using Configuration.Models;
+    using Debug;
+    using Discord;
+    using Discord.Interfaces;
+    using Discord.Models;
+    using Models;
+    using OpenVPN;
+    using OpenVPN.Interfaces;
+    using OpenVPN.Models;
+    using Services;
+    using Services.Interfaces;
+    using Utils;
+
     /// <inheritdoc />
     /// <summary>
     ///     Handles the injection of services
@@ -37,21 +36,22 @@ namespace LightVPN.Client.Windows
         [STAThread]
         internal static void Main(string[] args)
         {
-            DebugLogger.Write("lvpn-client-win-ep", $"app: {Assembly.GetEntryAssembly().GetName().Version}, host os: {HostVersion.GetOsVersion()}");
+            DebugLogger.Write("lvpn-client-win-ep",
+                $"app: {Assembly.GetEntryAssembly()?.GetName().Version}, host os: {HostVersion.GetOsVersion()}");
 
             DebugLogger.Write("lvpn-client-win-ep", $"args len: {args.Length}");
 
             if (args.Length != 0)
             {
-                DebugLogger.Write("lvpn-client-win-ep", $"parsing args");
+                DebugLogger.Write("lvpn-client-win-ep", "parsing args");
                 switch (args.FirstOrDefault())
                 {
                     case "--minimised":
                         Globals.IsStartingMinimised = true;
-                        DebugLogger.Write("lvpn-client-win-ep", $"min arg, 1");
+                        DebugLogger.Write("lvpn-client-win-ep", "min arg, 1");
                         break;
                     default:
-                        DebugLogger.Write("lvpn-client-win-ep", $"unrecognised args, ignoring...");
+                        DebugLogger.Write("lvpn-client-win-ep", "unrecognised args, ignoring...");
                         break;
                 }
             }
@@ -61,17 +61,17 @@ namespace LightVPN.Client.Windows
                 OpenVpnLogPath = Globals.OpenVpnLogPath,
                 OpenVpnPath = Globals.OpenVpnPath,
                 TapAdapterName = "LightVPN-TAP",
-                TapCtlPath = Globals.TapCtlPath
+                TapCtlPath = Globals.TapCtlPath,
             };
 
             Globals.Container.RegisterSingleton<IApiClient, ApiClient>();
             Globals.Container.RegisterSingleton<ICacheService, CacheService>();
             Globals.Container.RegisterInstance<IVpnManager>(new VpnManager(ovpnConf));
-            Globals.Container.RegisterInstance<IDiscordRp>(new DiscordRp(new DiscordRpConfiguration()
+            Globals.Container.RegisterInstance<IDiscordRp>(new DiscordRp(new DiscordRpConfiguration
             {
                 ClientId = 856714133629829130,
                 LargeImageKey = "lvpn",
-                LargeImageText = $"v{Assembly.GetEntryAssembly()?.GetName().Version} ({HostVersion.GetOsVersion()})"
+                LargeImageText = $"v{Assembly.GetEntryAssembly()?.GetName().Version} ({HostVersion.GetOsVersion()})",
             }));
             Globals.Container.RegisterInstance<IConfigurationManager<AppConfiguration>>(
                 new ConfigurationManager<AppConfiguration>(Globals.AppSettingsPath));
@@ -85,7 +85,7 @@ namespace LightVPN.Client.Windows
             var app = new Startup
             {
                 Resources = res,
-                StartupUri = new Uri("Windows/LoginWindow.xaml", UriKind.RelativeOrAbsolute)
+                StartupUri = new Uri("Windows/LoginWindow.xaml", UriKind.RelativeOrAbsolute),
             };
 
             // Adds all the required resource dictionaries
@@ -127,14 +127,14 @@ namespace LightVPN.Client.Windows
                 new("pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesignTheme.PopupBox.xaml"
                     , UriKind.RelativeOrAbsolute);
 
-            res.MergedDictionaries.Add(new ResourceDictionary { Source = mdUri });
-            res.MergedDictionaries.Add(new ResourceDictionary { Source = mdUri1 });
-            res.MergedDictionaries.Add(new ResourceDictionary { Source = colorsUri });
-            res.MergedDictionaries.Add(new ResourceDictionary { Source = fontsUri });
-            res.MergedDictionaries.Add(new ResourceDictionary { Source = typographyUri });
-            res.MergedDictionaries.Add(new ResourceDictionary { Source = buttonsUri });
-            res.MergedDictionaries.Add(new ResourceDictionary { Source = windowsUri });
-            res.MergedDictionaries.Add(new ResourceDictionary { Source = trayUri });
+            res.MergedDictionaries.Add(new ResourceDictionary {Source = mdUri,});
+            res.MergedDictionaries.Add(new ResourceDictionary {Source = mdUri1,});
+            res.MergedDictionaries.Add(new ResourceDictionary {Source = colorsUri,});
+            res.MergedDictionaries.Add(new ResourceDictionary {Source = fontsUri,});
+            res.MergedDictionaries.Add(new ResourceDictionary {Source = typographyUri,});
+            res.MergedDictionaries.Add(new ResourceDictionary {Source = buttonsUri,});
+            res.MergedDictionaries.Add(new ResourceDictionary {Source = windowsUri,});
+            res.MergedDictionaries.Add(new ResourceDictionary {Source = trayUri,});
 
             DebugLogger.Write("lvpn-client-win-ep", "attempting to authenticate...");
 
@@ -150,7 +150,7 @@ namespace LightVPN.Client.Windows
                 Globals.Container.GetInstance<IApiClient>().GetAsync<GenericResponse>("profile").GetAwaiter()
                     .GetResult();
 
-                if (settings is { IsDiscordRpcEnabled: true }) Globals.Container.GetInstance<IDiscordRp>().Initialize();
+                if (settings is {IsDiscordRpcEnabled: true,}) Globals.Container.GetInstance<IDiscordRp>().Initialize();
 
                 DebugLogger.Write("lvpn-client-win-ep", "auth success");
                 app.StartupUri = new Uri("Windows/MainWindow.xaml", UriKind.RelativeOrAbsolute);

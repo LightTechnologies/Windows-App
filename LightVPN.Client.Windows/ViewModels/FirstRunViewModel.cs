@@ -1,13 +1,13 @@
-﻿using System.Windows;
-using System.Windows.Input;
-using LightVPN.Client.Windows.Common;
-using LightVPN.Client.Windows.Configuration.Interfaces;
-using LightVPN.Client.Windows.Configuration.Models;
-using LightVPN.Client.Windows.Utils;
-using LightVPN.Client.Windows.Views;
-
-namespace LightVPN.Client.Windows.ViewModels
+﻿namespace LightVPN.Client.Windows.ViewModels
 {
+    using System.Windows;
+    using System.Windows.Input;
+    using Common;
+    using Configuration.Interfaces;
+    using Configuration.Models;
+    using Utils;
+    using Views;
+
     internal sealed class FirstRunViewModel : BaseViewModel
     {
         public ICommand ForwardCommand
@@ -28,7 +28,7 @@ namespace LightVPN.Client.Windows.ViewModels
 
                         var mainWindow = (MainWindow) Application.Current.MainWindow;
                         mainWindow?.LoadView(new MainView());
-                    }
+                    },
                 };
             }
         }

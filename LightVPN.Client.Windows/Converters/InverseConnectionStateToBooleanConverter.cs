@@ -1,10 +1,10 @@
-﻿using System;
-using System.Globalization;
-using System.Windows.Data;
-using LightVPN.Client.Windows.Models;
-
-namespace LightVPN.Client.Windows.Converters
+﻿namespace LightVPN.Client.Windows.Converters
 {
+    using System;
+    using System.Globalization;
+    using System.Windows.Data;
+    using Models;
+
     [ValueConversion(typeof(ConnectionState), typeof(bool))]
     internal sealed class InverseConnectionStateToBooleanConverter : IValueConverter
     {
@@ -26,7 +26,7 @@ namespace LightVPN.Client.Windows.Converters
             {
                 ConnectionState.Connecting => true,
                 ConnectionState.Disconnecting => true,
-                _ => false
+                _ => false,
             };
         }
 

@@ -1,15 +1,15 @@
-﻿using System;
-
-namespace LightVPN.Client.OpenVPN.EventArgs
+﻿namespace LightVPN.Client.OpenVPN.EventArgs
 {
+    using System;
+
     /// <inheritdoc />
-    public class ErrorEventArgs : System.EventArgs
+    public sealed class ErrorEventArgs : EventArgs
     {
-        public ErrorEventArgs(Exception exception)
+        internal ErrorEventArgs(Exception exception)
         {
-            Exception = exception;
+            this.Exception = exception;
         }
 
-        public Exception Exception { get; init; }
+        public Exception Exception { get; }
     }
 }

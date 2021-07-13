@@ -1,12 +1,12 @@
-﻿using System;
-using System.ComponentModel;
-using System.Diagnostics;
-using System.IO;
-using System.Linq;
-using System.Reflection;
-
-namespace LightVPN.Client.Windows.StartupHelper
+﻿namespace LightVPN.Client.Windows.StartupHelper
 {
+    using System;
+    using System.ComponentModel;
+    using System.Diagnostics;
+    using System.IO;
+    using System.Linq;
+    using System.Reflection;
+
     internal static class Program
     {
         private static int Main(string[] args)
@@ -28,16 +28,17 @@ namespace LightVPN.Client.Windows.StartupHelper
 
                 Console.WriteLine("[*] found binary\n[*] constructing process...");
 
-                var process = new Process()
+                var process = new Process
                 {
-                    StartInfo = new ProcessStartInfo()
+                    StartInfo = new ProcessStartInfo
                     {
                         FileName = args.First(),
-                        WorkingDirectory = Path.GetDirectoryName(args.First()),
+                        WorkingDirectory = Path.GetDirectoryName(args.First()) ??
+                                           throw new ArgumentNullException(nameof(args)),
                         Verb = "runas",
                         Arguments = "--minimised",
-                        UseShellExecute = true
-                    }
+                        UseShellExecute = true,
+                    },
                 };
 
                 Console.WriteLine("[*] executing binary...");
@@ -59,7 +60,7 @@ namespace LightVPN.Client.Windows.StartupHelper
             {
                 Console.ForegroundColor = ConsoleColor.DarkRed;
                 Console.WriteLine(
-                    $"[!] a win32 exception has been thrown, this could be due to pressing 'No' on the user account control dialog. as a result lightvpn will not start this time.");
+                    "[!] a win32 exception has been thrown, this could be due to pressing 'No' on the user account control dialog. as a result lightvpn will not start this time.");
                 return 2;
             }
             catch (Exception e)
@@ -73,7 +74,6 @@ namespace LightVPN.Client.Windows.StartupHelper
             {
                 Console.ResetColor();
             }
-
         }
     }
 }

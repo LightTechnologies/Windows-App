@@ -1,14 +1,11 @@
-﻿using System;
-using System.Diagnostics;
-using System.IO;
-using System.Reflection;
-using System.Runtime.Versioning;
-using System.Windows;
-using LightVPN.Client.Debug;
-using Microsoft.Win32;
-
-namespace LightVPN.Client.Windows.Common.Utils
+﻿namespace LightVPN.Client.Windows.Common.Utils
 {
+    using System;
+    using System.IO;
+    using System.Runtime.Versioning;
+    using Debug;
+    using Microsoft.Win32;
+
     /// <summary>
     ///     Class that handles Windows registry related stuff, this is unused at the moment due to Windows startup based
     ///     restrictions
@@ -22,7 +19,7 @@ namespace LightVPN.Client.Windows.Common.Utils
         public static void DisableRunOnStartup()
         {
             var regKey = Registry.CurrentUser.OpenSubKey(@"SOFTWARE\Microsoft\Windows\CurrentVersion\Run", true);
-            if (IsRunningOnStartup()) regKey?.DeleteValue("LightVPN", true);
+            if (StartupHelper.IsRunningOnStartup()) regKey?.DeleteValue("LightVPN", true);
         }
 
         /// <summary>
@@ -31,8 +28,9 @@ namespace LightVPN.Client.Windows.Common.Utils
         public static void EnableRunOnStartup(string executablePath)
         {
             var regKey = Registry.CurrentUser.OpenSubKey(@"SOFTWARE\Microsoft\Windows\CurrentVersion\Run", true);
-            if (!IsRunningOnStartup())
-                regKey?.SetValue("LightVPN", Path.Combine(AppDomain.CurrentDomain.BaseDirectory, $"startupHelper.exe {executablePath}"),
+            if (!StartupHelper.IsRunningOnStartup())
+                regKey?.SetValue("LightVPN",
+                    Path.Combine(AppDomain.CurrentDomain.BaseDirectory, $"startupHelper.exe {executablePath}"),
                     RegistryValueKind.String);
         }
 

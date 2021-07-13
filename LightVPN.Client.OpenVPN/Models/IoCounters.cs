@@ -1,8 +1,7 @@
-﻿using System;
-using System.Runtime.InteropServices;
-
-namespace LightVPN.Client.OpenVPN.Models
+﻿namespace LightVPN.Client.OpenVPN.Models
 {
+    using System.Runtime.InteropServices;
+
     [StructLayout(LayoutKind.Sequential)]
     internal readonly struct IoCounters
     {

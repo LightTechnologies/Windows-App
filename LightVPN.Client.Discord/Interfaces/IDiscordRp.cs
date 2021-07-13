@@ -31,7 +31,7 @@ namespace LightVPN.Client.Discord.Interfaces
         /// <summary>
         ///     Deinitializes the DiscordRpc client
         /// </summary>
-        void Deinitialize();
+        void Deinitialise();
 
         /// <summary>
         ///     Initializes the DiscordRpc client and sets the presence

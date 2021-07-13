@@ -1,12 +1,12 @@
-﻿using System;
-using System.IO;
-using System.Security.Authentication;
-using System.Threading;
-using System.Threading.Tasks;
-using LightVPN.Client.OpenVPN.Exceptions;
-
-namespace LightVPN.Client.Windows.Services.Interfaces
+﻿namespace LightVPN.Client.Windows.Services.Interfaces
 {
+    using System;
+    using System.IO;
+    using System.Security.Authentication;
+    using System.Threading;
+    using System.Threading.Tasks;
+    using OpenVPN.Exceptions;
+
     /// <summary>
     ///     Interface for the OpenVpnService
     /// </summary>

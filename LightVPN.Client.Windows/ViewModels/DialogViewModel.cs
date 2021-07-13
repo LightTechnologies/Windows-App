@@ -1,15 +1,14 @@
-﻿using System.Drawing;
-using MaterialDesignThemes.Wpf;
-
-namespace LightVPN.Client.Windows.ViewModels
+﻿namespace LightVPN.Client.Windows.ViewModels
 {
-    internal class DialogViewModel : BaseViewModel
+    using MaterialDesignThemes.Wpf;
+
+    internal sealed class DialogViewModel : BaseViewModel
     {
         public DialogViewModel(PackIconKind icon, string title, string message)
         {
-            Message = message;
-            Title = title;
-            IconKind = icon;
+            this.Message = message;
+            this.Title = title;
+            this.IconKind = icon;
         }
 
         public string Message { get; }
@@ -17,6 +16,5 @@ namespace LightVPN.Client.Windows.ViewModels
         public string Title { get; }
 
         public PackIconKind IconKind { get; }
-
     }
 }

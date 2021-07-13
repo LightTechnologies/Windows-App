@@ -1,11 +1,11 @@
-﻿using System;
-using System.Threading;
-using System.Threading.Tasks;
-using LightVPN.Client.OpenVPN.EventArgs;
-using LightVPN.Client.OpenVPN.Utils;
-
-namespace LightVPN.Client.OpenVPN.Interfaces
+﻿namespace LightVPN.Client.OpenVPN.Interfaces
 {
+    using System;
+    using System.Threading;
+    using System.Threading.Tasks;
+    using EventArgs;
+    using Utils;
+
     public interface IVpnManager
     {
         delegate void OutputReceived(object sender, OutputReceivedEventArgs e);

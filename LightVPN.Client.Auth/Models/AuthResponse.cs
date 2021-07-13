@@ -1,7 +1,7 @@
-﻿using System.Text.Json.Serialization;
-
-namespace LightVPN.Client.Auth.Models
+﻿namespace LightVPN.Client.Auth.Models
 {
+    using System.Text.Json.Serialization;
+
     /// <summary>
     ///     Response from the API after a successful authentication attempt (this is also written to the auth file)
     /// </summary>

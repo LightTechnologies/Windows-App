@@ -1,8 +1,8 @@
 ﻿#nullable enable
-using System;
-
 namespace LightVPN.Client.OpenVPN.Exceptions
 {
+    using System;
+
     /// <inheritdoc />
     /// <summary>
     ///     Thrown when OpenVPN returns a 'Unknown error' output

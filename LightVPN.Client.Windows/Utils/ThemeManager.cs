@@ -1,13 +1,13 @@
-﻿using System;
-using System.Windows;
-using System.Windows.Media;
-using LightVPN.Client.Debug;
-using LightVPN.Client.Windows.Configuration.Models;
-using LightVPN.Client.Windows.Models;
-using MaterialDesignThemes.Wpf;
-
-namespace LightVPN.Client.Windows.Utils
+﻿namespace LightVPN.Client.Windows.Utils
 {
+    using System;
+    using System.Windows;
+    using System.Windows.Media;
+    using Configuration.Models;
+    using Debug;
+    using MaterialDesignThemes.Wpf;
+    using Models;
+
     /// <summary>
     ///     Responsible for managing the colors, themes, etc. (dark or light mode, UI colors)
     /// </summary>
@@ -29,7 +29,7 @@ namespace LightVPN.Client.Windows.Utils
                 {
                     BackgroundMode.Dark => Theme.Dark,
                     BackgroundMode.Light => Theme.Light,
-                    _ => throw new ArgumentOutOfRangeException(nameof(backgroundMode), backgroundMode, null)
+                    _ => throw new ArgumentOutOfRangeException(nameof(backgroundMode), backgroundMode, null),
                 };
 
                 ITheme theme = primaryColor switch
@@ -44,8 +44,8 @@ namespace LightVPN.Client.Windows.Utils
                         customColorBrush,
                         customColorBrush),
                     _ => Theme.Create(baseTheme,
-                        (Color)ColorConverter.ConvertFromString(primaryColor.ToString()),
-                        (Color)ColorConverter.ConvertFromString(primaryColor.ToString()))
+                        (Color) ColorConverter.ConvertFromString(primaryColor.ToString()),
+                        (Color) ColorConverter.ConvertFromString(primaryColor.ToString())),
                 };
 
                 Application.Current.Resources.SetTheme(theme);

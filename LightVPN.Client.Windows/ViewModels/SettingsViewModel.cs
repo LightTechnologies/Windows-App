@@ -1,57 +1,48 @@
-﻿using System;
-using System.Diagnostics;
-using System.Reflection;
-using System.Windows;
-using System.Windows.Input;
-using LightVPN.Client.Auth.Exceptions;
-using LightVPN.Client.Discord.Interfaces;
-using LightVPN.Client.OpenVPN.EventArgs;
-using LightVPN.Client.OpenVPN.Interfaces;
-using LightVPN.Client.OpenVPN.Utils;
-using LightVPN.Client.Windows.Common;
-using LightVPN.Client.Windows.Common.Utils;
-using LightVPN.Client.Windows.Configuration.Interfaces;
-using LightVPN.Client.Windows.Configuration.Models;
-using LightVPN.Client.Windows.Models;
-using LightVPN.Client.Windows.Services.Interfaces;
-using LightVPN.Client.Windows.Utils;
-using LightVPN.Client.Windows.Views;
-using MaterialDesignThemes.Wpf;
-
-namespace LightVPN.Client.Windows.ViewModels
+﻿namespace LightVPN.Client.Windows.ViewModels
 {
+    using System;
+    using System.Diagnostics;
+    using System.Reflection;
+    using System.Windows;
+    using System.Windows.Input;
+    using Auth.Exceptions;
+    using Common;
+    using Common.Utils;
+    using Configuration.Interfaces;
+    using Configuration.Models;
+    using Debug;
+    using Discord.Interfaces;
+    using MaterialDesignThemes.Wpf;
+    using Models;
+    using OpenVPN.Interfaces;
+    using Services.Interfaces;
+    using Utils;
+    using Views;
+
     internal sealed class SettingsViewModel : BaseViewModel
     {
         public SettingsViewModel()
         {
             Globals.Container.GetInstance<IVpnManager>().TapManager.OnErrorReceived += async (_, args) =>
-            {
-                await Application.Current.Dispatcher.InvokeAsync(async () =>
-                {
-                    await DialogManager.ShowDialogAsync(PackIconKind.ErrorOutline, "Something went wrong...",
-                        args.Exception.Message);
-                });
-            };
+                await Application.Current.Dispatcher.InvokeAsync(async () => await DialogManager.ShowDialogAsync(
+                    PackIconKind.ErrorOutline, "Something went wrong...",
+                    args.Exception.Message));
 
-            Globals.Container.GetInstance<IVpnManager>().TapManager.OnSuccess += async (_) =>
-            {
-                await Application.Current.Dispatcher.InvokeAsync(async () =>
-                {
-                    await DialogManager.ShowDialogAsync(PackIconKind.CheckCircleOutline, "Success!",
-                        "The VPN adapter has been reinstalled.");
-                });
-            };
+            Globals.Container.GetInstance<IVpnManager>().TapManager.OnSuccess += async _ =>
+                await Application.Current.Dispatcher.InvokeAsync(async () => await DialogManager.ShowDialogAsync(
+                    PackIconKind.CheckCircleOutline, "Success!",
+                    "The VPN adapter has been reinstalled."));
         }
 
         private AppConfiguration _appConfiguration;
 
         public AppConfiguration AppConfiguration
         {
-            get => _appConfiguration;
+            get => this._appConfiguration;
             set
             {
-                _appConfiguration = value;
-                OnPropertyChanged(nameof(AppConfiguration));
+                this._appConfiguration = value;
+                this.OnPropertyChanged(nameof(SettingsViewModel.AppConfiguration));
             }
         }
 
@@ -59,11 +50,23 @@ namespace LightVPN.Client.Windows.ViewModels
 
         public bool IsLogProcessOpen
         {
-            get => _isLogProcessOpen;
+            get => this._isLogProcessOpen;
             set
             {
-                _isLogProcessOpen = value;
-                OnPropertyChanged(nameof(IsLogProcessOpen));
+                this._isLogProcessOpen = value;
+                this.OnPropertyChanged(nameof(SettingsViewModel.IsLogProcessOpen));
+            }
+        }
+
+        private bool _isAppLogProcessOpen;
+
+        public bool IsAppLogProcessOpen
+        {
+            get => this._isAppLogProcessOpen;
+            set
+            {
+                this._isAppLogProcessOpen = value;
+                this.OnPropertyChanged(nameof(SettingsViewModel.IsAppLogProcessOpen));
             }
         }
 
@@ -71,11 +74,11 @@ namespace LightVPN.Client.Windows.ViewModels
 
         public bool IsReinstallingAdapter
         {
-            get => _isReinstallingAdapter;
+            get => this._isReinstallingAdapter;
             set
             {
-                _isReinstallingAdapter = value;
-                OnPropertyChanged(nameof(IsReinstallingAdapter));
+                this._isReinstallingAdapter = value;
+                this.OnPropertyChanged(nameof(SettingsViewModel.IsReinstallingAdapter));
             }
         }
 
@@ -83,11 +86,11 @@ namespace LightVPN.Client.Windows.ViewModels
 
         public bool IsRunningOnStartup
         {
-            get => _isRunningOnStartup;
+            get => this._isRunningOnStartup;
             set
             {
-                _isRunningOnStartup = value;
-                OnPropertyChanged(nameof(IsRunningOnStartup));
+                this._isRunningOnStartup = value;
+                this.OnPropertyChanged(nameof(SettingsViewModel.IsRunningOnStartup));
             }
         }
 
@@ -95,16 +98,16 @@ namespace LightVPN.Client.Windows.ViewModels
 
         public bool IsRefreshingCache
         {
-            get => _isRefreshingCache;
+            get => this._isRefreshingCache;
             set
             {
-                _isRefreshingCache = value;
-                OnPropertyChanged(nameof(IsRefreshingCache));
+                this._isRefreshingCache = value;
+                this.OnPropertyChanged(nameof(SettingsViewModel.IsRefreshingCache));
             }
         }
 
         public string VersionString { get; set; } =
-            $"{"preview 2"/*(Globals.IsBeta ? "beta" : "stable")*/} {Assembly.GetEntryAssembly()?.GetName().Version} {HostVersion.GetOsVersion()}";
+            $"{"preview 3" /*(Globals.IsBeta ? "beta" : "stable")*/} {Assembly.GetEntryAssembly()?.GetName().Version} {HostVersion.GetOsVersion()}";
 
         public ICommand HandleConfigChanges
         {
@@ -115,22 +118,22 @@ namespace LightVPN.Client.Windows.ViewModels
                     CommandAction = _ =>
                     {
                         var manager = Globals.Container.GetInstance<IConfigurationManager<AppConfiguration>>();
-                        manager.Write(AppConfiguration);
+                        manager.Write(this.AppConfiguration);
 
                         var discordClient = Globals.Container.GetInstance<IDiscordRp>();
-                        if (AppConfiguration.IsDiscordRpcEnabled)
+                        if (this.AppConfiguration.IsDiscordRpcEnabled)
                             discordClient.Initialize();
                         else
-                            discordClient.Deinitialize();
+                            discordClient.Deinitialise();
 
-                        if (IsRunningOnStartup)
-                            StartupHelper.EnableRunOnStartup(Process.GetCurrentProcess().MainModule.FileName);
+                        if (this.IsRunningOnStartup)
+                            StartupHelper.EnableRunOnStartup(Process.GetCurrentProcess().MainModule?.FileName);
                         else
                             StartupHelper.DisableRunOnStartup();
 
                         ThemeManager.SwitchTheme(ThemeColor.Default,
-                            AppConfiguration.IsDarkModeEnabled ? BackgroundMode.Dark : BackgroundMode.Light);
-                    }
+                            this.AppConfiguration.IsDarkModeEnabled ? BackgroundMode.Dark : BackgroundMode.Light);
+                    },
                 };
             }
         }
@@ -144,15 +147,15 @@ namespace LightVPN.Client.Windows.ViewModels
                     CommandAction = _ =>
                     {
                         var manager = Globals.Container.GetInstance<IConfigurationManager<AppConfiguration>>();
-                        AppConfiguration = manager.Read();
+                        this.AppConfiguration = manager.Read();
 
-                        if (AppConfiguration is not null) return;
+                        if (this.AppConfiguration is not null) return;
 
-                        IsRunningOnStartup = StartupHelper.IsRunningOnStartup();
+                        this.IsRunningOnStartup = StartupHelper.IsRunningOnStartup();
 
-                        AppConfiguration = new AppConfiguration();
-                        manager.Write(AppConfiguration);
-                    }
+                        this.AppConfiguration = new AppConfiguration();
+                        manager.Write(this.AppConfiguration);
+                    },
                 };
             }
         }
@@ -167,7 +170,7 @@ namespace LightVPN.Client.Windows.ViewModels
                     {
                         try
                         {
-                            IsRefreshingCache = true;
+                            this.IsRefreshingCache = true;
 
                             await Globals.Container.GetInstance<ICacheService>().CacheServersAsync(true);
 
@@ -181,9 +184,9 @@ namespace LightVPN.Client.Windows.ViewModels
                         }
                         finally
                         {
-                            IsRefreshingCache = false;
+                            this.IsRefreshingCache = false;
                         }
-                    }
+                    },
                 };
             }
         }
@@ -196,11 +199,11 @@ namespace LightVPN.Client.Windows.ViewModels
                 {
                     CommandAction = _ =>
                     {
-                        IsPlayingAnimation = true;
+                        this.IsPlayingAnimation = true;
                         var mainWindow = (MainWindow) Application.Current.MainWindow;
                         mainWindow?.LoadView(new MainView());
                     },
-                    CanExecuteFunc = () => !IsPlayingAnimation
+                    CanExecuteFunc = () => !this.IsPlayingAnimation,
                 };
             }
         }
@@ -219,18 +222,50 @@ namespace LightVPN.Client.Windows.ViewModels
                             {
                                 FileName = "notepad.exe",
                                 UseShellExecute = true,
-                                Arguments = Globals.OpenVpnLogPath
-                            }
+                                Arguments = Globals.OpenVpnLogPath,
+                            },
                         };
 
                         notepadProcess.Start();
-                        IsLogProcessOpen = true;
+                        this.IsLogProcessOpen = true;
 
                         await notepadProcess.WaitForExitAsync();
 
-                        IsLogProcessOpen = false;
+                        this.IsLogProcessOpen = false;
                         notepadProcess.Dispose();
-                    }
+                    },
+                    CanExecuteFunc = () => !this.IsLogProcessOpen,
+                };
+            }
+        }
+
+        public ICommand AppLogsCommand
+        {
+            get
+            {
+                return new UICommand
+                {
+                    CommandAction = async _ =>
+                    {
+                        var notepadProcess = new Process
+                        {
+                            StartInfo = new ProcessStartInfo
+                            {
+                                FileName = "notepad.exe",
+                                UseShellExecute = true,
+                                Arguments = DebugLogger.DebugLogLocation,
+                            },
+                        };
+
+                        notepadProcess.Start();
+                        this.IsAppLogProcessOpen = true;
+
+                        await notepadProcess.WaitForExitAsync();
+
+                        this.IsAppLogProcessOpen = false;
+                        notepadProcess.Dispose();
+                    },
+                    CanExecuteFunc = () => !this.IsAppLogProcessOpen,
                 };
             }
         }
@@ -245,7 +280,7 @@ namespace LightVPN.Client.Windows.ViewModels
                     {
                         try
                         {
-                            IsReinstallingAdapter = true;
+                            this.IsReinstallingAdapter = true;
 
                             var vpnManager = Globals.Container.GetInstance<IVpnManager>();
                             if (await vpnManager.TapManager.IsAdapterExistentAsync())
@@ -260,9 +295,9 @@ namespace LightVPN.Client.Windows.ViewModels
                         }
                         finally
                         {
-                            IsReinstallingAdapter = false;
+                            this.IsReinstallingAdapter = false;
                         }
-                    }
+                    },
                 };
             }
         }

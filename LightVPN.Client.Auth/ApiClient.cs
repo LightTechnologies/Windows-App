@@ -30,25 +30,26 @@ namespace LightVPN.Client.Auth
 
         public ApiClient()
         {
-            DebugLogger.Write("lvpn-client-auth-apiclient", $"ctor called");
+            DebugLogger.Write("lvpn-client-auth-apiclient", "ctor called");
 
-            DefaultRequestHeaders.UserAgent.Add(new ProductInfoHeaderValue("LightVPN", "3.0"));
-            DefaultRequestHeaders.TryAddWithoutValidation("X-Client-Version",
+            this.DefaultRequestHeaders.UserAgent.Add(new ProductInfoHeaderValue("LightVPN", "3.0"));
+            this.DefaultRequestHeaders.TryAddWithoutValidation("X-Client-Version",
                 $"{Environment.OSVersion.Platform.ConvertPlatformToString()} {Assembly.GetEntryAssembly()?.GetName().Version}");
-            DefaultRequestVersion = new Version("2.0.0.0");
-            DefaultVersionPolicy = HttpVersionPolicy.RequestVersionOrHigher;
-            BaseAddress = new Uri("https://lightvpn.org/api/");
+            this.DefaultRequestVersion = new Version("2.0.0.0");
+            this.DefaultVersionPolicy = HttpVersionPolicy.RequestVersionOrHigher;
+            this.BaseAddress = new Uri("https://lightvpn.org/api/");
 
             try
             {
-                AuthData = AuthDataManager.Read();
+                this.AuthData = AuthDataManager.Read();
 
-                if (!string.IsNullOrWhiteSpace(AuthData.SessionId) && !string.IsNullOrWhiteSpace(AuthData.UserName))
-                    AssignSessionHeader(AuthData.UserName, AuthData.SessionId);
+                if (!string.IsNullOrWhiteSpace(this.AuthData.SessionId) &&
+                    !string.IsNullOrWhiteSpace(this.AuthData.UserName))
+                    this.AssignSessionHeader(this.AuthData.UserName, this.AuthData.SessionId);
             }
-            catch (JsonException)
+            catch (Exception)
             {
-                AuthData = new AuthResponse();
+                this.AuthData = new AuthResponse();
             }
         }
 
@@ -61,8 +62,8 @@ namespace LightVPN.Client.Auth
         /// <returns>If successful, the response deserialized to an object</returns>
         public async Task<T> GetAsync<T>(string url, CancellationToken cancellationToken = default)
         {
-            var resp = await GetAsync(url, cancellationToken);
-            return await CheckResponse<T>(resp, cancellationToken);
+            var resp = await this.GetAsync(url, cancellationToken);
+            return await this.CheckResponse<T>(resp, cancellationToken);
         }
 
         /// <summary>
@@ -75,10 +76,10 @@ namespace LightVPN.Client.Auth
         /// <returns>If successful, the response deserialized to an object</returns>
         public async Task<T> PostAsync<T>(string url, object body, CancellationToken cancellationToken = default)
         {
-            var resp = await PostAsync(url,
+            var resp = await this.PostAsync(url,
                 new StringContent(JsonSerializer.Serialize(body), Encoding.UTF8, "application/json"),
                 cancellationToken);
-            return await CheckResponse<T>(resp, cancellationToken);
+            return await this.CheckResponse<T>(resp, cancellationToken);
         }
 
         /// <summary>
@@ -88,10 +89,10 @@ namespace LightVPN.Client.Auth
         /// <param name="sessionId">ID pointing to an active session for the specified user</param>
         private void AssignSessionHeader(string userName, string sessionId)
         {
-            DebugLogger.Write("lvpn-client-auth-apiclient", $"assigned sess header");
+            DebugLogger.Write("lvpn-client-auth-apiclient", "assigned sess header");
 
-            DefaultRequestHeaders.Remove("Authorization");
-            DefaultRequestHeaders.TryAddWithoutValidation("Authorization", $"{userName} {sessionId}");
+            this.DefaultRequestHeaders.Remove("Authorization");
+            this.DefaultRequestHeaders.TryAddWithoutValidation("Authorization", $"{userName} {sessionId}");
         }
 
         /// <summary>
@@ -109,7 +110,6 @@ namespace LightVPN.Client.Auth
             var responseString = await responseMessage.Content.ReadAsStringAsync(cancellationToken);
 
             if (!responseMessage.IsSuccessStatusCode)
-            {
                 try
                 {
                     var genericResponse =
@@ -120,18 +120,14 @@ namespace LightVPN.Client.Auth
                     if (responseMessage.StatusCode == HttpStatusCode.UpgradeRequired)
                         throw new UpdateRequiredException("You need to update your client version!");
 
-                    if (!string.IsNullOrWhiteSpace(genericResponse.Message))
-                    {
-                        throw new InvalidResponseException(genericResponse.Message, responseString, responseMessage.StatusCode);
-                    }
+                    if (!string.IsNullOrWhiteSpace(genericResponse?.Message))
+                        throw new InvalidResponseException(genericResponse.Message, responseString,
+                            responseMessage.StatusCode);
                 }
                 catch (JsonException)
                 {
                     // ignored.
                 }
-
-
-            }
 
             switch (responseMessage.StatusCode)
             {
@@ -183,21 +179,21 @@ namespace LightVPN.Client.Auth
                 if (typeof(T) == typeof(byte[]))
                 {
                     object respByteArray = await responseMessage.Content.ReadAsByteArrayAsync(cancellationToken);
-                    return (T)respByteArray;
+                    return (T) respByteArray;
                 }
 
                 object respJson = await JsonSerializer.DeserializeAsync<T>(
                     await responseMessage.Content.ReadAsStreamAsync(cancellationToken),
                     cancellationToken: cancellationToken);
 
-                if (respJson is not AuthResponse authResponse) return (T)respJson;
+                if (respJson is not AuthResponse authResponse) return (T) respJson;
 
                 authResponse.UserName = Globals.UserName;
 
-                AssignSessionHeader(Globals.UserName, authResponse.SessionId);
+                this.AssignSessionHeader(Globals.UserName, authResponse.SessionId);
                 AuthDataManager.Write(authResponse);
 
-                return (T)respJson;
+                return (T) respJson;
             }
             catch (JsonException)
             {

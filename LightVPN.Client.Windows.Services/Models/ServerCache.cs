@@ -1,10 +1,10 @@
-﻿using System;
-using System.ComponentModel;
-using LightVPN.Client.Windows.Common.Models;
-
-namespace LightVPN.Client.Windows.Services.Models
+﻿namespace LightVPN.Client.Windows.Services.Models
 {
-    public class ServerCache
+    using System;
+    using System.ComponentModel;
+    using Common.Models;
+
+    public sealed class ServerCache
     {
         public BindingList<DisplayVpnServer> Servers { get; set; }
         public DateTime LastCache { get; set; }

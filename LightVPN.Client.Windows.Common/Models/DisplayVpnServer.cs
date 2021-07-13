@@ -1,74 +1,74 @@
-﻿using System.ComponentModel;
-
-namespace LightVPN.Client.Windows.Common.Models
+﻿namespace LightVPN.Client.Windows.Common.Models
 {
+    using System.ComponentModel;
+
     public sealed class DisplayVpnServer : INotifyPropertyChanged
     {
         public event PropertyChangedEventHandler PropertyChanged;
 
         public string Country
         {
-            get => _country;
+            get => this._country;
 
             set
             {
-                _country = value;
-                OnPropertyChanged(nameof(Country));
+                this._country = value;
+                this.OnPropertyChanged(nameof(DisplayVpnServer.Country));
             }
         }
 
         public string Flag
         {
-            get => _flag;
+            get => this._flag;
 
             set
             {
-                _flag = value;
-                OnPropertyChanged(nameof(Flag));
+                this._flag = value;
+                this.OnPropertyChanged(nameof(DisplayVpnServer.Flag));
             }
         }
 
         public string Id
         {
-            get => _id;
+            get => this._id;
 
             init
             {
-                _id = value;
-                OnPropertyChanged(nameof(Id));
+                this._id = value;
+                this.OnPropertyChanged(nameof(DisplayVpnServer.Id));
             }
         }
 
         public string ServerName
         {
-            get => _displayName;
+            get => this._displayName;
 
             init
             {
-                _displayName = value;
-                OnPropertyChanged(nameof(ServerName));
+                this._displayName = value;
+                this.OnPropertyChanged(nameof(DisplayVpnServer.ServerName));
             }
         }
 
         public string Status
         {
-            get => _status;
+            get => this._status;
 
             set
             {
-                _status = value;
-                OnPropertyChanged(nameof(Status));
+                this._status = value;
+                this.OnPropertyChanged(nameof(DisplayVpnServer.Status));
             }
         }
 
         public VpnServerType Type
         {
-            get => _type;
+            get => this._type;
 
             set
             {
-                _type = value;
-                OnPropertyChanged(nameof(Type));
+                this._type = value;
+                this.OnPropertyChanged(nameof(DisplayVpnServer.Type));
             }
         }
 
@@ -86,7 +86,7 @@ namespace LightVPN.Client.Windows.Common.Models
 
         private void OnPropertyChanged(string propertyName)
         {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+            this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
     }
 }

@@ -157,7 +157,6 @@
                         <TextBlock Text="View VPN logs" Opacity="0.7" VerticalAlignment="Center"
                                    HorizontalAlignment="Left" />
                         <Button
-                            IsEnabled="{Binding IsLogProcessOpen, Converter={StaticResource InverseBooleanConverter}}"
                             Command="{Binding VpnLogsCommand}"
                             ToolTip="View the VPN logs, they contain VPN connection events. Support may ask for this in a ticket."
                             Cursor="Arrow" Style="{DynamicResource MaterialDesignRaisedButton}"
@@ -173,6 +172,7 @@
                         <TextBlock Text="View app logs" Opacity="0.7" VerticalAlignment="Center"
                                    HorizontalAlignment="Left" />
                         <Button
+                            Command="{Binding AppLogsCommand}"
                             ToolTip="View the app logs, they contain events such as errors. Support may ask for this in a ticket."
                             Cursor="Arrow" Style="{DynamicResource MaterialDesignRaisedButton}"
                             VerticalAlignment="Center" HorizontalAlignment="Right">
@@ -185,8 +185,8 @@
                 </StackPanel>
             </materialDesign:Card>
             <TextBlock FontSize="11" Opacity="0.5"
-                   Foreground="{DynamicResource MaterialDesignBody}" Margin="5" VerticalAlignment="Bottom"
-                   HorizontalAlignment="Center" Text="{Binding VersionString}" Name="VersionText" />
+                       Foreground="{DynamicResource MaterialDesignBody}" Margin="5" VerticalAlignment="Bottom"
+                       HorizontalAlignment="Center" Text="{Binding VersionString}" Name="VersionText" />
         </StackPanel>
     </ScrollViewer>
 </Page>

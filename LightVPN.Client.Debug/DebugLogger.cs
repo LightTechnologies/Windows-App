@@ -1,17 +1,20 @@
-﻿using System;
-using System.IO;
-
-namespace LightVPN.Client.Debug
+﻿namespace LightVPN.Client.Debug
 {
+    using System;
+    using System.IO;
+
     public static class DebugLogger
     {
-        private static readonly string _debugLogLocation = Path.Combine(
+        public static readonly string DebugLogLocation = Path.Combine(
             Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
             "LightVPN", "debug.log");
 
         public static void Write(string source, string log)
         {
-            File.AppendAllText(_debugLogLocation, $"[{source} at {DateTime.Now}]: {log}\r\n");
+            if (!Directory.Exists(Path.GetDirectoryName(DebugLogger.DebugLogLocation)))
+                Directory.CreateDirectory(Path.GetDirectoryName(DebugLogger.DebugLogLocation)!);
+
+            File.AppendAllText(DebugLogger.DebugLogLocation, $"[{source} at {DateTime.Now}]: {log}\r\n");
         }
     }
 }

@@ -1,8 +1,8 @@
-﻿using System.Threading;
-using System.Threading.Tasks;
-
-namespace LightVPN.Client.Windows.Configuration.Interfaces
+﻿namespace LightVPN.Client.Windows.Configuration.Interfaces
 {
+    using System.Threading;
+    using System.Threading.Tasks;
+
     public interface IConfigurationManager<T>
     {
         Task WriteAsync(T value, CancellationToken cancellationToken = default);

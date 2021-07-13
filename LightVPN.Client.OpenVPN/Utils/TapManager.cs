@@ -1,17 +1,18 @@
-﻿using System;
-using System.Diagnostics;
-using System.IO;
-using System.Management;
-using System.Runtime.Versioning;
-using System.Threading;
-using System.Threading.Tasks;
-using LightVPN.Client.Debug;
-using LightVPN.Client.OpenVPN.Models;
-using LightVPN.Client.OpenVPN.Resources;
-using LightVPN.Client.Windows.Common;
-
-namespace LightVPN.Client.OpenVPN.Utils
+﻿namespace LightVPN.Client.OpenVPN.Utils
 {
+    using System;
+    using System.Diagnostics;
+    using System.IO;
+    using System.Management;
+    using System.Runtime.Versioning;
+    using System.Threading;
+    using System.Threading.Tasks;
+    using Windows.Common;
+    using Debug;
+    using Models;
+    using Resources;
+    using ErrorEventArgs = EventArgs.ErrorEventArgs;
+
     /// <summary>
     ///     Manages the TAP adapter and it's drivers, this class is only functional on Windows
     /// </summary>
@@ -21,16 +22,18 @@ namespace LightVPN.Client.OpenVPN.Utils
         private Process _tapCtlProcess;
         private readonly OpenVpnConfiguration _configuration;
 
-        public delegate void ErrorReceived(object sender, LightVPN.Client.OpenVPN.EventArgs.ErrorEventArgs e);
+        public delegate void ErrorReceived(object sender, ErrorEventArgs e);
+
         public delegate void Success(object sender);
+
         public event Success OnSuccess;
         public event ErrorReceived OnErrorReceived;
 
-        public TapManager(OpenVpnConfiguration configuration)
+        internal TapManager(OpenVpnConfiguration configuration)
         {
-            _configuration = configuration;
+            this._configuration = configuration;
 
-            ConstructProcess();
+            this.ConstructProcess();
         }
 
         /// <summary>
@@ -38,10 +41,10 @@ namespace LightVPN.Client.OpenVPN.Utils
         /// </summary>
         private void StartProcess()
         {
-            _tapCtlProcess.Start();
+            this._tapCtlProcess.Start();
 
-            _tapCtlProcess.BeginErrorReadLine();
-            _tapCtlProcess.BeginOutputReadLine();
+            this._tapCtlProcess.BeginErrorReadLine();
+            this._tapCtlProcess.BeginOutputReadLine();
         }
 
         /// <summary>
@@ -49,8 +52,8 @@ namespace LightVPN.Client.OpenVPN.Utils
         /// </summary>
         public void ConfigureTapDriverInstallation()
         {
-            _tapCtlProcess.StartInfo.WorkingDirectory = Globals.OpenVpnDriversPath;
-            _tapCtlProcess.StartInfo.FileName = Path.Combine(Globals.OpenVpnDriversPath, "tapinstall.exe");
+            this._tapCtlProcess.StartInfo.WorkingDirectory = Globals.OpenVpnDriversPath;
+            this._tapCtlProcess.StartInfo.FileName = Path.Combine(Globals.OpenVpnDriversPath, "tapinstall.exe");
         }
 
         /// <summary>
@@ -59,24 +62,24 @@ namespace LightVPN.Client.OpenVPN.Utils
         /// <exception cref="ArgumentNullException">Thrown when the OpenVpnPath is null</exception>
         private void ConstructProcess()
         {
-            _tapCtlProcess = new Process
+            this._tapCtlProcess = new Process
             {
                 StartInfo = new ProcessStartInfo
                 {
                     CreateNoWindow = true,
-                    FileName = _configuration.TapCtlPath,
+                    FileName = this._configuration.TapCtlPath,
                     Verb = "runas",
                     WindowStyle = ProcessWindowStyle.Hidden,
-                    WorkingDirectory = Path.GetDirectoryName(_configuration.OpenVpnPath) ??
-                                       throw new ArgumentNullException(nameof(_configuration)),
+                    WorkingDirectory = Path.GetDirectoryName(this._configuration.OpenVpnPath) ??
+                                       throw new ArgumentNullException(nameof(TapManager._configuration)),
                     RedirectStandardOutput = true,
                     RedirectStandardError = true,
-                    UseShellExecute = false
-                }
+                    UseShellExecute = false,
+                },
             };
 
-            _tapCtlProcess.OutputDataReceived += TapCtlProcessOnOutputDataReceived;
-            _tapCtlProcess.ErrorDataReceived += TapCtlProcessOnErrorDataReceived;
+            this._tapCtlProcess.OutputDataReceived += this.TapCtlProcessOnOutputDataReceived;
+            this._tapCtlProcess.ErrorDataReceived += this.TapCtlProcessOnErrorDataReceived;
         }
 
         /// <summary>
@@ -85,12 +88,12 @@ namespace LightVPN.Client.OpenVPN.Utils
         /// <param name="cancellationToken">The cancellation token</param>
         public async Task InstallTapDriverAsync(CancellationToken cancellationToken = default)
         {
-            ConfigureTapDriverInstallation();
+            this.ConfigureTapDriverInstallation();
 
-            _tapCtlProcess.StartInfo.Arguments = "install OemVista.inf tap0901";
+            this._tapCtlProcess.StartInfo.Arguments = "install OemVista.inf tap0901";
 
-            StartProcess();
-            await BeginTerminatingProcessAsync(cancellationToken);
+            this.StartProcess();
+            await this.BeginTerminatingProcessAsync(cancellationToken);
         }
 
         /// <summary>
@@ -99,12 +102,12 @@ namespace LightVPN.Client.OpenVPN.Utils
         /// <param name="cancellationToken"></param>
         public async Task RemoveTapDriverAsync(CancellationToken cancellationToken = default)
         {
-            ConfigureTapDriverInstallation();
+            this.ConfigureTapDriverInstallation();
 
-            _tapCtlProcess.StartInfo.Arguments = "remove tap0901";
+            this._tapCtlProcess.StartInfo.Arguments = "remove tap0901";
 
-            StartProcess();
-            await BeginTerminatingProcessAsync(cancellationToken);
+            this.StartProcess();
+            await this.BeginTerminatingProcessAsync(cancellationToken);
         }
 
         /// <summary>
@@ -136,10 +139,10 @@ namespace LightVPN.Client.OpenVPN.Utils
         /// <param name="cancellationToken">The cancellation token</param>
         private async Task BeginTerminatingProcessAsync(CancellationToken cancellationToken = default)
         {
-            await _tapCtlProcess.WaitForExitAsync(cancellationToken);
+            await this._tapCtlProcess.WaitForExitAsync(cancellationToken);
 
-            _tapCtlProcess.CancelOutputRead();
-            _tapCtlProcess.CancelErrorRead();
+            this._tapCtlProcess.CancelOutputRead();
+            this._tapCtlProcess.CancelErrorRead();
         }
 
         /// <summary>
@@ -148,10 +151,10 @@ namespace LightVPN.Client.OpenVPN.Utils
         /// <param name="cancellationToken">The cancellation token</param>
         public async Task InstallTapAdapterAsync(CancellationToken cancellationToken = default)
         {
-            _tapCtlProcess.StartInfo.Arguments = $"create --name {_configuration.TapAdapterName}";
+            this._tapCtlProcess.StartInfo.Arguments = $"create --name {this._configuration.TapAdapterName}";
 
-            StartProcess();
-            await BeginTerminatingProcessAsync(cancellationToken);
+            this.StartProcess();
+            await this.BeginTerminatingProcessAsync(cancellationToken);
         }
 
         /// <summary>
@@ -160,10 +163,10 @@ namespace LightVPN.Client.OpenVPN.Utils
         /// <param name="cancellationToken">The cancellation token</param>
         public async Task RemoveTapAdapterAsync(CancellationToken cancellationToken = default)
         {
-            _tapCtlProcess.StartInfo.Arguments = $"delete {_configuration.TapAdapterName}";
+            this._tapCtlProcess.StartInfo.Arguments = $"delete {this._configuration.TapAdapterName}";
 
-            StartProcess();
-            await BeginTerminatingProcessAsync(cancellationToken);
+            this.StartProcess();
+            await this.BeginTerminatingProcessAsync(cancellationToken);
         }
 
         /// <summary>
@@ -175,20 +178,20 @@ namespace LightVPN.Client.OpenVPN.Utils
         {
             var found = false;
 
-            _tapCtlProcess.StartInfo.Arguments = "list";
+            this._tapCtlProcess.StartInfo.Arguments = "list";
 
-            _tapCtlProcess.OutputDataReceived -= TapCtlProcessOnOutputDataReceived;
+            this._tapCtlProcess.OutputDataReceived -= this.TapCtlProcessOnOutputDataReceived;
 
-            _tapCtlProcess.OutputDataReceived += (_, args) =>
+            this._tapCtlProcess.OutputDataReceived += (_, args) =>
             {
-                if (args.Data?.Contains(_configuration.TapAdapterName) == true && !found) found = true;
+                if (args.Data?.Contains(this._configuration.TapAdapterName) == true && !found) found = true;
             };
 
-            _tapCtlProcess.OutputDataReceived += TapCtlProcessOnOutputDataReceived;
+            this._tapCtlProcess.OutputDataReceived += this.TapCtlProcessOnOutputDataReceived;
 
-            StartProcess();
+            this.StartProcess();
 
-            await BeginTerminatingProcessAsync(cancellationToken);
+            await this.BeginTerminatingProcessAsync(cancellationToken);
 
             return found;
         }
@@ -205,10 +208,12 @@ namespace LightVPN.Client.OpenVPN.Utils
 
             DebugLogger.Write("lvpn-client-ovpn-tapman", $"create_vpn_adap failed: {e.Data}");
 
-            _tapCtlProcess.Kill();
+            this._tapCtlProcess.Kill();
 
-            OnErrorReceived?.Invoke(this,
-                new LightVPN.Client.OpenVPN.EventArgs.ErrorEventArgs(new InvalidOperationException("Failed to create VPN adapter. Your OpenVPN drivers are most likely corrupt.")));
+            this.OnErrorReceived?.Invoke(this,
+                new ErrorEventArgs(
+                    new InvalidOperationException(
+                        "Failed to create VPN adapter. Your OpenVPN drivers are most likely corrupt.")));
         }
 
         /// <summary>
@@ -225,18 +230,21 @@ namespace LightVPN.Client.OpenVPN.Utils
             {
                 case var str
                     when str.Contains(string.Format(StringTable.OVPN_TAP_ALREADY_EXISTS,
-                        _configuration.TapAdapterName)):
-                    OnErrorReceived?.Invoke(this,
-                        new LightVPN.Client.OpenVPN.EventArgs.ErrorEventArgs(new InvalidOperationException("TAP adapter already exists!")));
+                        this._configuration.TapAdapterName)):
+                    this.OnErrorReceived?.Invoke(this,
+                        new ErrorEventArgs(
+                            new InvalidOperationException("TAP adapter already exists!")));
                     break;
                 case var str
-                    when str.Contains(string.Format(StringTable.OVPN_TAP_NO_EXISTS, _configuration.TapAdapterName)):
-                    OnErrorReceived?.Invoke(this,
-                        new LightVPN.Client.OpenVPN.EventArgs.ErrorEventArgs(new InvalidOperationException("TAP adapter doesn't exist!")));
+                    when str.Contains(string.Format(StringTable.OVPN_TAP_NO_EXISTS,
+                        this._configuration.TapAdapterName)):
+                    this.OnErrorReceived?.Invoke(this,
+                        new ErrorEventArgs(
+                            new InvalidOperationException("TAP adapter doesn't exist!")));
                     break;
-                case var guid when Guid.TryParse(guid, out var adapterId):
-                    DebugLogger.Write("lvpn-client-ovpn-tapman", $"tapctl exited, tap created it seems.");
-                    OnSuccess?.Invoke(this);
+                case var guid when Guid.TryParse(guid, out var _):
+                    DebugLogger.Write("lvpn-client-ovpn-tapman", "tapctl exited, tap created it seems.");
+                    this.OnSuccess?.Invoke(this);
                     break;
             }
         }

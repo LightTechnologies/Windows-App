@@ -1,8 +1,8 @@
-﻿using System.Text.Json.Serialization;
-
-namespace LightVPN.Client.Auth.Models
+﻿namespace LightVPN.Client.Auth.Models
 {
-    public class VpnConfigResponse
+    using System.Text.Json.Serialization;
+
+    public sealed class VpnConfigResponse
     {
         [JsonPropertyName("bytes")] public string ArchiveBase64 { get; set; }
     }

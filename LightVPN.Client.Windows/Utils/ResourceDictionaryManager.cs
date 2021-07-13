@@ -1,15 +1,15 @@
-﻿using System;
-using System.Windows;
-
-namespace LightVPN.Client.Windows.Utils
+﻿namespace LightVPN.Client.Windows.Utils
 {
+    using System;
+    using System.Windows;
+
     /// <summary>
-    /// Generates resource dictionaries, must be called after startup object construction
+    ///     Generates resource dictionaries, must be called after startup object construction
     /// </summary>
     public static class ResourceDictionaryManager
     {
         /// <summary>
-        /// Generates a resource dictionary containing all the merged dictionaries
+        ///     Generates a resource dictionary containing all the merged dictionaries
         /// </summary>
         /// <returns>The newly generated dictionary</returns>
         public static ResourceDictionary GenerateResourceDictionary()
@@ -56,14 +56,14 @@ namespace LightVPN.Client.Windows.Utils
                 new("pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesignTheme.PopupBox.xaml"
                     , UriKind.RelativeOrAbsolute);
 
-            res.MergedDictionaries.Add(new ResourceDictionary { Source = mdUri });
-            res.MergedDictionaries.Add(new ResourceDictionary { Source = mdUri1 });
-            res.MergedDictionaries.Add(new ResourceDictionary { Source = colorsUri });
-            res.MergedDictionaries.Add(new ResourceDictionary { Source = fontsUri });
-            res.MergedDictionaries.Add(new ResourceDictionary { Source = typographyUri });
-            res.MergedDictionaries.Add(new ResourceDictionary { Source = buttonsUri });
-            res.MergedDictionaries.Add(new ResourceDictionary { Source = windowsUri });
-            res.MergedDictionaries.Add(new ResourceDictionary { Source = trayUri });
+            res.MergedDictionaries.Add(new ResourceDictionary {Source = mdUri,});
+            res.MergedDictionaries.Add(new ResourceDictionary {Source = mdUri1,});
+            res.MergedDictionaries.Add(new ResourceDictionary {Source = colorsUri,});
+            res.MergedDictionaries.Add(new ResourceDictionary {Source = fontsUri,});
+            res.MergedDictionaries.Add(new ResourceDictionary {Source = typographyUri,});
+            res.MergedDictionaries.Add(new ResourceDictionary {Source = buttonsUri,});
+            res.MergedDictionaries.Add(new ResourceDictionary {Source = windowsUri,});
+            res.MergedDictionaries.Add(new ResourceDictionary {Source = trayUri,});
 
             return res;
         }

@@ -20,7 +20,7 @@ namespace LightVPN.Client.OpenVPN.Utils
         private IPEndPoint _endPoint;
         private Socket _socket;
 
-        private bool IsConnected => _socket.Connected;
+        private bool IsConnected => this._socket.Connected;
 
         /// <summary>
         ///     The port that the OpenVPN management server is currently listening on
@@ -29,10 +29,10 @@ namespace LightVPN.Client.OpenVPN.Utils
 
         public ManagementSocketHandler(ushort port)
         {
-            Port = port;
+            this.Port = port;
 
-            _endPoint = CreateEndPoint();
-            _socket = new Socket(_endPoint.AddressFamily, SocketType.Stream, ProtocolType.Tcp);
+            this._endPoint = this.CreateEndPoint();
+            this._socket = new Socket(this._endPoint.AddressFamily, SocketType.Stream, ProtocolType.Tcp);
         }
 
         /// <summary>
@@ -41,14 +41,14 @@ namespace LightVPN.Client.OpenVPN.Utils
         /// <param name="cancellationToken">The cancellation token</param>
         public async Task ConnectAsync(CancellationToken cancellationToken = default)
         {
-            _endPoint = CreateEndPoint();
-            _socket = new Socket(_endPoint.AddressFamily, SocketType.Stream, ProtocolType.Tcp);
+            this._endPoint = this.CreateEndPoint();
+            this._socket = new Socket(this._endPoint.AddressFamily, SocketType.Stream, ProtocolType.Tcp);
 
-            DebugLogger.Write("lvpn-client-ovpn-mgmtsock", $"attempting to establish connection to mgmt sock");
+            DebugLogger.Write("lvpn-client-ovpn-mgmtsock", "attempting to establish connection to mgmt sock");
 
-            await _socket.ConnectAsync(_endPoint, cancellationToken);
+            await this._socket.ConnectAsync(this._endPoint, cancellationToken);
 
-            DebugLogger.Write("lvpn-client-ovpn-mgmtsock", $"awaiting task has completed, result: {IsConnected}");
+            DebugLogger.Write("lvpn-client-ovpn-mgmtsock", $"awaiting task has completed, result: {this.IsConnected}");
         }
 
         /// <summary>
@@ -58,10 +58,11 @@ namespace LightVPN.Client.OpenVPN.Utils
         /// <param name="cancellationToken">The cancellation token</param>
         private async Task SendDataAsync(string buffer, CancellationToken cancellationToken = default)
         {
-            if (!IsConnected) await ConnectAsync(cancellationToken);
+            if (!this.IsConnected) await this.ConnectAsync(cancellationToken);
 
-            DebugLogger.Write("lvpn-client-ovpn-mgmtsock", $"we're gonna send a buffer boys, sockflags = none, buff-len = {buffer.Length}");
-            await _socket.SendAsync(Encoding.UTF8.GetBytes(buffer + "\r\n"), SocketFlags.None, cancellationToken);
+            DebugLogger.Write("lvpn-client-ovpn-mgmtsock",
+                $"we're gonna send a buffer boys, sockflags = none, buff-len = {buffer.Length}");
+            await this._socket.SendAsync(Encoding.UTF8.GetBytes(buffer + "\r\n"), SocketFlags.None, cancellationToken);
         }
 
         /// <summary>
@@ -70,10 +71,10 @@ namespace LightVPN.Client.OpenVPN.Utils
         /// <param name="cancellationToken">The cancellation token</param>
         public async Task SendShutdownSignalAsync(CancellationToken cancellationToken = default)
         {
-            DebugLogger.Write("lvpn-client-ovpn-mgmtsock", $"sending sigterm");
-            await SendDataAsync(StringTable.OVPN_SHUTDOWN_SIG, cancellationToken);
+            DebugLogger.Write("lvpn-client-ovpn-mgmtsock", "sending sigterm");
+            await this.SendDataAsync(StringTable.OVPN_SHUTDOWN_SIG, cancellationToken);
 
-            Dispose();
+            this.Dispose();
         }
 
         /// <summary>
@@ -82,7 +83,7 @@ namespace LightVPN.Client.OpenVPN.Utils
         /// <returns>The new IPEndPoint instance</returns>
         private IPEndPoint CreateEndPoint()
         {
-            return new IPEndPoint(IPAddress.Parse("127.0.0.1"), Port);
+            return new(IPAddress.Parse("127.0.0.1"), this.Port);
         }
 
         /// <summary>
@@ -101,14 +102,14 @@ namespace LightVPN.Client.OpenVPN.Utils
                 .Concat(udpListenersEndpoints)
                 .Select(e => e.Port);
 
-            return (ushort)Enumerable.Range(startingPort, ushort.MaxValue - startingPort + 1).Except(portsInUse)
+            return (ushort) Enumerable.Range(startingPort, ushort.MaxValue - startingPort + 1).Except(portsInUse)
                 .FirstOrDefault();
         }
 
         public void Dispose()
         {
-            _socket?.Shutdown(SocketShutdown.Both);
-            _socket?.Dispose();
+            this._socket?.Shutdown(SocketShutdown.Both);
+            this._socket?.Dispose();
         }
     }
 }

@@ -1,9 +1,9 @@
-﻿using System.ComponentModel;
-
-namespace LightVPN.Client.Windows.Models
+﻿namespace LightVPN.Client.Windows.Models
 {
+    using System.ComponentModel;
+
     /// <summary>
-    /// Contains all the possible theme combinations
+    ///     Contains all the possible theme combinations
     /// </summary>
     internal enum BackgroundMode
     {

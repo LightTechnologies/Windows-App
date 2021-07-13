@@ -1,12 +1,12 @@
-﻿using System.Windows.Controls;
-
-namespace LightVPN.Client.Windows.Dialogs
+﻿namespace LightVPN.Client.Windows.Dialogs
 {
-    public partial class Dialog : UserControl
+    using System.Windows.Controls;
+
+    internal partial class Dialog : UserControl
     {
-        public Dialog()
+        internal Dialog()
         {
-            InitializeComponent();
+            this.InitializeComponent();
         }
     }
 }

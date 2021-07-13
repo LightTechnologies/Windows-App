@@ -1,7 +1,7 @@
-﻿using System.Text.Json.Serialization;
-
-namespace LightVPN.Client.Auth.Models
+﻿namespace LightVPN.Client.Auth.Models
 {
+    using System.Text.Json.Serialization;
+
     /// <summary>
     ///     Generic failure / non-failure response from the API
     /// </summary>

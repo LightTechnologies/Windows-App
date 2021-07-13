@@ -2,8 +2,7 @@
 {
     public sealed class AppSizeSaving
     {
-        public bool IsSavingSizeEnabled { get; set; } = true;
-        public uint Width { get; set; }
-        public uint Height { get; set; }
+        public uint Width { get; init; }
+        public uint Height { get; init; }
     }
 }

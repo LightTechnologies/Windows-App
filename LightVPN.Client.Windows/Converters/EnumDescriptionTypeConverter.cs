@@ -1,9 +1,9 @@
-﻿using System;
-using System.ComponentModel;
-using System.Globalization;
-
-namespace LightVPN.Client.Windows.Converters
+﻿namespace LightVPN.Client.Windows.Converters
 {
+    using System;
+    using System.ComponentModel;
+    using System.Globalization;
+
     /* Source: https://brianlagunas.com/a-better-way-to-data-bind-enums-in-wpf/ */
 
     public sealed class EnumDescriptionTypeConverter : EnumConverter
@@ -31,7 +31,7 @@ namespace LightVPN.Client.Windows.Converters
             var fi = value?.GetType().GetField(value.ToString() ?? string.Empty);
             if (fi == null) return string.Empty;
 
-            var attributes = (DescriptionAttribute[])fi.GetCustomAttributes(typeof(DescriptionAttribute), false);
+            var attributes = (DescriptionAttribute[]) fi.GetCustomAttributes(typeof(DescriptionAttribute), false);
             return attributes.Length > 0 && !string.IsNullOrEmpty(attributes[0].Description)
                 ? attributes[0].Description
                 : value.ToString();

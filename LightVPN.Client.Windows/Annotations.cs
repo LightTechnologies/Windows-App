@@ -20,7 +20,7 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE. */
 
-using System;
+
 
 // ReSharper disable InheritdocConsiderUsage
 
@@ -34,6 +34,8 @@ using System;
 
 namespace LightVPN.Client.Windows
 {
+    using System;
+
     /// <summary>
     ///     Indicates that the value of the marked element could be <c>null</c> sometimes,
     ///     so checking for <c>null</c> is required before its usage.
@@ -41,7 +43,7 @@ namespace LightVPN.Client.Windows
     /// <example>
     ///     <code>
     /// [CanBeNull] object Test() => null;
-    /// 
+    ///
     /// void UseTest() {
     ///   var p = Test();
     ///   var s = p.ToString(); // Warning: Possible 'System.NullReferenceException'
@@ -130,7 +132,7 @@ namespace LightVPN.Client.Windows
     ///     <code>
     /// [StringFormatMethod("message")]
     /// void ShowError(string message, params object[] args) { /* do something */ }
-    /// 
+    ///
     /// void Foo() {
     ///   ShowError("Failed: {0}"); // Warning: Non-existing argument in format string
     /// }
@@ -146,7 +148,7 @@ namespace LightVPN.Client.Windows
         /// </param>
         public StringFormatMethodAttribute([NotNull] string formatParameterName)
         {
-            FormatParameterName = formatParameterName;
+            this.FormatParameterName = formatParameterName;
         }
 
         [NotNull] public string FormatParameterName { get; }
@@ -166,12 +168,12 @@ namespace LightVPN.Client.Windows
     ///     public static int INT_CONST = 1;
     ///     public const string STRING_CONST = "1";
     ///   }
-    /// 
+    ///
     ///   public class Class1
     ///   {
     ///     [ValueProvider("TestNamespace.Constants")] public int myField;
     ///     public void Foo([ValueProvider("TestNamespace.Constants")] string str) { }
-    /// 
+    ///
     ///     public void Test()
     ///     {
     ///       Foo(/*try completion here*/);//
@@ -188,7 +190,7 @@ namespace LightVPN.Client.Windows
     {
         public ValueProviderAttribute([NotNull] string name)
         {
-            Name = name;
+            this.Name = name;
         }
 
         [NotNull] public string Name { get; }
@@ -219,24 +221,24 @@ namespace LightVPN.Client.Windows
 
         public ValueRangeAttribute(long from, long to)
         {
-            From = from;
-            To = to;
+            this.From = from;
+            this.To = to;
         }
 
         public ValueRangeAttribute(ulong from, ulong to)
         {
-            From = from;
-            To = to;
+            this.From = from;
+            this.To = to;
         }
 
         public ValueRangeAttribute(long value)
         {
-            From = To = value;
+            this.From = this.To = value;
         }
 
         public ValueRangeAttribute(ulong value)
         {
-            From = To = value;
+            this.From = this.To = value;
         }
     }
 
@@ -306,12 +308,12 @@ namespace LightVPN.Client.Windows
     ///     <code>
     /// public class Foo : INotifyPropertyChanged {
     ///   public event PropertyChangedEventHandler PropertyChanged;
-    /// 
+    ///
     ///   [NotifyPropertyChangedInvocator]
     ///   protected virtual void NotifyChanged(string propertyName) { ... }
-    /// 
+    ///
     ///   string _name;
-    /// 
+    ///
     ///   public string Name {
     ///     get { return _name; }
     ///     set { _name = value; NotifyChanged("LastName"); /* Warning */ }
@@ -343,7 +345,7 @@ namespace LightVPN.Client.Windows
 
         public NotifyPropertyChangedInvocatorAttribute([NotNull] string parameterName)
         {
-            ParameterName = parameterName;
+            this.ParameterName = parameterName;
         }
 
         [CanBeNull] public string ParameterName { get; }
@@ -415,8 +417,8 @@ namespace LightVPN.Client.Windows
 
         public ContractAnnotationAttribute([NotNull] string contract, bool forceFullStates)
         {
-            Contract = contract;
-            ForceFullStates = forceFullStates;
+            this.Contract = contract;
+            this.ForceFullStates = forceFullStates;
         }
 
         [NotNull] public string Contract { get; }
@@ -444,7 +446,7 @@ namespace LightVPN.Client.Windows
 
         public LocalizationRequiredAttribute(bool required)
         {
-            Required = required;
+            this.Required = required;
         }
 
         public bool Required { get; }
@@ -460,7 +462,7 @@ namespace LightVPN.Client.Windows
     ///     <code>
     /// [CannotApplyEqualityOperator]
     /// class NoEquality { }
-    /// 
+    ///
     /// class UsesNoEquality {
     ///   void Test() {
     ///     var ca1 = new NoEquality();
@@ -485,7 +487,7 @@ namespace LightVPN.Client.Windows
     ///     <code>
     /// [BaseTypeRequired(typeof(IComponent)] // Specify requirement
     /// class ComponentAttribute : Attribute { }
-    /// 
+    ///
     /// [Component] // ComponentAttribute requires implementing IComponent interface
     /// class MyComponent : IComponent { }
     /// </code>
@@ -496,7 +498,7 @@ namespace LightVPN.Client.Windows
     {
         public BaseTypeRequiredAttribute([NotNull] Type baseType)
         {
-            BaseType = baseType;
+            this.BaseType = baseType;
         }
 
         [NotNull] public Type BaseType { get; }
@@ -526,8 +528,8 @@ namespace LightVPN.Client.Windows
 
         public UsedImplicitlyAttribute(ImplicitUseKindFlags useKindFlags, ImplicitUseTargetFlags targetFlags)
         {
-            UseKindFlags = useKindFlags;
-            TargetFlags = targetFlags;
+            this.UseKindFlags = useKindFlags;
+            this.TargetFlags = targetFlags;
         }
 
         public ImplicitUseKindFlags UseKindFlags { get; }
@@ -563,8 +565,8 @@ namespace LightVPN.Client.Windows
 
         public MeansImplicitUseAttribute(ImplicitUseKindFlags useKindFlags, ImplicitUseTargetFlags targetFlags)
         {
-            UseKindFlags = useKindFlags;
-            TargetFlags = targetFlags;
+            this.UseKindFlags = useKindFlags;
+            this.TargetFlags = targetFlags;
         }
 
         [UsedImplicitly] public ImplicitUseKindFlags UseKindFlags { get; }
@@ -579,7 +581,8 @@ namespace LightVPN.Client.Windows
     [Flags]
     public enum ImplicitUseKindFlags
     {
-        Default = Access | Assign | InstantiatedWithFixedConstructorSignature,
+        Default = ImplicitUseKindFlags.Access | ImplicitUseKindFlags.Assign |
+                  ImplicitUseKindFlags.InstantiatedWithFixedConstructorSignature,
 
         /// <summary>Only entity marked with attribute considered used.</summary>
         Access = 1,
@@ -594,7 +597,7 @@ namespace LightVPN.Client.Windows
         InstantiatedWithFixedConstructorSignature = 4,
 
         /// <summary>Indicates implicit instantiation of a type.</summary>
-        InstantiatedNoFixedConstructorSignature = 8
+        InstantiatedNoFixedConstructorSignature = 8,
     }
 
     /// <summary>
@@ -604,7 +607,7 @@ namespace LightVPN.Client.Windows
     [Flags]
     public enum ImplicitUseTargetFlags
     {
-        Default = Itself,
+        Default = ImplicitUseTargetFlags.Itself,
         Itself = 1,
 
         /// <summary>Members of entity marked with attribute are considered used.</summary>
@@ -614,7 +617,7 @@ namespace LightVPN.Client.Windows
         WithInheritors = 4,
 
         /// <summary>Entity marked with attribute and all its members considered used.</summary>
-        WithMembers = Itself | Members
+        WithMembers = ImplicitUseTargetFlags.Itself | ImplicitUseTargetFlags.Members,
     }
 
     /// <summary>
@@ -631,7 +634,7 @@ namespace LightVPN.Client.Windows
 
         public PublicAPIAttribute([NotNull] string comment)
         {
-            Comment = comment;
+            this.Comment = comment;
         }
 
         [CanBeNull] public string Comment { get; }
@@ -654,7 +657,7 @@ namespace LightVPN.Client.Windows
     /// <example>
     ///     <code>
     /// [Pure] int Multiply(int x, int y) => x * y;
-    /// 
+    ///
     /// void M() {
     ///   Multiply(123, 42); // Warning: Return value of pure method is not used
     /// }
@@ -685,7 +688,7 @@ namespace LightVPN.Client.Windows
 
         public MustUseReturnValueAttribute([NotNull] string justification)
         {
-            Justification = justification;
+            this.Justification = justification;
         }
 
         [CanBeNull] public string Justification { get; }
@@ -700,7 +703,7 @@ namespace LightVPN.Client.Windows
     ///     <code>
     /// class Foo {
     ///   [ProvidesContext] IBarService _barService = ...;
-    /// 
+    ///
     ///   void ProcessNode(INode node) {
     ///     DoSomething(node, node.GetGlobalServices().Bar);
     ///     //              ^ Warning: use value of '_barService' field
@@ -729,7 +732,7 @@ namespace LightVPN.Client.Windows
 
         public PathReferenceAttribute([NotNull] [PathReference] string basePath)
         {
-            BasePath = basePath;
+            this.BasePath = basePath;
         }
 
         [CanBeNull] public string BasePath { get; }
@@ -825,7 +828,7 @@ namespace LightVPN.Client.Windows
     {
         public AspMvcAreaMasterLocationFormatAttribute([NotNull] string format)
         {
-            Format = format;
+            this.Format = format;
         }
 
         [NotNull] public string Format { get; }
@@ -837,7 +840,7 @@ namespace LightVPN.Client.Windows
     {
         public AspMvcAreaPartialViewLocationFormatAttribute([NotNull] string format)
         {
-            Format = format;
+            this.Format = format;
         }
 
         [NotNull] public string Format { get; }
@@ -849,7 +852,7 @@ namespace LightVPN.Client.Windows
     {
         public AspMvcAreaViewLocationFormatAttribute([NotNull] string format)
         {
-            Format = format;
+            this.Format = format;
         }
 
         [NotNull] public string Format { get; }
@@ -861,7 +864,7 @@ namespace LightVPN.Client.Windows
     {
         public AspMvcMasterLocationFormatAttribute([NotNull] string format)
         {
-            Format = format;
+            this.Format = format;
         }
 
         [NotNull] public string Format { get; }
@@ -873,7 +876,7 @@ namespace LightVPN.Client.Windows
     {
         public AspMvcPartialViewLocationFormatAttribute([NotNull] string format)
         {
-            Format = format;
+            this.Format = format;
         }
 
         [NotNull] public string Format { get; }
@@ -885,7 +888,7 @@ namespace LightVPN.Client.Windows
     {
         public AspMvcViewLocationFormatAttribute([NotNull] string format)
         {
-            Format = format;
+            this.Format = format;
         }
 
         [NotNull] public string Format { get; }
@@ -907,7 +910,7 @@ namespace LightVPN.Client.Windows
 
         public AspMvcActionAttribute([NotNull] string anonymousProperty)
         {
-            AnonymousProperty = anonymousProperty;
+            this.AnonymousProperty = anonymousProperty;
         }
 
         [CanBeNull] public string AnonymousProperty { get; }
@@ -927,7 +930,7 @@ namespace LightVPN.Client.Windows
 
         public AspMvcAreaAttribute([NotNull] string anonymousProperty)
         {
-            AnonymousProperty = anonymousProperty;
+            this.AnonymousProperty = anonymousProperty;
         }
 
         [CanBeNull] public string AnonymousProperty { get; }
@@ -949,7 +952,7 @@ namespace LightVPN.Client.Windows
 
         public AspMvcControllerAttribute([NotNull] string anonymousProperty)
         {
-            AnonymousProperty = anonymousProperty;
+            this.AnonymousProperty = anonymousProperty;
         }
 
         [CanBeNull] public string AnonymousProperty { get; }
@@ -1081,7 +1084,7 @@ namespace LightVPN.Client.Windows
 
         public HtmlElementAttributesAttribute([NotNull] string name)
         {
-            Name = name;
+            this.Name = name;
         }
 
         [CanBeNull] public string Name { get; }
@@ -1092,7 +1095,7 @@ namespace LightVPN.Client.Windows
     {
         public HtmlAttributeValueAttribute([NotNull] string name)
         {
-            Name = name;
+            this.Name = name;
         }
 
         [NotNull] public string Name { get; }
@@ -1142,7 +1145,7 @@ namespace LightVPN.Client.Windows
     {
         public CollectionAccessAttribute(CollectionAccessType collectionAccessType)
         {
-            CollectionAccessType = collectionAccessType;
+            this.CollectionAccessType = collectionAccessType;
         }
 
         public CollectionAccessType CollectionAccessType { get; }
@@ -1165,7 +1168,7 @@ namespace LightVPN.Client.Windows
         ModifyExistingContent = 2,
 
         /// <summary>Method can add new elements to the collection.</summary>
-        UpdatedContent = ModifyExistingContent | 4
+        UpdatedContent = CollectionAccessType.ModifyExistingContent | 4,
     }
 
     /// <summary>
@@ -1188,7 +1191,7 @@ namespace LightVPN.Client.Windows
     {
         public AssertionConditionAttribute(AssertionConditionType conditionType)
         {
-            ConditionType = conditionType;
+            this.ConditionType = conditionType;
         }
 
         public AssertionConditionType ConditionType { get; }
@@ -1210,7 +1213,7 @@ namespace LightVPN.Client.Windows
         IS_NULL = 2,
 
         /// <summary>Marked parameter should be evaluated to not null value.</summary>
-        IS_NOT_NULL = 3
+        IS_NOT_NULL = 3,
     }
 
     /// <summary>
@@ -1243,7 +1246,7 @@ namespace LightVPN.Client.Windows
     /// {
     ///   // custom check for null but no enumeration
     /// }
-    /// 
+    ///
     /// void Foo(IEnumerable&lt;string&gt; values)
     /// {
     ///   ThrowIfNull(values, nameof(values));
@@ -1318,8 +1321,8 @@ namespace LightVPN.Client.Windows
     {
         public AspChildControlTypeAttribute([NotNull] string tagName, [NotNull] Type controlType)
         {
-            TagName = tagName;
-            ControlType = controlType;
+            this.TagName = tagName;
+            this.ControlType = controlType;
         }
 
         [NotNull] public string TagName { get; }
@@ -1347,7 +1350,7 @@ namespace LightVPN.Client.Windows
     {
         public AspRequiredAttributeAttribute([NotNull] string attribute)
         {
-            Attribute = attribute;
+            this.Attribute = attribute;
         }
 
         [NotNull] public string Attribute { get; }
@@ -1360,7 +1363,7 @@ namespace LightVPN.Client.Windows
 
         public AspTypePropertyAttribute(bool createConstructorReferences)
         {
-            CreateConstructorReferences = createConstructorReferences;
+            this.CreateConstructorReferences = createConstructorReferences;
         }
     }
 
@@ -1369,7 +1372,7 @@ namespace LightVPN.Client.Windows
     {
         public RazorImportNamespaceAttribute([NotNull] string name)
         {
-            Name = name;
+            this.Name = name;
         }
 
         [NotNull] public string Name { get; }
@@ -1380,8 +1383,8 @@ namespace LightVPN.Client.Windows
     {
         public RazorInjectionAttribute([NotNull] string type, [NotNull] string fieldName)
         {
-            Type = type;
-            FieldName = fieldName;
+            this.Type = type;
+            this.FieldName = fieldName;
         }
 
         [NotNull] public string Type { get; }
@@ -1394,7 +1397,7 @@ namespace LightVPN.Client.Windows
     {
         public RazorDirectiveAttribute([NotNull] string directive)
         {
-            Directive = directive;
+            this.Directive = directive;
         }
 
         [NotNull] public string Directive { get; }
@@ -1405,13 +1408,13 @@ namespace LightVPN.Client.Windows
     {
         public RazorPageBaseTypeAttribute([NotNull] string baseType)
         {
-            BaseType = baseType;
+            this.BaseType = baseType;
         }
 
         public RazorPageBaseTypeAttribute([NotNull] string baseType, string pageName)
         {
-            BaseType = baseType;
-            PageName = pageName;
+            this.BaseType = baseType;
+            this.PageName = pageName;
         }
 
         [NotNull] public string BaseType { get; }

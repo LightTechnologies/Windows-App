@@ -1,14 +1,14 @@
-﻿using System;
-using System.IO;
-using System.Text.Json;
-using LightVPN.Client.Auth.Exceptions;
-using LightVPN.Client.Auth.Models;
-using LightVPN.Client.Cryptography;
-using LightVPN.Client.Debug;
-using LightVPN.Client.Windows.Common;
-
-namespace LightVPN.Client.Auth.Utils
+﻿namespace LightVPN.Client.Auth.Utils
 {
+    using System;
+    using System.IO;
+    using System.Text.Json;
+    using Windows.Common;
+    using Cryptography;
+    using Debug;
+    using Exceptions;
+    using Models;
+
     /// <summary>
     ///     Handles writing the authentication data to the auth data file
     /// </summary>
@@ -16,7 +16,7 @@ namespace LightVPN.Client.Auth.Utils
     {
         static AuthDataManager()
         {
-            Verify();
+            AuthDataManager.Verify();
         }
 
         /// <summary>
@@ -30,12 +30,12 @@ namespace LightVPN.Client.Auth.Utils
                                           throw new InvalidOperationException());
 
             if (!File.Exists(Globals.AuthDataPath))
-                Write(new AuthResponse
+                AuthDataManager.Write(new AuthResponse
                 {
                     UserId = default,
                     UserName = default,
                     SessionId = default,
-                    Email = default
+                    Email = default,
                 });
         }
 
@@ -60,7 +60,7 @@ namespace LightVPN.Client.Auth.Utils
         {
             try
             {
-                Verify();
+                AuthDataManager.Verify();
 
                 var encryptedData = File.ReadAllBytes(Globals.AuthDataPath);
 

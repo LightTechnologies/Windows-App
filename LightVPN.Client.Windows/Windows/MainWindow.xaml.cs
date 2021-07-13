@@ -1,16 +1,16 @@
-﻿using System;
-using System.Threading.Tasks;
-using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Media.Animation;
-using Hardcodet.Wpf.TaskbarNotification;
-using LightVPN.Client.Windows.Common;
-using LightVPN.Client.Windows.Configuration.Interfaces;
-using LightVPN.Client.Windows.Configuration.Models;
-using LightVPN.Client.Windows.Views;
-
-namespace LightVPN.Client.Windows
+﻿namespace LightVPN.Client.Windows
 {
+    using System;
+    using System.Threading.Tasks;
+    using System.Windows;
+    using System.Windows.Controls;
+    using System.Windows.Media.Animation;
+    using Common;
+    using Configuration.Interfaces;
+    using Configuration.Models;
+    using Hardcodet.Wpf.TaskbarNotification;
+    using Views;
+
     /// <inheritdoc cref="System.Windows.Window" />
     internal sealed partial class MainWindow : Window, IDisposable
     {
@@ -26,7 +26,9 @@ namespace LightVPN.Client.Windows
 
         public MainWindow()
         {
-            InitializeComponent();
+            this.InitializeComponent();
+
+            Application.Current.MainWindow = this;
 
             /* if (Globals.IsBeta)
                 MessageBox.Show(
@@ -41,37 +43,37 @@ namespace LightVPN.Client.Windows
                 Globals.Container.GetInstance<IConfigurationManager<AppConfiguration>>().Write(settings);
             }
 
-            if (settings.SizeSaving?.Width != null && settings.SizeSaving?.Width >= MinWidth ||
-                settings.SizeSaving?.Height >= MinHeight)
+            if (settings.SizeSaving?.Width != null && settings.SizeSaving?.Width >= this.MinWidth ||
+                settings.SizeSaving?.Height >= this.MinHeight)
             {
-                Width = settings.SizeSaving.Width;
-                Height = settings.SizeSaving.Height;
+                this.Width = settings.SizeSaving.Width;
+                this.Height = settings.SizeSaving.Height;
             }
 
             // Locates resources in the XAML and stores them for use in code-behind
-            _viewLoaded = FindResource("LoadView") as BeginStoryboard;
-            _viewUnloaded = FindResource("UnloadView") as BeginStoryboard;
-            _taskbarIcon = FindResource("TaskbarIcon") as TaskbarIcon;
+            this._viewLoaded = this.FindResource("LoadView") as BeginStoryboard;
+            this._viewUnloaded = this.FindResource("UnloadView") as BeginStoryboard;
+            this._taskbarIcon = this.FindResource("TaskbarIcon") as TaskbarIcon;
 
-            _mainView = new MainView();
+            this._mainView = new MainView();
 
             if (settings.IsFirstRun)
             {
-                LoadView(new FirstRunView());
+                this.LoadView(new FirstRunView());
                 return;
             }
 
-            LoadView(_mainView);
+            this.LoadView(this._mainView);
 
-            SizeChanged += (_, args) =>
+            this.SizeChanged += (_, args) =>
             {
                 var manager = Globals.Container.GetInstance<IConfigurationManager<AppConfiguration>>();
                 var config = manager.Read();
 
                 config.SizeSaving = new AppSizeSaving
                 {
-                    Width = (uint)args.NewSize.Width,
-                    Height = (uint)args.NewSize.Height
+                    Width = (uint) args.NewSize.Width,
+                    Height = (uint) args.NewSize.Height,
                 };
 
                 manager.Write(config);
@@ -85,24 +87,24 @@ namespace LightVPN.Client.Windows
 
         public void Dispose()
         {
-            _taskbarIcon.Dispose();
+            this._taskbarIcon.Dispose();
         }
 
         private void UnloadCompleted(object sender, EventArgs e)
         {
-            _viewLoaded.Storyboard.Begin();
+            this._viewLoaded.Storyboard.Begin();
         }
 
         public async void LoadView(Page page)
         {
-            if (page is MainView) page = _mainView;
+            if (page is MainView) page = this._mainView;
 
 
             // Play animation
-            _viewUnloaded.Storyboard.Begin();
+            this._viewUnloaded.Storyboard.Begin();
             await Task.Delay(400);
 
-            MainFrame.Navigate(page);
+            this.MainFrame.Navigate(page);
         }
     }
 }
