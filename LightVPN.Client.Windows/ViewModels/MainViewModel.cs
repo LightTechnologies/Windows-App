@@ -154,10 +154,22 @@
                     {
                         try
                         {
-                            if (this.ConnectionState is ConnectionState.Connecting or ConnectionState.Disconnecting or
-                                ConnectionState.Connected) return;
-
                             var vpnService = Globals.Container.GetInstance<IOpenVpnService>();
+                            var vpnManagerService = Globals.Container.GetInstance<IVpnManager>();
+
+                            if (Globals.TrayViewModel is not TrayViewModel trayViewModel) return;
+
+                            // If connected, disconnect and continue to connect to the server as the code will just move on after this conditional
+                            if (this.ConnectionState is ConnectionState.Connected)
+                            {
+                                this.ConnectionState = ConnectionState.Disconnecting;
+
+                                await vpnManagerService.DisconnectAsync();
+
+                                trayViewModel.ConnectionState = ConnectionState.Disconnected;
+
+                                this.ConnectionState = ConnectionState.Disconnected;
+                            }
 
                             if (args is not DisplayVpnServer server) return;
 
@@ -165,8 +177,7 @@
 
                             this.ConnectionState = ConnectionState.Connecting;
 
-                            if (Globals.TrayViewModel is TrayViewModel trayViewModel)
-                                trayViewModel.ConnectionState = ConnectionState.Connecting;
+                            trayViewModel.ConnectionState = ConnectionState.Connecting;
 
                             if (Globals.Container.GetInstance<IConfigurationManager<AppConfiguration>>().Read()
                                 .IsDiscordRpcEnabled)
@@ -184,6 +195,7 @@
                                 e.Message);
                         }
                     },
+                    CanExecuteFunc = () => _connectionState is not ConnectionState.Connecting or ConnectionState.Disconnecting
                 };
             }
         }
