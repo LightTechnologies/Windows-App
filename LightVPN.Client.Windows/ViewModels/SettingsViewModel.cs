@@ -122,7 +122,11 @@
 
                         var discordClient = Globals.Container.GetInstance<IDiscordRp>();
                         if (this.AppConfiguration.IsDiscordRpcEnabled)
+                        {
                             discordClient.Initialize();
+                            if (Globals.Container.GetInstance<IVpnManager>().IsConnected) discordClient.UpdateState($"Connected!");
+                            if (Globals.Container.GetInstance<IVpnManager>().IsConnecting) discordClient.UpdateState($"Connecting...");
+                        }
                         else
                             discordClient.Deinitialise();
 
